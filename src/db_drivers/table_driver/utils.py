@@ -10,14 +10,14 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 class TableDBConnectionConfig(BaseDatabaseConfig):
     """Конфигурация подключения к табличной базе данных.
 
-    :param db_info: Информация о базе и таблице, используемой для хранения данных. По умолчанию {'db': 'DefaultPersonalAITableDB', 'table': 'DefaultPersonalAITable'}).
+    :param db_info: Информация о базе и таблице, используемой для хранения данных. По умолчанию {'db': 'DefaultPersonalAITableDB', 'table': 'DefaultPersonalAITable', 'expected_db_base_path': '.'}).
     :type db_info: Dict
     :param host: Хост, на котором развернута табличная БД.
     :type host: str
     :param port: Порт, по которому производится подключение к табличной БД.
     :type port: str
     """
-    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAITableDB', 'table': 'DefaultPersonalAITable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAITableDB', 'table': 'DefaultPersonalAITable', 'expected_db_base_path': '.'})
     host: str = None
     port: str = None
 

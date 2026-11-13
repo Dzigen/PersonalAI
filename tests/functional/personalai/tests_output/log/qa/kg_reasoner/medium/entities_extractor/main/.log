@@ -1,0 +1,778 @@
+[11/13/2026 14:34:26] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:26] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:26] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:34:26] - DEBUG - * cache hash_key: e978b71310ad733ccafed8b23f3f471f4977491c.
+[11/13/2026 14:34:26] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:34:26] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:26] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:34:26] - DEBUG - * Query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:34:26] - DEBUG - * Query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:34:26] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:34:27] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:34:27] - DEBUG - TMP_RESULT: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:34:27] - DEBUG - RESULT: 3
+[11/13/2026 14:34:27] - DEBUG - * facilities
+[11/13/2026 14:34:27] - DEBUG - * students
+[11/13/2026 14:34:27] - DEBUG - * MSG dormitory
+[11/13/2026 14:34:27] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:34:27] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:27] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:27] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:34:27] - DEBUG - * cahce hash_key: e978b71310ad733ccafed8b23f3f471f4977491c .
+[11/13/2026 14:34:39] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:39] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:39] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:34:39] - DEBUG - * cache hash_key: c0e6f46acc2e2935221dd21c444a59d1f2d1e465.
+[11/13/2026 14:34:39] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:34:39] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:39] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:34:39] - DEBUG - * Query hash: 60cddc2892e701ea9225130f007b3a1e
+[11/13/2026 14:34:39] - DEBUG - * Query: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:34:39] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:34:39] - DEBUG - Количество извлечённых сущностей, до урезания: 2
+[11/13/2026 14:34:39] - DEBUG - TMP_RESULT: ['amenities', 'MSG dormitory']
+[11/13/2026 14:34:39] - DEBUG - RESULT: 2
+[11/13/2026 14:34:39] - DEBUG - * amenities
+[11/13/2026 14:34:39] - DEBUG - * MSG dormitory
+[11/13/2026 14:34:39] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:34:39] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:39] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:39] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:34:39] - DEBUG - * cahce hash_key: c0e6f46acc2e2935221dd21c444a59d1f2d1e465 .
+[11/13/2026 14:34:50] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:50] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:50] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:34:50] - DEBUG - * cache hash_key: 67b4467d33019cefef89e67f480a5a0d5d845d68.
+[11/13/2026 14:34:50] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory regarding recreational facilities?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:34:50] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:50] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:34:50] - DEBUG - * Query hash: 55cc6c23108918b92bc10973051ac1c5
+[11/13/2026 14:34:50] - DEBUG - * Query: What specific amenities are available to students in the MSG dormitory regarding recreational facilities?
+[11/13/2026 14:34:50] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:34:50] - DEBUG - Количество извлечённых сущностей, до урезания: 4
+[11/13/2026 14:34:50] - DEBUG - TMP_RESULT: ['amenities', 'recreational facilities', 'MSG dormitory', 'students']
+[11/13/2026 14:34:50] - DEBUG - RESULT: 4
+[11/13/2026 14:34:50] - DEBUG - * amenities
+[11/13/2026 14:34:50] - DEBUG - * recreational facilities
+[11/13/2026 14:34:50] - DEBUG - * MSG dormitory
+[11/13/2026 14:34:50] - DEBUG - * students
+[11/13/2026 14:34:50] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:34:50] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:50] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:50] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:34:50] - DEBUG - * cahce hash_key: 67b4467d33019cefef89e67f480a5a0d5d845d68 .
+[11/13/2026 14:35:01] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:01] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:01] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:35:01] - DEBUG - * cache hash_key: 3d2be3d3c010139c0fdc7a9bd439d7e2a6df9d5e.
+[11/13/2026 14:35:01] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory regarding study and learning resources?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:35:01] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:01] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:35:01] - DEBUG - * Query hash: 61f07e32be3347ae16249ff8ff8258a6
+[11/13/2026 14:35:01] - DEBUG - * Query: What specific amenities are available to students in the MSG dormitory regarding study and learning resources?
+[11/13/2026 14:35:01] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:35:01] - DEBUG - Количество извлечённых сущностей, до урезания: 4
+[11/13/2026 14:35:01] - DEBUG - TMP_RESULT: ['amenities', 'study', 'learning resources', 'MSG dormitory']
+[11/13/2026 14:35:01] - DEBUG - RESULT: 4
+[11/13/2026 14:35:01] - DEBUG - * amenities
+[11/13/2026 14:35:01] - DEBUG - * study
+[11/13/2026 14:35:01] - DEBUG - * learning resources
+[11/13/2026 14:35:01] - DEBUG - * MSG dormitory
+[11/13/2026 14:35:01] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:35:01] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:01] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:01] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:35:01] - DEBUG - * cahce hash_key: 3d2be3d3c010139c0fdc7a9bd439d7e2a6df9d5e .
+[11/13/2026 14:35:13] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:13] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:13] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:35:13] - DEBUG - * cache hash_key: f57fac8a285c819931f0efc04ad2aec7b119589e.
+[11/13/2026 14:35:13] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory regarding dining options?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:35:13] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:13] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:35:13] - DEBUG - * Query hash: 421ecb777a879afc5f114c38af426c3f
+[11/13/2026 14:35:13] - DEBUG - * Query: What specific amenities are available to students in the MSG dormitory regarding dining options?
+[11/13/2026 14:35:13] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:35:13] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:35:13] - DEBUG - TMP_RESULT: ['amenities', 'dining options', 'MSG dormitory']
+[11/13/2026 14:35:13] - DEBUG - RESULT: 3
+[11/13/2026 14:35:13] - DEBUG - * amenities
+[11/13/2026 14:35:13] - DEBUG - * dining options
+[11/13/2026 14:35:13] - DEBUG - * MSG dormitory
+[11/13/2026 14:35:13] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:35:13] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:13] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:13] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:35:13] - DEBUG - * cahce hash_key: f57fac8a285c819931f0efc04ad2aec7b119589e .
+[11/13/2026 14:35:24] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:24] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:24] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:35:24] - DEBUG - * cache hash_key: 98d44f305eeda121d992b4393da456b725401935.
+[11/13/2026 14:35:24] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory regarding laundry facilities?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:35:24] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:24] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:35:24] - DEBUG - * Query hash: af2df279216b408c92388b29001c8902
+[11/13/2026 14:35:24] - DEBUG - * Query: What specific amenities are available to students in the MSG dormitory regarding laundry facilities?
+[11/13/2026 14:35:24] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:35:24] - DEBUG - Количество извлечённых сущностей, до урезания: 4
+[11/13/2026 14:35:24] - DEBUG - TMP_RESULT: ['amenities', 'laundry facilities', 'MSG dormitory', 'students']
+[11/13/2026 14:35:24] - DEBUG - RESULT: 4
+[11/13/2026 14:35:24] - DEBUG - * amenities
+[11/13/2026 14:35:24] - DEBUG - * laundry facilities
+[11/13/2026 14:35:24] - DEBUG - * MSG dormitory
+[11/13/2026 14:35:24] - DEBUG - * students
+[11/13/2026 14:35:24] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:35:24] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:24] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:24] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:35:24] - DEBUG - * cahce hash_key: 98d44f305eeda121d992b4393da456b725401935 .
+[11/13/2026 14:35:37] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:37] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:37] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:35:37] - DEBUG - * cache hash_key: ae41b7d1c89c1f9a31b6d8b28d0c497b299f62a6.
+[11/13/2026 14:35:37] - DEBUG - * hash seed: ['What recreational facilities are available for students living in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:35:37] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:37] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:35:37] - DEBUG - * Query hash: 842dbf1f092afbdd0b70993e3a386ecc
+[11/13/2026 14:35:37] - DEBUG - * Query: What recreational facilities are available for students living in the MSG dormitory?
+[11/13/2026 14:35:37] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:35:37] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:35:37] - DEBUG - TMP_RESULT: ['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:35:37] - DEBUG - RESULT: 3
+[11/13/2026 14:35:37] - DEBUG - * recreational facilities
+[11/13/2026 14:35:37] - DEBUG - * students
+[11/13/2026 14:35:37] - DEBUG - * MSG dormitory
+[11/13/2026 14:35:37] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:35:37] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:37] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:37] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:35:37] - DEBUG - * cahce hash_key: ae41b7d1c89c1f9a31b6d8b28d0c497b299f62a6 .
+[11/13/2026 14:35:49] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:49] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:49] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:35:49] - DEBUG - * cache hash_key: 808e4f7d14050fba620421145f48e69cb0e6e924.
+[11/13/2026 14:35:49] - DEBUG - * hash seed: ['What study and learning resources are available for students living in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:35:49] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:49] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:35:49] - DEBUG - * Query hash: 2672360c606dec7e9300b3f918df7c2a
+[11/13/2026 14:35:49] - DEBUG - * Query: What study and learning resources are available for students living in the MSG dormitory?
+[11/13/2026 14:35:49] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:35:50] - DEBUG - Количество извлечённых сущностей, до урезания: 2
+[11/13/2026 14:35:50] - DEBUG - TMP_RESULT: ['study and learning resources', 'MSG dormitory']
+[11/13/2026 14:35:50] - DEBUG - RESULT: 2
+[11/13/2026 14:35:50] - DEBUG - * study and learning resources
+[11/13/2026 14:35:50] - DEBUG - * MSG dormitory
+[11/13/2026 14:35:50] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:35:50] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:50] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:50] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:35:50] - DEBUG - * cahce hash_key: 808e4f7d14050fba620421145f48e69cb0e6e924 .
+[11/13/2026 14:36:01] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:36:01] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:36:01] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:36:01] - DEBUG - * cache hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7.
+[11/13/2026 14:36:01] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:36:01] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:36:01] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:36:01] - DEBUG - * Query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:36:01] - DEBUG - * Query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:36:01] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:36:02] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:36:02] - DEBUG - TMP_RESULT: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:36:02] - DEBUG - RESULT: 3
+[11/13/2026 14:36:02] - DEBUG - * rules
+[11/13/2026 14:36:02] - DEBUG - * restrictions
+[11/13/2026 14:36:02] - DEBUG - * facility type
+[11/13/2026 14:36:02] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:36:02] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:36:02] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:36:02] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:36:02] - DEBUG - * cahce hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7 .
+[11/13/2026 14:39:06] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:06] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:06] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:39:06] - DEBUG - * cache hash_key: e978b71310ad733ccafed8b23f3f471f4977491c.
+[11/13/2026 14:39:06] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:39:06] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:06] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:39:06] - DEBUG - * Query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:39:06] - DEBUG - * Query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:39:06] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:39:06] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:39:06] - DEBUG - TMP_RESULT: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:39:06] - DEBUG - RESULT: 3
+[11/13/2026 14:39:06] - DEBUG - * facilities
+[11/13/2026 14:39:06] - DEBUG - * students
+[11/13/2026 14:39:06] - DEBUG - * MSG dormitory
+[11/13/2026 14:39:06] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:39:06] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:06] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:06] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:39:06] - DEBUG - * cahce hash_key: e978b71310ad733ccafed8b23f3f471f4977491c .
+[11/13/2026 14:39:17] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:17] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:17] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:39:17] - DEBUG - * cache hash_key: 546e9d11c78de221a6f41031e948d9645c836911.
+[11/13/2026 14:39:17] - DEBUG - * hash seed: ['What specific amenities and facilities are available to students in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:39:17] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:17] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:39:17] - DEBUG - * Query hash: 8b39d577bb0f63f27081068577536f99
+[11/13/2026 14:39:17] - DEBUG - * Query: What specific amenities and facilities are available to students in the MSG dormitory?
+[11/13/2026 14:39:17] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:39:18] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:39:18] - DEBUG - TMP_RESULT: ['amenities', 'facilities', 'MSG dormitory']
+[11/13/2026 14:39:18] - DEBUG - RESULT: 3
+[11/13/2026 14:39:18] - DEBUG - * amenities
+[11/13/2026 14:39:18] - DEBUG - * facilities
+[11/13/2026 14:39:18] - DEBUG - * MSG dormitory
+[11/13/2026 14:39:18] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:39:18] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:18] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:18] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:39:18] - DEBUG - * cahce hash_key: 546e9d11c78de221a6f41031e948d9645c836911 .
+[11/13/2026 14:39:30] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:30] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:30] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:39:30] - DEBUG - * cache hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7.
+[11/13/2026 14:39:30] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:39:30] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:30] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:39:30] - DEBUG - * Query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:39:30] - DEBUG - * Query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:39:30] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:39:30] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:39:30] - DEBUG - TMP_RESULT: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:39:30] - DEBUG - RESULT: 3
+[11/13/2026 14:39:30] - DEBUG - * rules
+[11/13/2026 14:39:30] - DEBUG - * restrictions
+[11/13/2026 14:39:30] - DEBUG - * facility type
+[11/13/2026 14:39:30] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:39:30] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:30] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:30] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:39:30] - DEBUG - * cahce hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7 .
+[11/13/2026 14:41:38] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:38] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:38] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:41:38] - DEBUG - * cache hash_key: e978b71310ad733ccafed8b23f3f471f4977491c.
+[11/13/2026 14:41:38] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:41:38] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:38] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:41:38] - DEBUG - * Query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:41:38] - DEBUG - * Query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:41:38] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:41:39] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:41:39] - DEBUG - TMP_RESULT: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:41:39] - DEBUG - RESULT: 3
+[11/13/2026 14:41:39] - DEBUG - * facilities
+[11/13/2026 14:41:39] - DEBUG - * students
+[11/13/2026 14:41:39] - DEBUG - * MSG dormitory
+[11/13/2026 14:41:39] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:41:39] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:39] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:39] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:41:39] - DEBUG - * cahce hash_key: e978b71310ad733ccafed8b23f3f471f4977491c .
+[11/13/2026 14:41:51] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:51] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:41:51] - DEBUG - * cache hash_key: bbbdc55c5b76ca855cc247d25b3f2668b0f55430.
+[11/13/2026 14:41:51] - DEBUG - * hash seed: ['What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:41:51] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:51] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:41:51] - DEBUG - * Query hash: 8c681693c502fc5d1694d5f9278d87da
+[11/13/2026 14:41:51] - DEBUG - * Query: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?
+[11/13/2026 14:41:51] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:41:51] - DEBUG - Количество извлечённых сущностей, до урезания: 5
+[11/13/2026 14:41:51] - DEBUG - TMP_RESULT: ['facilities', 'amenities', 'MSG dormitory', '24-hour access', 'guest room placement']
+[11/13/2026 14:41:51] - DEBUG - RESULT: 5
+[11/13/2026 14:41:51] - DEBUG - * facilities
+[11/13/2026 14:41:51] - DEBUG - * amenities
+[11/13/2026 14:41:51] - DEBUG - * MSG dormitory
+[11/13/2026 14:41:51] - DEBUG - * 24-hour access
+[11/13/2026 14:41:51] - DEBUG - * guest room placement
+[11/13/2026 14:41:51] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:41:51] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:51] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:41:51] - DEBUG - * cahce hash_key: bbbdc55c5b76ca855cc247d25b3f2668b0f55430 .
+[11/13/2026 14:42:06] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:42:06] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:42:06] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:42:06] - DEBUG - * cache hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7.
+[11/13/2026 14:42:06] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:42:06] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:42:06] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:42:06] - DEBUG - * Query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:42:06] - DEBUG - * Query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:42:06] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:42:07] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:42:07] - DEBUG - TMP_RESULT: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:42:07] - DEBUG - RESULT: 3
+[11/13/2026 14:42:07] - DEBUG - * rules
+[11/13/2026 14:42:07] - DEBUG - * restrictions
+[11/13/2026 14:42:07] - DEBUG - * facility type
+[11/13/2026 14:42:07] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:42:07] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:42:07] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:42:07] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:42:07] - DEBUG - * cahce hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7 .
+[11/13/2026 14:43:28] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:28] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:28] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:43:28] - DEBUG - * cache hash_key: e978b71310ad733ccafed8b23f3f471f4977491c.
+[11/13/2026 14:43:28] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:43:28] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:28] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:43:28] - DEBUG - * Query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:43:28] - DEBUG - * Query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:43:28] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:43:28] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:43:28] - DEBUG - TMP_RESULT: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:43:28] - DEBUG - RESULT: 3
+[11/13/2026 14:43:28] - DEBUG - * facilities
+[11/13/2026 14:43:28] - DEBUG - * students
+[11/13/2026 14:43:28] - DEBUG - * MSG dormitory
+[11/13/2026 14:43:28] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:43:28] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:28] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:28] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:43:28] - DEBUG - * cahce hash_key: e978b71310ad733ccafed8b23f3f471f4977491c .
+[11/13/2026 14:43:40] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:40] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:40] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:43:40] - DEBUG - * cache hash_key: c0e6f46acc2e2935221dd21c444a59d1f2d1e465.
+[11/13/2026 14:43:40] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:43:40] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:40] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:43:40] - DEBUG - * Query hash: 60cddc2892e701ea9225130f007b3a1e
+[11/13/2026 14:43:40] - DEBUG - * Query: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:43:40] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:43:41] - DEBUG - Количество извлечённых сущностей, до урезания: 2
+[11/13/2026 14:43:41] - DEBUG - TMP_RESULT: ['amenities', 'MSG dormitory']
+[11/13/2026 14:43:41] - DEBUG - RESULT: 2
+[11/13/2026 14:43:41] - DEBUG - * amenities
+[11/13/2026 14:43:41] - DEBUG - * MSG dormitory
+[11/13/2026 14:43:41] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:43:41] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:41] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:41] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:43:41] - DEBUG - * cahce hash_key: c0e6f46acc2e2935221dd21c444a59d1f2d1e465 .
+[11/13/2026 14:43:52] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:52] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:52] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:43:52] - DEBUG - * cache hash_key: bfdc327b39ba9ffc7608f1d8828a3c4e0ae12892.
+[11/13/2026 14:43:52] - DEBUG - * hash seed: ['What recreational facilities are available to students in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:43:52] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:52] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:43:52] - DEBUG - * Query hash: 7ceaf7323a5b833d343d210837b3b0ec
+[11/13/2026 14:43:52] - DEBUG - * Query: What recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:43:52] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:43:53] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:43:53] - DEBUG - TMP_RESULT: ['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:43:53] - DEBUG - RESULT: 3
+[11/13/2026 14:43:53] - DEBUG - * recreational facilities
+[11/13/2026 14:43:53] - DEBUG - * students
+[11/13/2026 14:43:53] - DEBUG - * MSG dormitory
+[11/13/2026 14:43:53] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:43:53] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:53] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:53] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:43:53] - DEBUG - * cahce hash_key: bfdc327b39ba9ffc7608f1d8828a3c4e0ae12892 .
+[11/13/2026 14:44:04] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:44:04] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:44:04] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:44:04] - DEBUG - * cache hash_key: 115bd3d58d0bbb5e85b9ce93ea26742eaa8767eb.
+[11/13/2026 14:44:04] - DEBUG - * hash seed: ['What amenities are available in the MSG dormitory for student residents?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:44:04] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:44:04] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:44:04] - DEBUG - * Query hash: 69190f63281d30e56ec244dd06180a9f
+[11/13/2026 14:44:04] - DEBUG - * Query: What amenities are available in the MSG dormitory for student residents?
+[11/13/2026 14:44:04] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:44:05] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:44:05] - DEBUG - TMP_RESULT: ['amenities', 'MSG dormitory', 'student residents']
+[11/13/2026 14:44:05] - DEBUG - RESULT: 3
+[11/13/2026 14:44:05] - DEBUG - * amenities
+[11/13/2026 14:44:05] - DEBUG - * MSG dormitory
+[11/13/2026 14:44:05] - DEBUG - * student residents
+[11/13/2026 14:44:05] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:44:05] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:44:05] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:44:05] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:44:05] - DEBUG - * cahce hash_key: 115bd3d58d0bbb5e85b9ce93ea26742eaa8767eb .
+[11/13/2026 14:44:17] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:44:17] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:44:17] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:44:17] - DEBUG - * cache hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7.
+[11/13/2026 14:44:17] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:44:17] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:44:17] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:44:17] - DEBUG - * Query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:44:17] - DEBUG - * Query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:44:17] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:44:18] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:44:18] - DEBUG - TMP_RESULT: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:44:18] - DEBUG - RESULT: 3
+[11/13/2026 14:44:18] - DEBUG - * rules
+[11/13/2026 14:44:18] - DEBUG - * restrictions
+[11/13/2026 14:44:18] - DEBUG - * facility type
+[11/13/2026 14:44:18] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:44:18] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:44:18] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:44:18] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:44:18] - DEBUG - * cahce hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7 .
+[11/13/2026 14:45:44] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:44] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:44] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:45:44] - DEBUG - * cache hash_key: e978b71310ad733ccafed8b23f3f471f4977491c.
+[11/13/2026 14:45:44] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:45:44] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:44] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:45:44] - DEBUG - * Query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:45:44] - DEBUG - * Query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:45:44] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:45:45] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:45:45] - DEBUG - TMP_RESULT: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:45:45] - DEBUG - RESULT: 3
+[11/13/2026 14:45:45] - DEBUG - * facilities
+[11/13/2026 14:45:45] - DEBUG - * students
+[11/13/2026 14:45:45] - DEBUG - * MSG dormitory
+[11/13/2026 14:45:45] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:45:45] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:45] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:45] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:45:45] - DEBUG - * cahce hash_key: e978b71310ad733ccafed8b23f3f471f4977491c .
+[11/13/2026 14:45:56] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:56] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:56] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:45:56] - DEBUG - * cache hash_key: bbbdc55c5b76ca855cc247d25b3f2668b0f55430.
+[11/13/2026 14:45:56] - DEBUG - * hash seed: ['What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:45:56] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:56] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:45:56] - DEBUG - * Query hash: 8c681693c502fc5d1694d5f9278d87da
+[11/13/2026 14:45:56] - DEBUG - * Query: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?
+[11/13/2026 14:45:56] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:45:57] - DEBUG - Количество извлечённых сущностей, до урезания: 5
+[11/13/2026 14:45:57] - DEBUG - TMP_RESULT: ['facilities', 'amenities', 'MSG dormitory', '24-hour access', 'guest room placement']
+[11/13/2026 14:45:57] - DEBUG - RESULT: 5
+[11/13/2026 14:45:57] - DEBUG - * facilities
+[11/13/2026 14:45:57] - DEBUG - * amenities
+[11/13/2026 14:45:57] - DEBUG - * MSG dormitory
+[11/13/2026 14:45:57] - DEBUG - * 24-hour access
+[11/13/2026 14:45:57] - DEBUG - * guest room placement
+[11/13/2026 14:45:57] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:45:57] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:57] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:57] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:45:57] - DEBUG - * cahce hash_key: bbbdc55c5b76ca855cc247d25b3f2668b0f55430 .
+[11/13/2026 14:46:08] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:08] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:08] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:46:08] - DEBUG - * cache hash_key: c68708596678967ee5008d46b18224566d4eab0d.
+[11/13/2026 14:46:08] - DEBUG - * hash seed: ['What specific amenities are included in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:46:08] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:08] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:46:08] - DEBUG - * Query hash: 4db7cb35e7504dd9ef0ad9169ac7a378
+[11/13/2026 14:46:08] - DEBUG - * Query: What specific amenities are included in the MSG dormitory?
+[11/13/2026 14:46:08] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:46:09] - DEBUG - Количество извлечённых сущностей, до урезания: 2
+[11/13/2026 14:46:09] - DEBUG - TMP_RESULT: ['amenities', 'MSG dormitory']
+[11/13/2026 14:46:09] - DEBUG - RESULT: 2
+[11/13/2026 14:46:09] - DEBUG - * amenities
+[11/13/2026 14:46:09] - DEBUG - * MSG dormitory
+[11/13/2026 14:46:09] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:46:09] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:09] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:09] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:46:09] - DEBUG - * cahce hash_key: c68708596678967ee5008d46b18224566d4eab0d .
+[11/13/2026 14:46:20] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:20] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:20] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:46:20] - DEBUG - * cache hash_key: c7030a6b60dcb9663c183675114e365ebda72845.
+[11/13/2026 14:46:20] - DEBUG - * hash seed: ['Are there any recreational facilities available for students in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:46:20] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:20] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:46:20] - DEBUG - * Query hash: 88c37889855c3e94690c25b60d9e0c35
+[11/13/2026 14:46:20] - DEBUG - * Query: Are there any recreational facilities available for students in the MSG dormitory?
+[11/13/2026 14:46:20] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:46:20] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:46:20] - DEBUG - TMP_RESULT: ['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:46:20] - DEBUG - RESULT: 3
+[11/13/2026 14:46:20] - DEBUG - * recreational facilities
+[11/13/2026 14:46:20] - DEBUG - * students
+[11/13/2026 14:46:20] - DEBUG - * MSG dormitory
+[11/13/2026 14:46:20] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:46:20] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:20] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:20] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:46:20] - DEBUG - * cahce hash_key: c7030a6b60dcb9663c183675114e365ebda72845 .
+[11/13/2026 14:46:32] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:32] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:32] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:46:32] - DEBUG - * cache hash_key: 3feb3231560c25b73ec1fc7b73d989cc660cb49b.
+[11/13/2026 14:46:32] - DEBUG - * hash seed: ['What amenities and services are typically included in university dormitories?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:46:32] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:32] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:46:32] - DEBUG - * Query hash: e47a324c6640f914f18c56221ca5b8e7
+[11/13/2026 14:46:32] - DEBUG - * Query: What amenities and services are typically included in university dormitories?
+[11/13/2026 14:46:32] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:46:32] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:46:32] - DEBUG - TMP_RESULT: ['amenities', 'services', 'university dormitories']
+[11/13/2026 14:46:32] - DEBUG - RESULT: 3
+[11/13/2026 14:46:32] - DEBUG - * amenities
+[11/13/2026 14:46:32] - DEBUG - * services
+[11/13/2026 14:46:32] - DEBUG - * university dormitories
+[11/13/2026 14:46:32] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:46:32] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:32] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:32] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:46:32] - DEBUG - * cahce hash_key: 3feb3231560c25b73ec1fc7b73d989cc660cb49b .
+[11/13/2026 14:46:45] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:45] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:46:45] - DEBUG - * cache hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7.
+[11/13/2026 14:46:45] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:46:45] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:45] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:46:45] - DEBUG - * Query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:46:45] - DEBUG - * Query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:46:45] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:46:45] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:46:45] - DEBUG - TMP_RESULT: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:46:45] - DEBUG - RESULT: 3
+[11/13/2026 14:46:45] - DEBUG - * rules
+[11/13/2026 14:46:45] - DEBUG - * restrictions
+[11/13/2026 14:46:45] - DEBUG - * facility type
+[11/13/2026 14:46:45] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:46:45] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:45] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:45] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:46:45] - DEBUG - * cahce hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7 .
+[11/13/2026 14:48:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:18] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:48:18] - DEBUG - * cache hash_key: e978b71310ad733ccafed8b23f3f471f4977491c.
+[11/13/2026 14:48:18] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:48:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:18] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:48:18] - DEBUG - * Query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:48:18] - DEBUG - * Query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:48:18] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:48:18] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:48:18] - DEBUG - TMP_RESULT: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:48:18] - DEBUG - RESULT: 3
+[11/13/2026 14:48:18] - DEBUG - * facilities
+[11/13/2026 14:48:18] - DEBUG - * students
+[11/13/2026 14:48:18] - DEBUG - * MSG dormitory
+[11/13/2026 14:48:18] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:48:18] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:18] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:18] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:48:18] - DEBUG - * cahce hash_key: e978b71310ad733ccafed8b23f3f471f4977491c .
+[11/13/2026 14:48:30] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:30] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:30] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:48:30] - DEBUG - * cache hash_key: c0e6f46acc2e2935221dd21c444a59d1f2d1e465.
+[11/13/2026 14:48:30] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:48:30] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:30] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:48:30] - DEBUG - * Query hash: 60cddc2892e701ea9225130f007b3a1e
+[11/13/2026 14:48:30] - DEBUG - * Query: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:48:30] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:48:31] - DEBUG - Количество извлечённых сущностей, до урезания: 2
+[11/13/2026 14:48:31] - DEBUG - TMP_RESULT: ['amenities', 'MSG dormitory']
+[11/13/2026 14:48:31] - DEBUG - RESULT: 2
+[11/13/2026 14:48:31] - DEBUG - * amenities
+[11/13/2026 14:48:31] - DEBUG - * MSG dormitory
+[11/13/2026 14:48:31] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:48:31] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:31] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:31] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:48:31] - DEBUG - * cahce hash_key: c0e6f46acc2e2935221dd21c444a59d1f2d1e465 .
+[11/13/2026 14:48:42] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:42] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:42] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:48:42] - DEBUG - * cache hash_key: bfdc327b39ba9ffc7608f1d8828a3c4e0ae12892.
+[11/13/2026 14:48:42] - DEBUG - * hash seed: ['What recreational facilities are available to students in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:48:42] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:42] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:48:42] - DEBUG - * Query hash: 7ceaf7323a5b833d343d210837b3b0ec
+[11/13/2026 14:48:42] - DEBUG - * Query: What recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:48:42] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:48:42] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:48:42] - DEBUG - TMP_RESULT: ['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:48:42] - DEBUG - RESULT: 3
+[11/13/2026 14:48:42] - DEBUG - * recreational facilities
+[11/13/2026 14:48:42] - DEBUG - * students
+[11/13/2026 14:48:42] - DEBUG - * MSG dormitory
+[11/13/2026 14:48:42] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:48:42] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:42] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:42] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:48:42] - DEBUG - * cahce hash_key: bfdc327b39ba9ffc7608f1d8828a3c4e0ae12892 .
+[11/13/2026 14:48:54] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:54] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:54] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:48:54] - DEBUG - * cache hash_key: 7ff3c02182db7cadb7d4fab5bc8f40bbb79f2478.
+[11/13/2026 14:48:54] - DEBUG - * hash seed: ['What amenities are available in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:48:54] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:54] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:48:54] - DEBUG - * Query hash: cd7918ffff1401905107d2a363af5a56
+[11/13/2026 14:48:54] - DEBUG - * Query: What amenities are available in the MSG dormitory?
+[11/13/2026 14:48:54] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:48:55] - DEBUG - Количество извлечённых сущностей, до урезания: 2
+[11/13/2026 14:48:55] - DEBUG - TMP_RESULT: ['amenities', 'MSG dormitory']
+[11/13/2026 14:48:55] - DEBUG - RESULT: 2
+[11/13/2026 14:48:55] - DEBUG - * amenities
+[11/13/2026 14:48:55] - DEBUG - * MSG dormitory
+[11/13/2026 14:48:55] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:48:55] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:55] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:55] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:48:55] - DEBUG - * cahce hash_key: 7ff3c02182db7cadb7d4fab5bc8f40bbb79f2478 .
+[11/13/2026 14:49:07] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:07] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:07] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:49:07] - DEBUG - * cache hash_key: 9652a60ed8c8f13acd5ace1df66aab3bcb8a3c14.
+[11/13/2026 14:49:07] - DEBUG - * hash seed: ['What amenities and facilities are available in the MSG dormitory for student use?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:49:07] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:07] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:49:07] - DEBUG - * Query hash: f2f92c031ad813f1a9e3f12cafe2a1c0
+[11/13/2026 14:49:07] - DEBUG - * Query: What amenities and facilities are available in the MSG dormitory for student use?
+[11/13/2026 14:49:07] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:49:08] - DEBUG - Количество извлечённых сущностей, до урезания: 4
+[11/13/2026 14:49:08] - DEBUG - TMP_RESULT: ['amenities', 'facilities', 'MSG dormitory', 'student']
+[11/13/2026 14:49:08] - DEBUG - RESULT: 4
+[11/13/2026 14:49:08] - DEBUG - * amenities
+[11/13/2026 14:49:08] - DEBUG - * facilities
+[11/13/2026 14:49:08] - DEBUG - * MSG dormitory
+[11/13/2026 14:49:08] - DEBUG - * student
+[11/13/2026 14:49:08] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:49:08] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:08] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:08] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:49:08] - DEBUG - * cahce hash_key: 9652a60ed8c8f13acd5ace1df66aab3bcb8a3c14 .
+[11/13/2026 14:49:20] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:20] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:20] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:49:20] - DEBUG - * cache hash_key: 7fa4400facc8051ce1d90f2ba670e52c0af357bb.
+[11/13/2026 14:49:20] - DEBUG - * hash seed: ['What specific amenities and facilities are available for student use in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:49:20] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:20] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:49:20] - DEBUG - * Query hash: 6767db967a4449bf3a5b179e5fce0503
+[11/13/2026 14:49:20] - DEBUG - * Query: What specific amenities and facilities are available for student use in the MSG dormitory?
+[11/13/2026 14:49:20] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:49:21] - DEBUG - Количество извлечённых сущностей, до урезания: 4
+[11/13/2026 14:49:21] - DEBUG - TMP_RESULT: ['amenities', 'facilities', 'student', 'MSG dormitory']
+[11/13/2026 14:49:21] - DEBUG - RESULT: 4
+[11/13/2026 14:49:21] - DEBUG - * amenities
+[11/13/2026 14:49:21] - DEBUG - * facilities
+[11/13/2026 14:49:21] - DEBUG - * student
+[11/13/2026 14:49:21] - DEBUG - * MSG dormitory
+[11/13/2026 14:49:21] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:49:21] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:21] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:21] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:49:21] - DEBUG - * cahce hash_key: 7fa4400facc8051ce1d90f2ba670e52c0af357bb .
+[11/13/2026 14:49:34] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:34] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:34] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:49:34] - DEBUG - * cache hash_key: 980453b8d9f8e642a385c50e5450435c7e4f5f27.
+[11/13/2026 14:49:34] - DEBUG - * hash seed: ['Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:49:34] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:34] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:49:34] - DEBUG - * Query hash: a61401d3c6a24b351d5c45896b331c59
+[11/13/2026 14:49:34] - DEBUG - * Query: Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?
+[11/13/2026 14:49:34] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:49:34] - DEBUG - Количество извлечённых сущностей, до урезания: 4
+[11/13/2026 14:49:34] - DEBUG - TMP_RESULT: ['recreational facilities', 'common areas', 'students', 'MSG dormitory']
+[11/13/2026 14:49:34] - DEBUG - RESULT: 4
+[11/13/2026 14:49:34] - DEBUG - * recreational facilities
+[11/13/2026 14:49:34] - DEBUG - * common areas
+[11/13/2026 14:49:34] - DEBUG - * students
+[11/13/2026 14:49:34] - DEBUG - * MSG dormitory
+[11/13/2026 14:49:34] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:49:34] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:34] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:34] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:49:34] - DEBUG - * cahce hash_key: 980453b8d9f8e642a385c50e5450435c7e4f5f27 .
+[11/13/2026 14:49:45] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:45] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:49:45] - DEBUG - * cache hash_key: bb4e00e07a5fa8ba5e03b55a92edf2dc02951f83.
+[11/13/2026 14:49:45] - DEBUG - * hash seed: ['What amenities and services are available to students living in the MSG dormitory?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:49:45] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:45] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:49:45] - DEBUG - * Query hash: 0f82fa0f7437784e9fdf9def5e0ac2c7
+[11/13/2026 14:49:45] - DEBUG - * Query: What amenities and services are available to students living in the MSG dormitory?
+[11/13/2026 14:49:45] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:49:46] - DEBUG - Количество извлечённых сущностей, до урезания: 4
+[11/13/2026 14:49:46] - DEBUG - TMP_RESULT: ['amenities', 'services', 'students', 'MSG dormitory']
+[11/13/2026 14:49:46] - DEBUG - RESULT: 4
+[11/13/2026 14:49:46] - DEBUG - * amenities
+[11/13/2026 14:49:46] - DEBUG - * services
+[11/13/2026 14:49:46] - DEBUG - * students
+[11/13/2026 14:49:46] - DEBUG - * MSG dormitory
+[11/13/2026 14:49:46] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:49:46] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:46] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:46] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:49:46] - DEBUG - * cahce hash_key: bb4e00e07a5fa8ba5e03b55a92edf2dc02951f83 .
+[11/13/2026 14:49:58] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:58] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:58] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache .
+[11/13/2026 14:49:58] - DEBUG - * cache hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7.
+[11/13/2026 14:49:58] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', 'en|None|20|entities_extraction=v1', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:49:58] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:58] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:49:58] - DEBUG - * Query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:49:58] - DEBUG - * Query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:49:58] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:49:59] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:49:59] - DEBUG - TMP_RESULT: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:49:59] - DEBUG - RESULT: 3
+[11/13/2026 14:49:59] - DEBUG - * rules
+[11/13/2026 14:49:59] - DEBUG - * restrictions
+[11/13/2026 14:49:59] - DEBUG - * facility type
+[11/13/2026 14:49:59] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:49:59] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:59] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:59] - DEBUG - * cache table_name: medreasn_entextr_main_stage_cache
+[11/13/2026 14:49:59] - DEBUG - * cahce hash_key: b2a9143e8c8ccf1ac80fc48020facaea9a2caeb7 .
+[11/13/2026 14:51:36] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:36] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:51:36] - DEBUG - * Query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:51:36] - DEBUG - * Query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:51:36] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:51:37] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:51:37] - DEBUG - TMP_RESULT: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:51:37] - DEBUG - RESULT: 3
+[11/13/2026 14:51:37] - DEBUG - * facilities
+[11/13/2026 14:51:37] - DEBUG - * students
+[11/13/2026 14:51:37] - DEBUG - * MSG dormitory
+[11/13/2026 14:51:37] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:51:53] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:53] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:51:53] - DEBUG - * Query hash: 1af2d4710a4155d7e1f7be3809e5fa9e
+[11/13/2026 14:51:53] - DEBUG - * Query: What other facilities or amenities are available to students in the MSG dormitory besides guest room access?
+[11/13/2026 14:51:53] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:51:53] - DEBUG - Количество извлечённых сущностей, до урезания: 5
+[11/13/2026 14:51:53] - DEBUG - TMP_RESULT: ['facilities', 'amenities', 'guest room access', 'MSG dormitory', 'students']
+[11/13/2026 14:51:53] - DEBUG - RESULT: 5
+[11/13/2026 14:51:53] - DEBUG - * facilities
+[11/13/2026 14:51:53] - DEBUG - * amenities
+[11/13/2026 14:51:53] - DEBUG - * guest room access
+[11/13/2026 14:51:53] - DEBUG - * MSG dormitory
+[11/13/2026 14:51:53] - DEBUG - * students
+[11/13/2026 14:51:53] - DEBUG - STATUS: Операция выполнена успешно.
+[11/13/2026 14:52:09] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:52:09] - DEBUG - START ENTITIES EXTRACTION...
+[11/13/2026 14:52:09] - DEBUG - * Query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:52:09] - DEBUG - * Query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:52:09] - DEBUG - Выполнение извлечения сущностей из запроса с помощью LLM-агента...
+[11/13/2026 14:52:10] - DEBUG - Количество извлечённых сущностей, до урезания: 3
+[11/13/2026 14:52:10] - DEBUG - TMP_RESULT: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:52:10] - DEBUG - RESULT: 3
+[11/13/2026 14:52:10] - DEBUG - * rules
+[11/13/2026 14:52:10] - DEBUG - * restrictions
+[11/13/2026 14:52:10] - DEBUG - * facility type
+[11/13/2026 14:52:10] - DEBUG - STATUS: Операция выполнена успешно.

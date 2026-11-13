@@ -3,6 +3,7 @@ from haystack_integrations.document_stores.elasticsearch import ElasticsearchDoc
 from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchBM25Retriever
 from haystack.document_stores.types import DuplicatePolicy
 from haystack import Document
+from elasticsearch import TransportError, ConnectionError, NotFoundError, SSLError, AuthenticationException
 
 import urllib3
 urllib3.disable_warnings()
@@ -14,6 +15,7 @@ from .....utils.errors import ReturnInfo
 
 
 class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
+    DATABASE_KW = 'elasticsearch'
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_ELASTICSEARCH_BM25_CONFIG, **kwargs) -> None:
         if isinstance(config, dict):
@@ -30,15 +32,23 @@ class ElasticSearchBM25Connector(AbstractVectorDatabaseConnection):
         host = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         index = f"{self.config.db_info['db']}_{self.config.db_info['table']}"
         self.db_conn = ElasticsearchDocumentStore(hosts=host, index=index)
+        self.db_conn._ensure_initialized()
         self.retriever = ElasticsearchBM25Retriever(document_store=self.db_conn)
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            return self.db_conn._client.ping()
+        except (ConnectionError, TransportError, SSLError, AuthenticationException, AttributeError) as e:
+            return False
 
     def close_connection(self) -> ReturnInfo:
-        # TODO
-        pass
+        try:
+            self.db_conn._client.close()
+            #self.db_conn._client = None
+            del self.db_conn
+            del self.retriever
+        except (TypeError, AttributeError):
+            pass
 
     @restore_connection
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:

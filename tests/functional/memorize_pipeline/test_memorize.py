@@ -47,7 +47,11 @@ def test_mem_pipeline(mem_config: MemPipelineConfig, raw_texts: List[str],
     kv_cache_config = None
     if use_kv_cache:
         kv_cache_config = KV_CACHE_CONFIG
+
+    mem_config.synchronize_logging()
+
     mem_pipeline = MemPipeline(kg_model, mem_config, kv_cache_config)
+    mem_pipeline.open_connections()
 
     for text in tqdm(raw_texts):
         _, status, _ = mem_pipeline.remember(text)

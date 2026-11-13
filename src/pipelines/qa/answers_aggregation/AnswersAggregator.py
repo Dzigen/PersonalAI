@@ -14,7 +14,7 @@ from ....utils.cache_kv import CacheUtils
 from ....utils.cache_kv.CacheOperations import CacheOperations
 from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
-
+from ....environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
@@ -32,7 +32,7 @@ class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
 
     answers_summ_behaviour: AnswersSummBehaviour = AnswersSummBehaviour.strict_answer
     cache_table_name: str = 'answers_aggregation_main_stage_cache'
-    log_path: str = AAGG_MAIN_LOG_PATH
+    log_relative_path: str = AAGG_MAIN_LOG_PATH
 
     def to_str(self) -> str:
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.answers_summ_behaviour}"
@@ -51,7 +51,7 @@ class AnswersAggregatorConfig(BaseComponentConfig, LanguageConfig):
             self.answers_summ_behaviour = AnswersSummBehaviour[self.answers_summ_behaviour]
 
 
-class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
+class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс AnswersAggregator-стадии (точка входа), отвечающей за аггрегацию/резюмирование информации, полученной в результате ризонинга на графе знаний (памяти), и генерацию финального ответа на user-вопрос.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -74,7 +74,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level, self.config.log_base_path)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -93,7 +93,7 @@ class AnswersAggregator(CacheUtils, CacheOperations, AgentStatOperations):
             )
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 

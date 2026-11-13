@@ -32,7 +32,7 @@ class NaiveGraphSearchConfig(BaseGraphSearchConfig):
     accepted_node_types: List[NodeType] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
 
     cache_table_name: str = 'qa_naive_t_retriever_cache'
-    log_path: str = NAIVE_RETRIEVER_LOG_PATH
+    log_relative_path: str = NAIVE_RETRIEVER_LOG_PATH
 
     def to_str(self):
         return f"{self.max_k};{self.reranker_driver_config.to_str()}"
@@ -74,7 +74,7 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             search_config.formate_fields()
         self.config: NaiveGraphSearchConfig = search_config
 
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
@@ -84,13 +84,9 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             kg_model.graph_embeddings.triplets_vcomposer
         )
 
-        self.log = Logger(search_config.log_path)
+        self.log = Logger(search_config.log_relative_path, search_config.log_base_path)
         self.verbose = search_config.verbose
         self.log_level = search_config.log_level
-
-    def close_connections(self):
-        if self.cachekv is not None:
-            self.cachekv.close_connection()
 
     def get_traversal_cache(self) -> None:
         return None
@@ -114,7 +110,7 @@ class NaiveTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         triplet_ids = list(map(lambda item: item.metadata['t_id'], relevant_triplets))
         self.log.debug("Количество извлечённых объектов из векторной бд (triplets): %d", len(triplet_ids), verbose=self.verbose, log_level=self.log_level)
 
-        triplets: List[Triplet] = self.kg_model.graph_struct.db_conn.read(triplet_ids)
+        triplets: List[Triplet] = self.kgmodel_ref.graph_struct.db_conn.read(triplet_ids)
         self.log.debug("Количество полученных трипелтов из графовой бд: %d", len(triplets), verbose=self.verbose, log_level=self.log_level)
         self.log.debug("Распределение типов связей в наборе извлечённых триплетов: %s",
                        Counter([triplet.relation.type for triplet in triplets]), verbose=self.verbose, log_level=self.log_level)

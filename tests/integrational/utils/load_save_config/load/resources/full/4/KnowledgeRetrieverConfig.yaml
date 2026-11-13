@@ -1,9 +1,9 @@
-log_path: log/qa/kg_reasoner/weak/knowledge_retriever/main
+log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/main
 verbose: false
 log_level: 10
 retriever_method: mixture
 retriever_config:
-  log_path: log/qa/kg_reasoner/weak/knowledge_retriever/mixtured_retriever
+  log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/mixtured_retriever
   verbose: false
   log_level: 10
   accepted_node_types:
@@ -12,7 +12,7 @@ retriever_config:
   - episodic
   retriever1_name: beamsearch
   retriever1_config:
-    log_path: log/qa/kg_reasoner/weak/knowledge_retriever/beamsearch_retriever
+    log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/beamsearch_retriever
     verbose: false
     log_level: 10
     accepted_node_types:
@@ -36,7 +36,7 @@ retriever_config:
     cache_table_name: qa_beamsearch_t_retriever_cache
   retriever2_name: watercircles
   retriever2_config:
-    log_path: log/qa/kg_reasoner/weak/knowledge_retriever/watercircles_retriever
+    log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/watercircles_retriever
     verbose: false
     log_level: 10
     accepted_node_types:
@@ -53,7 +53,7 @@ retriever_config:
   cache_table_name: qa_mixture_t_retriever_cache
 filter_method: naive
 filter_config:
-  log_path: log/qa/kg_reasoner/weak/knowledge_retriever/triples_filter
+  log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/triples_filter
   verbose: false
   log_level: 10
   reranker_driver_config:

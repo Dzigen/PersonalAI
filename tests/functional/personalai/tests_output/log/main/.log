@@ -1,0 +1,154 @@
+[11/13/2026 14:34:08] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:34:08] - INFO - * Text hash: 0b1e5055de3c0b69727e38f292a1e9b9 .
+[11/13/2026 14:34:08] - INFO - * Text: Students living in the dormitory have the right to 24-hour access to their place of residence. .
+[11/13/2026 14:34:08] - INFO - * Properties: None .
+[11/13/2026 14:34:08] - DEBUG - * Internal text id: 33e8f72da34efc46ce2a1532e6b05455
+[11/13/2026 14:34:14] - INFO - RESULT:
+[11/13/2026 14:34:14] - INFO - * Extracted triples amount: 10 .
+[11/13/2026 14:34:14] - INFO - * Elapsed time: 6.36784 sec .
+[11/13/2026 14:34:14] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:34:14] - INFO - * Text hash: 04bfba457cb79f3fffca6ce12b435295 .
+[11/13/2026 14:34:14] - INFO - * Text: Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship). .
+[11/13/2026 14:34:14] - INFO - * Properties: None .
+[11/13/2026 14:34:14] - DEBUG - * Internal text id: 0478f2a5861be91f63898e7356d463f6
+[11/13/2026 14:34:22] - INFO - RESULT:
+[11/13/2026 14:34:22] - INFO - * Extracted triples amount: 57 .
+[11/13/2026 14:34:22] - INFO - * Elapsed time: 8.19788 sec .
+[11/13/2026 14:34:22] - INFO - START ANSWER GENERATION...
+[11/13/2026 14:34:22] - INFO - * Question hash: 3ea10df6f26d45eb9129adf96580a02a .
+[11/13/2026 14:34:22] - INFO - * Question: What facilities are students allowed to use while living in the MSG dormitory? .
+[11/13/2026 14:36:16] - INFO - RESULT:
+[11/13/2026 14:36:16] - INFO - * Answer: <|NotEnoughtInfo|> .
+[11/13/2026 14:36:16] - INFO - * Elapsed time: 113.75867 sec .
+[11/13/2026 14:38:47] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:38:47] - INFO - * Text hash: 0b1e5055de3c0b69727e38f292a1e9b9 .
+[11/13/2026 14:38:47] - INFO - * Text: Students living in the dormitory have the right to 24-hour access to their place of residence. .
+[11/13/2026 14:38:47] - INFO - * Properties: None .
+[11/13/2026 14:38:47] - DEBUG - * Internal text id: 945a9cf7b387cfc066f16e815a6030cd
+[11/13/2026 14:38:53] - INFO - RESULT:
+[11/13/2026 14:38:53] - INFO - * Extracted triples amount: 10 .
+[11/13/2026 14:38:53] - INFO - * Elapsed time: 6.13012 sec .
+[11/13/2026 14:38:53] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:38:53] - INFO - * Text hash: 04bfba457cb79f3fffca6ce12b435295 .
+[11/13/2026 14:38:53] - INFO - * Text: Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship). .
+[11/13/2026 14:38:53] - INFO - * Properties: None .
+[11/13/2026 14:38:53] - DEBUG - * Internal text id: 8f849ca819799ec4dd9952f5f3e48532
+[11/13/2026 14:39:02] - INFO - RESULT:
+[11/13/2026 14:39:02] - INFO - * Extracted triples amount: 57 .
+[11/13/2026 14:39:02] - INFO - * Elapsed time: 8.59295 sec .
+[11/13/2026 14:39:02] - INFO - START ANSWER GENERATION...
+[11/13/2026 14:39:02] - INFO - * Question hash: 3ea10df6f26d45eb9129adf96580a02a .
+[11/13/2026 14:39:02] - INFO - * Question: What facilities are students allowed to use while living in the MSG dormitory? .
+[11/13/2026 14:39:45] - INFO - RESULT:
+[11/13/2026 14:39:45] - INFO - * Answer: Students in the MSG dormitory have 24-hour access and can apply to use guest rooms for their relatives, with specific conditions: parents can stay indefinitely, while other relatives require a kinship document and must stay for at least two days. .
+[11/13/2026 14:39:45] - INFO - * Elapsed time: 42.72501 sec .
+[11/13/2026 14:41:20] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:41:20] - INFO - * Text hash: 0b1e5055de3c0b69727e38f292a1e9b9 .
+[11/13/2026 14:41:20] - INFO - * Text: Students living in the dormitory have the right to 24-hour access to their place of residence. .
+[11/13/2026 14:41:20] - INFO - * Properties: None .
+[11/13/2026 14:41:20] - DEBUG - * Internal text id: ae8ac407f5a31a563d56b75bb794eadb
+[11/13/2026 14:41:26] - INFO - RESULT:
+[11/13/2026 14:41:26] - INFO - * Extracted triples amount: 10 .
+[11/13/2026 14:41:26] - INFO - * Elapsed time: 6.22625 sec .
+[11/13/2026 14:41:26] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:41:26] - INFO - * Text hash: 04bfba457cb79f3fffca6ce12b435295 .
+[11/13/2026 14:41:26] - INFO - * Text: Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship). .
+[11/13/2026 14:41:26] - INFO - * Properties: None .
+[11/13/2026 14:41:26] - DEBUG - * Internal text id: a5a70a0d9edce28ed51e10c1bf9e3433
+[11/13/2026 14:41:34] - INFO - RESULT:
+[11/13/2026 14:41:34] - INFO - * Extracted triples amount: 57 .
+[11/13/2026 14:41:34] - INFO - * Elapsed time: 8.48065 sec .
+[11/13/2026 14:41:34] - INFO - START ANSWER GENERATION...
+[11/13/2026 14:41:34] - INFO - * Question hash: 3ea10df6f26d45eb9129adf96580a02a .
+[11/13/2026 14:41:34] - INFO - * Question: What facilities are students allowed to use while living in the MSG dormitory? .
+[11/13/2026 14:42:19] - INFO - RESULT:
+[11/13/2026 14:42:19] - INFO - * Answer: <|NotEnoughtInfo|> .
+[11/13/2026 14:42:19] - INFO - * Elapsed time: 45.00191 sec .
+[11/13/2026 14:43:09] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:43:09] - INFO - * Text hash: 0b1e5055de3c0b69727e38f292a1e9b9 .
+[11/13/2026 14:43:09] - INFO - * Text: Students living in the dormitory have the right to 24-hour access to their place of residence. .
+[11/13/2026 14:43:09] - INFO - * Properties: None .
+[11/13/2026 14:43:09] - DEBUG - * Internal text id: 6e5e23d3172cc0255e6f812af7fce387
+[11/13/2026 14:43:15] - INFO - RESULT:
+[11/13/2026 14:43:15] - INFO - * Extracted triples amount: 10 .
+[11/13/2026 14:43:15] - INFO - * Elapsed time: 6.03764 sec .
+[11/13/2026 14:43:15] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:43:15] - INFO - * Text hash: 04bfba457cb79f3fffca6ce12b435295 .
+[11/13/2026 14:43:15] - INFO - * Text: Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship). .
+[11/13/2026 14:43:15] - INFO - * Properties: None .
+[11/13/2026 14:43:15] - DEBUG - * Internal text id: 293343c9bdbbfca363a55cd250030821
+[11/13/2026 14:43:24] - INFO - RESULT:
+[11/13/2026 14:43:24] - INFO - * Extracted triples amount: 57 .
+[11/13/2026 14:43:24] - INFO - * Elapsed time: 8.30327 sec .
+[11/13/2026 14:43:24] - INFO - START ANSWER GENERATION...
+[11/13/2026 14:43:24] - INFO - * Question hash: 3ea10df6f26d45eb9129adf96580a02a .
+[11/13/2026 14:43:24] - INFO - * Question: What facilities are students allowed to use while living in the MSG dormitory? .
+[11/13/2026 14:44:31] - INFO - RESULT:
+[11/13/2026 14:44:31] - INFO - * Answer: Students have 24-hour access and can apply to stay in guest rooms for at least two days with a degree of kinship document. There are specific rules requiring application through the administration, and parents must provide certified documents for short-term stays. .
+[11/13/2026 14:44:31] - INFO - * Elapsed time: 67.62978 sec .
+[11/13/2026 14:45:25] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:45:25] - INFO - * Text hash: 0b1e5055de3c0b69727e38f292a1e9b9 .
+[11/13/2026 14:45:25] - INFO - * Text: Students living in the dormitory have the right to 24-hour access to their place of residence. .
+[11/13/2026 14:45:25] - INFO - * Properties: None .
+[11/13/2026 14:45:25] - DEBUG - * Internal text id: a7749705ce580eaad635238032c06bb8
+[11/13/2026 14:45:32] - INFO - RESULT:
+[11/13/2026 14:45:32] - INFO - * Extracted triples amount: 10 .
+[11/13/2026 14:45:32] - INFO - * Elapsed time: 6.17675 sec .
+[11/13/2026 14:45:32] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:45:32] - INFO - * Text hash: 04bfba457cb79f3fffca6ce12b435295 .
+[11/13/2026 14:45:32] - INFO - * Text: Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship). .
+[11/13/2026 14:45:32] - INFO - * Properties: None .
+[11/13/2026 14:45:32] - DEBUG - * Internal text id: 8c6cbefccf708e4c0b2082d6fd1407df
+[11/13/2026 14:45:40] - INFO - RESULT:
+[11/13/2026 14:45:40] - INFO - * Extracted triples amount: 57 .
+[11/13/2026 14:45:40] - INFO - * Elapsed time: 8.51655 sec .
+[11/13/2026 14:45:40] - INFO - START ANSWER GENERATION...
+[11/13/2026 14:45:40] - INFO - * Question hash: 3ea10df6f26d45eb9129adf96580a02a .
+[11/13/2026 14:45:40] - INFO - * Question: What facilities are students allowed to use while living in the MSG dormitory? .
+[11/13/2026 14:47:00] - INFO - RESULT:
+[11/13/2026 14:47:00] - INFO - * Answer: Students living in the MSG dormitory have 24-hour access and can apply for placing relatives in guest rooms. Specific rules include making applications through administration, certified by the head of the dormitory, with parents able to stay indefinitely while other relatives need a document confirming their degree of kinship and must stay for at least two days. .
+[11/13/2026 14:47:00] - INFO - * Elapsed time: 80.21170 sec .
+[11/13/2026 14:47:59] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:47:59] - INFO - * Text hash: 0b1e5055de3c0b69727e38f292a1e9b9 .
+[11/13/2026 14:47:59] - INFO - * Text: Students living in the dormitory have the right to 24-hour access to their place of residence. .
+[11/13/2026 14:47:59] - INFO - * Properties: None .
+[11/13/2026 14:47:59] - DEBUG - * Internal text id: f4701f3812dbf0407d062d1a23b765c9
+[11/13/2026 14:48:05] - INFO - RESULT:
+[11/13/2026 14:48:05] - INFO - * Extracted triples amount: 10 .
+[11/13/2026 14:48:05] - INFO - * Elapsed time: 6.12915 sec .
+[11/13/2026 14:48:05] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:48:05] - INFO - * Text hash: 04bfba457cb79f3fffca6ce12b435295 .
+[11/13/2026 14:48:05] - INFO - * Text: Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship). .
+[11/13/2026 14:48:05] - INFO - * Properties: None .
+[11/13/2026 14:48:05] - DEBUG - * Internal text id: 6d4c3bfe4c13b6fc40289024c07ab38e
+[11/13/2026 14:48:13] - INFO - RESULT:
+[11/13/2026 14:48:13] - INFO - * Extracted triples amount: 57 .
+[11/13/2026 14:48:13] - INFO - * Elapsed time: 8.54965 sec .
+[11/13/2026 14:48:13] - INFO - START ANSWER GENERATION...
+[11/13/2026 14:48:13] - INFO - * Question hash: 3ea10df6f26d45eb9129adf96580a02a .
+[11/13/2026 14:48:13] - INFO - * Question: What facilities are students allowed to use while living in the MSG dormitory? .
+[11/13/2026 14:50:11] - INFO - RESULT:
+[11/13/2026 14:50:11] - INFO - * Answer: <|NotEnoughtInfo|> .
+[11/13/2026 14:50:11] - INFO - * Elapsed time: 117.60824 sec .
+[11/13/2026 14:51:18] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:51:18] - INFO - * Text hash: 0b1e5055de3c0b69727e38f292a1e9b9 .
+[11/13/2026 14:51:18] - INFO - * Text: Students living in the dormitory have the right to 24-hour access to their place of residence. .
+[11/13/2026 14:51:18] - INFO - * Properties: None .
+[11/13/2026 14:51:18] - DEBUG - * Internal text id: 4ba1b50c63aadf0f04369df3a174214f
+[11/13/2026 14:51:24] - INFO - RESULT:
+[11/13/2026 14:51:24] - INFO - * Extracted triples amount: 10 .
+[11/13/2026 14:51:24] - INFO - * Elapsed time: 6.13968 sec .
+[11/13/2026 14:51:24] - INFO - START MEMORY_UPDATING ...
+[11/13/2026 14:51:24] - INFO - * Text hash: 04bfba457cb79f3fffca6ce12b435295 .
+[11/13/2026 14:51:24] - INFO - * Text: Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship). .
+[11/13/2026 14:51:24] - INFO - * Properties: None .
+[11/13/2026 14:51:24] - DEBUG - * Internal text id: a1d545aade906c4c8ad36f581d3c4f51
+[11/13/2026 14:51:32] - INFO - RESULT:
+[11/13/2026 14:51:32] - INFO - * Extracted triples amount: 57 .
+[11/13/2026 14:51:32] - INFO - * Elapsed time: 8.45002 sec .
+[11/13/2026 14:51:32] - INFO - START ANSWER GENERATION...
+[11/13/2026 14:51:32] - INFO - * Question hash: 3ea10df6f26d45eb9129adf96580a02a .
+[11/13/2026 14:51:32] - INFO - * Question: What facilities are students allowed to use while living in the MSG dormitory? .
+[11/13/2026 14:52:28] - INFO - RESULT:
+[11/13/2026 14:52:28] - INFO - * Answer: Students living in the MSG dormitory have 24-hour access and can apply to place their relatives, including parents, in guest rooms with a kinship document. Parents can stay indefinitely while other relatives can stay for at least 2 days. Applications must be made through administration or the head of dormitory. .
+[11/13/2026 14:52:28] - INFO - * Elapsed time: 55.21814 sec .

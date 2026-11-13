@@ -28,8 +28,6 @@ class OLlamaConnector(AbstractAgentConnector):
         self.CONNECTOR_KW = 'ollama'
         self.trials = config.ext_params.get('trials', 5)
 
-        self.open_connection()
-
     def open_connection(self):
         self.client = Client(
             host=f"http://{self.config.credentials['host']}:{self.config.credentials['port']}",

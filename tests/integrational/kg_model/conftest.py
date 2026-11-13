@@ -1,51 +1,31 @@
 import pytest
 from typing import Dict
+from copy import deepcopy
 import sys
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
-from src.db_drivers.vector_driver.embedders import EmbedderModelConfig, EmbedderModel
-from src.kg_model.embeddings_model import EmbeddingsModelConfig
-from src.kg_model.graph_model import GraphModelConfig
-from src.kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
-from src.kg_model.utils import KGEmbeddersMapping
+from src.kg_model import KnowledgeGraphModel
 
-from .embeddings_model.conftest import available_embedding_configs, embeddings_chroma_config, embeddings_inmemory_config, \
-    embeddings_elasticsearch_config, embeddings_qdrant_config, embeddings_weaviate_config, embeddings_opensearch_config  #,embeddings_milvus_config
-from .graph_model.conftest import available_graph_configs, graph_inmemory_config, graph_kuzu_config, graph_neo4j_config
-from .cases import AVAILABLE_GRAPH_MODELS, AVAILABLE_EMBEDDING_MODELS
+from .available_kgmodel_configs import *
+from .cases import AVAILABLE_GRAPH_DBS, AVAILABLE_DENSE_DBS, AVAILABLE_SPARSEBM25_DBS, AVAILABLE_NODESTREE_MODELS
 
 # ------------------------------#
 
 @pytest.fixture(scope='module')
-def available_kg_models(
-    available_embedding_configs: Dict[str, EmbeddingsModelConfig],
-    available_graph_configs: Dict[str, GraphModelConfig]
-    ):
-
-    e5small_config = EmbedderModelConfig(model_name_or_path=f'{PROJECT_BASE_DIR}models/intfloat/multilingual-e5-small', device='cuda')
-    embedders_map = KGEmbeddersMapping(
-        embeddings_model={'dense_nodes': 'm-e5-small', 'dense_triplets': 'm-e5-small'},
-        nodestree_model=None
-    )
-    embedders_configs = {'m-e5-small': e5small_config}
-
-    kg_configs = {}
-    for vector_name in AVAILABLE_EMBEDDING_MODELS:
-        vector_config = available_embedding_configs[vector_name]
-
-        for graph_name in AVAILABLE_GRAPH_MODELS:
-            graph_config = available_graph_configs[graph_name]
-
-            cur_config = KnowledgeGraphModelConfig(
-                graph_struct_config=graph_config,
-                graph_embeddings_config=vector_config,
-                nodestree_config=None,
-                embedders_configs=embedders_configs,
-                embedders_map=embedders_map)
-            kg_configs[f"{vector_name}/{graph_name}"] = KnowledgeGraphModel(cur_config)
+def available_kg_models(available_kgmodel_configs):
+    kg_configs: Dict[str, KnowledgeGraphModel] = dict()
+    for graphdb_vendor in AVAILABLE_GRAPH_DBS:
+        for densedb_vendor in AVAILABLE_DENSE_DBS:
+            for sparsedb_vendor in AVAILABLE_SPARSEBM25_DBS:
+                for nodestreedb_vendor in AVAILABLE_NODESTREE_MODELS:
+                    kw_config = f"{densedb_vendor}/{sparsedb_vendor}/{graphdb_vendor}/{nodestreedb_vendor}"
+                    config = deepcopy(available_kgmodel_configs[kw_config])
+                    
+                    kg_configs[kw_config] = KnowledgeGraphModel(config)
+                    kg_configs[kw_config].open_connections()
 
     return kg_configs
 

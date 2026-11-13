@@ -31,16 +31,16 @@ from src.agents.AgentDriver import AgentDriverConfig
 #from src.rerankers.methods.SingleStepReranker import SingleStepRerankerConfig
 
 # graph traversal
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever import AStarMetricsConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.AStarTripletsRetriever import AStarGraphSearchConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import GraphBeamSearchConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.MixturedTripletsRetriever import MixturedGraphSearchConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever import NaiveBFSGraphSearchConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveTripletsRetriever import NaiveGraphSearchConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.WaterCirclesTripletsRetriever import WaterCirclesSearchConfig
+from src.pipelines.qa.knowledge_retriever.traversal_methods.AStarTripletsRetriever import AStarMetricsConfig
+from src.pipelines.qa.knowledge_retriever.traversal_methods.AStarTripletsRetriever import AStarGraphSearchConfig
+from src.pipelines.qa.knowledge_retriever.traversal_methods.BeamSearchTripletsRetriever import GraphBeamSearchConfig
+from src.pipelines.qa.knowledge_retriever.traversal_methods.MixturedTripletsRetriever import MixturedGraphSearchConfig
+from src.pipelines.qa.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever import NaiveBFSGraphSearchConfig
+from src.pipelines.qa.knowledge_retriever.traversal_methods.NaiveTripletsRetriever import NaiveGraphSearchConfig
+from src.pipelines.qa.knowledge_retriever.traversal_methods.WaterCirclesTripletsRetriever import WaterCirclesSearchConfig
 
 # triples filtering
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.TripletsFilter import TripletsFilterConfig
+from src.pipelines.qa.knowledge_retriever.filtering_methods.TripletsFilter import TripletsFilterConfig
 
 # stat_analyzer
 from src.utils.agent_stat_analyzer.AgentStatAnalyzer import AgentStatAnalyzerConfig
@@ -77,7 +77,7 @@ from src.pipelines.qa.kg_reasoning.weak_reasoner.WeakKGReasoner import WeakKGRea
 from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.QueryLLMParser import QueryLLMParserConfig
 from src.pipelines.qa.kg_reasoning.weak_reasoner.query_parser.utils import QueryLLMParserAgentTasksConfig
 from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_comparator.KnowledgeComparator import KnowledgeComparatorConfig
-from src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.KnowledgeRetriever import KnowledgeRetrieverConfig
+from src.pipelines.qa.knowledge_retriever.KnowledgeRetriever import KnowledgeRetrieverConfig
 from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.QALLMGenerator import QALLMGeneratorConfig
 from src.pipelines.qa.kg_reasoning.weak_reasoner.answer_generator.utils import QALLMGeneratorAgentTasksConfig
 

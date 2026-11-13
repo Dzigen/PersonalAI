@@ -11,6 +11,7 @@ from ......utils.cache_kv import CacheUtils
 from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......rerankers import RerankerDriver, RerankerDriverConfig
 from ......utils.cache_kv.CacheOperations import CacheOperations
+from ......environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 
 @dataclass
@@ -33,7 +34,7 @@ class KnowledgeComparatorConfig(BaseComponentConfig):
     k_compare: int = 5
 
     cache_table_name: str = 'qa_kcomparator_stage_cache'
-    log_path: str = KC_MAIN_LOG_PATH
+    log_relative_path: str = KC_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.reranker_driver_config.to_str()};{self.max_k}:{self.k_compare}:{self.discard_other_mnodes_if_exactmatch_found}"
@@ -52,7 +53,7 @@ class KnowledgeComparatorConfig(BaseComponentConfig):
             self.reranker_driver_config.formate_fields()
 
 
-class KnowledgeComparator(CacheUtils, CacheOperations):
+class KnowledgeComparator(CacheUtils, CacheOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс второй стадии QA-конвейера для сопоставления информации из user-вопроса с имеющейся информацией в памяти (графе знаний) ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -71,7 +72,7 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
             config.formate_fields()
         self.config = config
 
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -80,7 +81,7 @@ class KnowledgeComparator(CacheUtils, CacheOperations):
             self.config.reranker_driver_config,
             kg_model.graph_embeddings.nodes_vcomposers[NodeType.object])
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 

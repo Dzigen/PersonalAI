@@ -14,7 +14,7 @@ from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv.CacheOperations import CacheOperations
 from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
-
+from ....environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class LLMExtractorConfig(BaseComponentConfig, LanguageConfig):
@@ -37,7 +37,7 @@ class LLMExtractorConfig(BaseComponentConfig, LanguageConfig):
     need_thesises: bool = True
     need_episodic: bool = True
 
-    log_path: str = MEM_EXTRACTOR_MAIN_LOG_PATH
+    log_relative_path: str = MEM_EXTRACTOR_MAIN_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -57,7 +57,7 @@ class LLMExtractorConfig(BaseComponentConfig, LanguageConfig):
             self.agent_tasks_config.formate_fields()
 
 
-class LLMExtractor(CacheOperations, AgentStatOperations):
+class LLMExtractor(CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс первой стадии Memorize-конвейера для извлечения информации (и её приведения в triplet-формат) из слабоструктурированных данных.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -79,7 +79,7 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
             config.formate_fields()
         self.config = config
         self.config.agent_tasks_config.versions_to_configs(
-            self.config.verbose, self.config.log_level)
+            self.config.verbose, self.config.log_level, self.config.log_base_path)
 
         self.agent = agent
         self.tasks_solvers: MemExtractorTaskSolvers = MemExtractorTaskSolvers(
@@ -91,7 +91,7 @@ class LLMExtractor(CacheOperations, AgentStatOperations):
                 cache_kvdriver_config, inferencestat_config)
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 

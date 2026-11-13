@@ -1,5 +1,5 @@
 lang: auto
-log_path: log/qa/kg_reasoner/medium/clueansw_generation/main
+log_relative_path: log/qa/kg_reasoner/medium/clueansw_generation/main
 verbose: false
 log_level: 10
 agent_gen_stategy: null

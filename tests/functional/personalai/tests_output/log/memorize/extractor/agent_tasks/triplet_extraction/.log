@@ -1,0 +1,673 @@
+[11/13/2026 14:34:08] - DEBUG - ====================
+[11/13/2026 14:34:08] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:34:08] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to 24-hour access to their place of residence."
+}
+[11/13/2026 14:34:08] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:08] - DEBUG - --------------------
+[11/13/2026 14:34:08] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:34:08] - DEBUG - Результат: en
+[11/13/2026 14:34:08] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:34:08] - DEBUG - --------------------
+[11/13/2026 14:34:08] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:34:08] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to 24-hour access to their place of residence.
+ .
+[11/13/2026 14:34:08] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:34:08] - DEBUG - --------------------
+[11/13/2026 14:34:08] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:34:08] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:34:08] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:08] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:34:08] - DEBUG - * cache hash_key: 9762f490c50aad6dfe7f93b84e9378d70320cb95 .
+[11/13/2026 14:34:08] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-f0fc6a23f94d0f5aa7cf1a4c62e6167cbc1ced70
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:34:08] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:34:08] - DEBUG - Результат:
+Students | live in | dormitory;
+Students | have right | 24-hour access to | residence.
+[11/13/2026 14:34:08] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=584, generated_tokens_amount=23, inference_elapsed_time=0.85, timestamp=None)
+[11/13/2026 14:34:08] - DEBUG - --------------------
+[11/13/2026 14:34:08] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:34:08] - DEBUG - Результат:
+[('students', 'live in', 'dormitory')]
+[11/13/2026 14:34:08] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:08] - DEBUG - --------------------
+[11/13/2026 14:34:08] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:34:08] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802')]
+[11/13/2026 14:34:08] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:08] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:34:14] - DEBUG - ====================
+[11/13/2026 14:34:14] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:34:14] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship)."
+}
+[11/13/2026 14:34:14] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:14] - DEBUG - --------------------
+[11/13/2026 14:34:14] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:34:14] - DEBUG - Результат: en
+[11/13/2026 14:34:14] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:34:14] - DEBUG - --------------------
+[11/13/2026 14:34:14] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:34:14] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship).
+ .
+[11/13/2026 14:34:14] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:34:14] - DEBUG - --------------------
+[11/13/2026 14:34:14] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:34:14] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:34:14] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:14] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:34:14] - DEBUG - * cache hash_key: 6742b1ef0f2807bfbd3a1507db34d0ee3f7b72f1 .
+[11/13/2026 14:34:14] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-d045af6ca5a5963f80d04d65fe7886d3460a446c
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:34:14] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:34:15] - DEBUG - Результат:
+students | live in | dormitory;
+students | have right to apply to | administration of MSG;
+application | submitted by | head of dormitory;
+relatives | can be placed in | guest rooms of dormitory;
+guest rooms | for short period stay | 2 days or more;
+parents | can apply for | placement in guest rooms;
+document | confirms | degree of kinship.
+[11/13/2026 14:34:15] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=645, generated_tokens_amount=79, inference_elapsed_time=1.55, timestamp=None)
+[11/13/2026 14:34:15] - DEBUG - --------------------
+[11/13/2026 14:34:15] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:34:15] - DEBUG - Результат:
+[('students', 'live in', 'dormitory'), ('students', 'have right to apply to', 'administration of msg'), ('application', 'submitted by', 'head of dormitory'), ('relatives', 'can be placed in', 'guest rooms of dormitory'), ('guest rooms', 'for short period stay', '2 days or more'), ('parents', 'can apply for', 'placement in guest rooms'), ('document', 'confirms', 'degree of kinship')]
+[11/13/2026 14:34:15] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:15] - DEBUG - --------------------
+[11/13/2026 14:34:15] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:34:15] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802'), Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='have right to apply to', type=<RelationType.simple: 'simple'>, prop={}, id='3d010e728a779b434b11745eb83a9754'), end_node=Node(name='administration of msg', type=<NodeType.object: 'object'>, prop={}, stringified='administration of msg', id='75299b395965c91be350c2a82ad6343e'), stringified='students have right to apply to administration of msg', id='06c70b6d71577a25423d15ec6fe94668'), Triplet(start_node=Node(name='application', type=<NodeType.object: 'object'>, prop={}, stringified='application', id='3676d55f84497cbeadfc614c1b1b62fc'), relation=Relation(name='submitted by', type=<RelationType.simple: 'simple'>, prop={}, id='4a859e27b6e752b3d4348fb6d6e83bdc'), end_node=Node(name='head of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='head of dormitory', id='e2ddf3d644d6aacf9208d027e9ea4613'), stringified='application submitted by head of dormitory', id='19615e9838d757e291a68be05ebb5074'), Triplet(start_node=Node(name='relatives', type=<NodeType.object: 'object'>, prop={}, stringified='relatives', id='e5e157178e74f0776237fee94dbbfed4'), relation=Relation(name='can be placed in', type=<RelationType.simple: 'simple'>, prop={}, id='bcf811658df392566a5f23de6038b2fe'), end_node=Node(name='guest rooms of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms of dormitory', id='3db59810fbb545f2bd95d2584b3f4b14'), stringified='relatives can be placed in guest rooms of dormitory', id='ca66df0ed25c607e3807978728aada87'), Triplet(start_node=Node(name='guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms', id='ba7ddd87e1289aa2457c8e46497f5389'), relation=Relation(name='for short period stay', type=<RelationType.simple: 'simple'>, prop={}, id='b2e4d8a3b398a63e839cddb3c7d54354'), end_node=Node(name='2 days or more', type=<NodeType.object: 'object'>, prop={}, stringified='2 days or more', id='003f790955a9a7c333d07bf949969435'), stringified='guest rooms for short period stay 2 days or more', id='75e953c49113cb3c98087d6d29758fec'), Triplet(start_node=Node(name='parents', type=<NodeType.object: 'object'>, prop={}, stringified='parents', id='c68ad910ed49ac65f21f1bf2c5dbf912'), relation=Relation(name='can apply for', type=<RelationType.simple: 'simple'>, prop={}, id='98bf67bd5df7f2dbe42b5945f0015662'), end_node=Node(name='placement in guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='placement in guest rooms', id='e444232ad8493d4ea9be504d81acec31'), stringified='parents can apply for placement in guest rooms', id='a1831cf6f3eac8a2cfc357e821f45057'), Triplet(start_node=Node(name='document', type=<NodeType.object: 'object'>, prop={}, stringified='document', id='fdc3bdefb79cec8eb8211d2499e04704'), relation=Relation(name='confirms', type=<RelationType.simple: 'simple'>, prop={}, id='76ae30999001502cbdfd5bd838c20774'), end_node=Node(name='degree of kinship', type=<NodeType.object: 'object'>, prop={}, stringified='degree of kinship', id='1109f357020363ac138dea7e6152a8ee'), stringified='document confirms degree of kinship', id='addb4ed02e8d9bc7f5b728d16fc24568')]
+[11/13/2026 14:34:15] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:15] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:38:47] - DEBUG - ====================
+[11/13/2026 14:38:47] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:38:47] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to 24-hour access to their place of residence."
+}
+[11/13/2026 14:38:47] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:38:47] - DEBUG - --------------------
+[11/13/2026 14:38:47] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:38:47] - DEBUG - Результат: en
+[11/13/2026 14:38:47] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:38:47] - DEBUG - --------------------
+[11/13/2026 14:38:47] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:38:47] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to 24-hour access to their place of residence.
+ .
+[11/13/2026 14:38:47] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:38:47] - DEBUG - --------------------
+[11/13/2026 14:38:47] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:38:47] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:38:47] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:38:47] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:38:47] - DEBUG - * cache hash_key: 9762f490c50aad6dfe7f93b84e9378d70320cb95 .
+[11/13/2026 14:38:47] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-f0fc6a23f94d0f5aa7cf1a4c62e6167cbc1ced70
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:38:47] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:38:48] - DEBUG - Результат:
+Students | live in | dormitory;
+Students | have right | 24-hour access to | residence.
+[11/13/2026 14:38:48] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=584, generated_tokens_amount=23, inference_elapsed_time=0.91, timestamp=None)
+[11/13/2026 14:38:48] - DEBUG - --------------------
+[11/13/2026 14:38:48] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:38:48] - DEBUG - Результат:
+[('students', 'live in', 'dormitory')]
+[11/13/2026 14:38:48] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:38:48] - DEBUG - --------------------
+[11/13/2026 14:38:48] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:38:48] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802')]
+[11/13/2026 14:38:48] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:38:48] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:38:53] - DEBUG - ====================
+[11/13/2026 14:38:53] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:38:53] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship)."
+}
+[11/13/2026 14:38:53] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:38:53] - DEBUG - --------------------
+[11/13/2026 14:38:53] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:38:53] - DEBUG - Результат: en
+[11/13/2026 14:38:53] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:38:53] - DEBUG - --------------------
+[11/13/2026 14:38:53] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:38:53] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship).
+ .
+[11/13/2026 14:38:53] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:38:53] - DEBUG - --------------------
+[11/13/2026 14:38:53] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:38:53] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:38:53] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:38:53] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:38:53] - DEBUG - * cache hash_key: 6742b1ef0f2807bfbd3a1507db34d0ee3f7b72f1 .
+[11/13/2026 14:38:53] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-d045af6ca5a5963f80d04d65fe7886d3460a446c
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:38:53] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:38:55] - DEBUG - Результат:
+students | live in | dormitory;
+students | have right to apply to | administration of MSG;
+application | submitted by | head of dormitory;
+relatives | can be placed in | guest rooms of dormitory;
+guest rooms | for short period stay | 2 days or more;
+parents | can apply for | placement in guest rooms;
+document | confirms | degree of kinship.
+[11/13/2026 14:38:55] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=645, generated_tokens_amount=79, inference_elapsed_time=1.56, timestamp=None)
+[11/13/2026 14:38:55] - DEBUG - --------------------
+[11/13/2026 14:38:55] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:38:55] - DEBUG - Результат:
+[('students', 'live in', 'dormitory'), ('students', 'have right to apply to', 'administration of msg'), ('application', 'submitted by', 'head of dormitory'), ('relatives', 'can be placed in', 'guest rooms of dormitory'), ('guest rooms', 'for short period stay', '2 days or more'), ('parents', 'can apply for', 'placement in guest rooms'), ('document', 'confirms', 'degree of kinship')]
+[11/13/2026 14:38:55] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:38:55] - DEBUG - --------------------
+[11/13/2026 14:38:55] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:38:55] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802'), Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='have right to apply to', type=<RelationType.simple: 'simple'>, prop={}, id='3d010e728a779b434b11745eb83a9754'), end_node=Node(name='administration of msg', type=<NodeType.object: 'object'>, prop={}, stringified='administration of msg', id='75299b395965c91be350c2a82ad6343e'), stringified='students have right to apply to administration of msg', id='06c70b6d71577a25423d15ec6fe94668'), Triplet(start_node=Node(name='application', type=<NodeType.object: 'object'>, prop={}, stringified='application', id='3676d55f84497cbeadfc614c1b1b62fc'), relation=Relation(name='submitted by', type=<RelationType.simple: 'simple'>, prop={}, id='4a859e27b6e752b3d4348fb6d6e83bdc'), end_node=Node(name='head of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='head of dormitory', id='e2ddf3d644d6aacf9208d027e9ea4613'), stringified='application submitted by head of dormitory', id='19615e9838d757e291a68be05ebb5074'), Triplet(start_node=Node(name='relatives', type=<NodeType.object: 'object'>, prop={}, stringified='relatives', id='e5e157178e74f0776237fee94dbbfed4'), relation=Relation(name='can be placed in', type=<RelationType.simple: 'simple'>, prop={}, id='bcf811658df392566a5f23de6038b2fe'), end_node=Node(name='guest rooms of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms of dormitory', id='3db59810fbb545f2bd95d2584b3f4b14'), stringified='relatives can be placed in guest rooms of dormitory', id='ca66df0ed25c607e3807978728aada87'), Triplet(start_node=Node(name='guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms', id='ba7ddd87e1289aa2457c8e46497f5389'), relation=Relation(name='for short period stay', type=<RelationType.simple: 'simple'>, prop={}, id='b2e4d8a3b398a63e839cddb3c7d54354'), end_node=Node(name='2 days or more', type=<NodeType.object: 'object'>, prop={}, stringified='2 days or more', id='003f790955a9a7c333d07bf949969435'), stringified='guest rooms for short period stay 2 days or more', id='75e953c49113cb3c98087d6d29758fec'), Triplet(start_node=Node(name='parents', type=<NodeType.object: 'object'>, prop={}, stringified='parents', id='c68ad910ed49ac65f21f1bf2c5dbf912'), relation=Relation(name='can apply for', type=<RelationType.simple: 'simple'>, prop={}, id='98bf67bd5df7f2dbe42b5945f0015662'), end_node=Node(name='placement in guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='placement in guest rooms', id='e444232ad8493d4ea9be504d81acec31'), stringified='parents can apply for placement in guest rooms', id='a1831cf6f3eac8a2cfc357e821f45057'), Triplet(start_node=Node(name='document', type=<NodeType.object: 'object'>, prop={}, stringified='document', id='fdc3bdefb79cec8eb8211d2499e04704'), relation=Relation(name='confirms', type=<RelationType.simple: 'simple'>, prop={}, id='76ae30999001502cbdfd5bd838c20774'), end_node=Node(name='degree of kinship', type=<NodeType.object: 'object'>, prop={}, stringified='degree of kinship', id='1109f357020363ac138dea7e6152a8ee'), stringified='document confirms degree of kinship', id='addb4ed02e8d9bc7f5b728d16fc24568')]
+[11/13/2026 14:38:55] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:38:55] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:41:20] - DEBUG - ====================
+[11/13/2026 14:41:20] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:41:20] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to 24-hour access to their place of residence."
+}
+[11/13/2026 14:41:20] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:20] - DEBUG - --------------------
+[11/13/2026 14:41:20] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:41:20] - DEBUG - Результат: en
+[11/13/2026 14:41:20] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:41:20] - DEBUG - --------------------
+[11/13/2026 14:41:20] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:41:20] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to 24-hour access to their place of residence.
+ .
+[11/13/2026 14:41:20] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:41:20] - DEBUG - --------------------
+[11/13/2026 14:41:20] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:41:20] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:41:20] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:20] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:41:20] - DEBUG - * cache hash_key: 9762f490c50aad6dfe7f93b84e9378d70320cb95 .
+[11/13/2026 14:41:20] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-f0fc6a23f94d0f5aa7cf1a4c62e6167cbc1ced70
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:41:20] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:41:21] - DEBUG - Результат:
+Students | live in | dormitory;
+Students | have right | 24-hour access to | residence.
+[11/13/2026 14:41:21] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=584, generated_tokens_amount=23, inference_elapsed_time=0.92, timestamp=None)
+[11/13/2026 14:41:21] - DEBUG - --------------------
+[11/13/2026 14:41:21] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:41:21] - DEBUG - Результат:
+[('students', 'live in', 'dormitory')]
+[11/13/2026 14:41:21] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:21] - DEBUG - --------------------
+[11/13/2026 14:41:21] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:41:21] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802')]
+[11/13/2026 14:41:21] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:21] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:41:26] - DEBUG - ====================
+[11/13/2026 14:41:26] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:41:26] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship)."
+}
+[11/13/2026 14:41:26] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:26] - DEBUG - --------------------
+[11/13/2026 14:41:26] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:41:26] - DEBUG - Результат: en
+[11/13/2026 14:41:26] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:41:26] - DEBUG - --------------------
+[11/13/2026 14:41:26] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:41:26] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship).
+ .
+[11/13/2026 14:41:26] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:41:26] - DEBUG - --------------------
+[11/13/2026 14:41:26] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:41:26] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:41:26] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:26] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:41:26] - DEBUG - * cache hash_key: 6742b1ef0f2807bfbd3a1507db34d0ee3f7b72f1 .
+[11/13/2026 14:41:26] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-d045af6ca5a5963f80d04d65fe7886d3460a446c
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:41:26] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:41:27] - DEBUG - Результат:
+students | live in | dormitory;
+students | have right to apply to | administration of MSG;
+application | submitted by | head of dormitory;
+relatives | can be placed in | guest rooms of dormitory;
+guest rooms | for short period stay | 2 days or more;
+parents | can apply for | placement in guest rooms;
+document | confirms | degree of kinship.
+[11/13/2026 14:41:27] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=645, generated_tokens_amount=79, inference_elapsed_time=1.49, timestamp=None)
+[11/13/2026 14:41:27] - DEBUG - --------------------
+[11/13/2026 14:41:27] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:41:27] - DEBUG - Результат:
+[('students', 'live in', 'dormitory'), ('students', 'have right to apply to', 'administration of msg'), ('application', 'submitted by', 'head of dormitory'), ('relatives', 'can be placed in', 'guest rooms of dormitory'), ('guest rooms', 'for short period stay', '2 days or more'), ('parents', 'can apply for', 'placement in guest rooms'), ('document', 'confirms', 'degree of kinship')]
+[11/13/2026 14:41:27] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:27] - DEBUG - --------------------
+[11/13/2026 14:41:27] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:41:27] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802'), Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='have right to apply to', type=<RelationType.simple: 'simple'>, prop={}, id='3d010e728a779b434b11745eb83a9754'), end_node=Node(name='administration of msg', type=<NodeType.object: 'object'>, prop={}, stringified='administration of msg', id='75299b395965c91be350c2a82ad6343e'), stringified='students have right to apply to administration of msg', id='06c70b6d71577a25423d15ec6fe94668'), Triplet(start_node=Node(name='application', type=<NodeType.object: 'object'>, prop={}, stringified='application', id='3676d55f84497cbeadfc614c1b1b62fc'), relation=Relation(name='submitted by', type=<RelationType.simple: 'simple'>, prop={}, id='4a859e27b6e752b3d4348fb6d6e83bdc'), end_node=Node(name='head of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='head of dormitory', id='e2ddf3d644d6aacf9208d027e9ea4613'), stringified='application submitted by head of dormitory', id='19615e9838d757e291a68be05ebb5074'), Triplet(start_node=Node(name='relatives', type=<NodeType.object: 'object'>, prop={}, stringified='relatives', id='e5e157178e74f0776237fee94dbbfed4'), relation=Relation(name='can be placed in', type=<RelationType.simple: 'simple'>, prop={}, id='bcf811658df392566a5f23de6038b2fe'), end_node=Node(name='guest rooms of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms of dormitory', id='3db59810fbb545f2bd95d2584b3f4b14'), stringified='relatives can be placed in guest rooms of dormitory', id='ca66df0ed25c607e3807978728aada87'), Triplet(start_node=Node(name='guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms', id='ba7ddd87e1289aa2457c8e46497f5389'), relation=Relation(name='for short period stay', type=<RelationType.simple: 'simple'>, prop={}, id='b2e4d8a3b398a63e839cddb3c7d54354'), end_node=Node(name='2 days or more', type=<NodeType.object: 'object'>, prop={}, stringified='2 days or more', id='003f790955a9a7c333d07bf949969435'), stringified='guest rooms for short period stay 2 days or more', id='75e953c49113cb3c98087d6d29758fec'), Triplet(start_node=Node(name='parents', type=<NodeType.object: 'object'>, prop={}, stringified='parents', id='c68ad910ed49ac65f21f1bf2c5dbf912'), relation=Relation(name='can apply for', type=<RelationType.simple: 'simple'>, prop={}, id='98bf67bd5df7f2dbe42b5945f0015662'), end_node=Node(name='placement in guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='placement in guest rooms', id='e444232ad8493d4ea9be504d81acec31'), stringified='parents can apply for placement in guest rooms', id='a1831cf6f3eac8a2cfc357e821f45057'), Triplet(start_node=Node(name='document', type=<NodeType.object: 'object'>, prop={}, stringified='document', id='fdc3bdefb79cec8eb8211d2499e04704'), relation=Relation(name='confirms', type=<RelationType.simple: 'simple'>, prop={}, id='76ae30999001502cbdfd5bd838c20774'), end_node=Node(name='degree of kinship', type=<NodeType.object: 'object'>, prop={}, stringified='degree of kinship', id='1109f357020363ac138dea7e6152a8ee'), stringified='document confirms degree of kinship', id='addb4ed02e8d9bc7f5b728d16fc24568')]
+[11/13/2026 14:41:27] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:27] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:43:09] - DEBUG - ====================
+[11/13/2026 14:43:09] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:43:09] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to 24-hour access to their place of residence."
+}
+[11/13/2026 14:43:09] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:09] - DEBUG - --------------------
+[11/13/2026 14:43:09] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:43:09] - DEBUG - Результат: en
+[11/13/2026 14:43:09] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:43:09] - DEBUG - --------------------
+[11/13/2026 14:43:09] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:43:09] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to 24-hour access to their place of residence.
+ .
+[11/13/2026 14:43:09] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:43:09] - DEBUG - --------------------
+[11/13/2026 14:43:09] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:43:09] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:43:09] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:09] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:43:09] - DEBUG - * cache hash_key: 9762f490c50aad6dfe7f93b84e9378d70320cb95 .
+[11/13/2026 14:43:09] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-f0fc6a23f94d0f5aa7cf1a4c62e6167cbc1ced70
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:43:09] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:43:10] - DEBUG - Результат:
+Students | live in | dormitory;
+Students | have right | 24-hour access to | residence.
+[11/13/2026 14:43:10] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=584, generated_tokens_amount=23, inference_elapsed_time=0.88, timestamp=None)
+[11/13/2026 14:43:10] - DEBUG - --------------------
+[11/13/2026 14:43:10] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:43:10] - DEBUG - Результат:
+[('students', 'live in', 'dormitory')]
+[11/13/2026 14:43:10] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:10] - DEBUG - --------------------
+[11/13/2026 14:43:10] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:43:10] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802')]
+[11/13/2026 14:43:10] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:10] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:43:15] - DEBUG - ====================
+[11/13/2026 14:43:15] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:43:15] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship)."
+}
+[11/13/2026 14:43:15] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:15] - DEBUG - --------------------
+[11/13/2026 14:43:15] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:43:15] - DEBUG - Результат: en
+[11/13/2026 14:43:15] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:43:15] - DEBUG - --------------------
+[11/13/2026 14:43:15] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:43:15] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship).
+ .
+[11/13/2026 14:43:15] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:43:15] - DEBUG - --------------------
+[11/13/2026 14:43:15] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:43:15] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:43:15] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:15] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:43:15] - DEBUG - * cache hash_key: 6742b1ef0f2807bfbd3a1507db34d0ee3f7b72f1 .
+[11/13/2026 14:43:15] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-d045af6ca5a5963f80d04d65fe7886d3460a446c
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:43:15] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:43:17] - DEBUG - Результат:
+students | live in | dormitory;
+students | have right to apply to | administration of MSG;
+application | submitted by | head of dormitory;
+relatives | can be placed in | guest rooms of dormitory;
+guest rooms | for short period stay | 2 days or more;
+parents | can apply for | placement in guest rooms;
+document | confirms | degree of kinship.
+[11/13/2026 14:43:17] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=645, generated_tokens_amount=79, inference_elapsed_time=1.56, timestamp=None)
+[11/13/2026 14:43:17] - DEBUG - --------------------
+[11/13/2026 14:43:17] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:43:17] - DEBUG - Результат:
+[('students', 'live in', 'dormitory'), ('students', 'have right to apply to', 'administration of msg'), ('application', 'submitted by', 'head of dormitory'), ('relatives', 'can be placed in', 'guest rooms of dormitory'), ('guest rooms', 'for short period stay', '2 days or more'), ('parents', 'can apply for', 'placement in guest rooms'), ('document', 'confirms', 'degree of kinship')]
+[11/13/2026 14:43:17] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:17] - DEBUG - --------------------
+[11/13/2026 14:43:17] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:43:17] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802'), Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='have right to apply to', type=<RelationType.simple: 'simple'>, prop={}, id='3d010e728a779b434b11745eb83a9754'), end_node=Node(name='administration of msg', type=<NodeType.object: 'object'>, prop={}, stringified='administration of msg', id='75299b395965c91be350c2a82ad6343e'), stringified='students have right to apply to administration of msg', id='06c70b6d71577a25423d15ec6fe94668'), Triplet(start_node=Node(name='application', type=<NodeType.object: 'object'>, prop={}, stringified='application', id='3676d55f84497cbeadfc614c1b1b62fc'), relation=Relation(name='submitted by', type=<RelationType.simple: 'simple'>, prop={}, id='4a859e27b6e752b3d4348fb6d6e83bdc'), end_node=Node(name='head of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='head of dormitory', id='e2ddf3d644d6aacf9208d027e9ea4613'), stringified='application submitted by head of dormitory', id='19615e9838d757e291a68be05ebb5074'), Triplet(start_node=Node(name='relatives', type=<NodeType.object: 'object'>, prop={}, stringified='relatives', id='e5e157178e74f0776237fee94dbbfed4'), relation=Relation(name='can be placed in', type=<RelationType.simple: 'simple'>, prop={}, id='bcf811658df392566a5f23de6038b2fe'), end_node=Node(name='guest rooms of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms of dormitory', id='3db59810fbb545f2bd95d2584b3f4b14'), stringified='relatives can be placed in guest rooms of dormitory', id='ca66df0ed25c607e3807978728aada87'), Triplet(start_node=Node(name='guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms', id='ba7ddd87e1289aa2457c8e46497f5389'), relation=Relation(name='for short period stay', type=<RelationType.simple: 'simple'>, prop={}, id='b2e4d8a3b398a63e839cddb3c7d54354'), end_node=Node(name='2 days or more', type=<NodeType.object: 'object'>, prop={}, stringified='2 days or more', id='003f790955a9a7c333d07bf949969435'), stringified='guest rooms for short period stay 2 days or more', id='75e953c49113cb3c98087d6d29758fec'), Triplet(start_node=Node(name='parents', type=<NodeType.object: 'object'>, prop={}, stringified='parents', id='c68ad910ed49ac65f21f1bf2c5dbf912'), relation=Relation(name='can apply for', type=<RelationType.simple: 'simple'>, prop={}, id='98bf67bd5df7f2dbe42b5945f0015662'), end_node=Node(name='placement in guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='placement in guest rooms', id='e444232ad8493d4ea9be504d81acec31'), stringified='parents can apply for placement in guest rooms', id='a1831cf6f3eac8a2cfc357e821f45057'), Triplet(start_node=Node(name='document', type=<NodeType.object: 'object'>, prop={}, stringified='document', id='fdc3bdefb79cec8eb8211d2499e04704'), relation=Relation(name='confirms', type=<RelationType.simple: 'simple'>, prop={}, id='76ae30999001502cbdfd5bd838c20774'), end_node=Node(name='degree of kinship', type=<NodeType.object: 'object'>, prop={}, stringified='degree of kinship', id='1109f357020363ac138dea7e6152a8ee'), stringified='document confirms degree of kinship', id='addb4ed02e8d9bc7f5b728d16fc24568')]
+[11/13/2026 14:43:17] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:17] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:45:25] - DEBUG - ====================
+[11/13/2026 14:45:25] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:45:25] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to 24-hour access to their place of residence."
+}
+[11/13/2026 14:45:25] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:25] - DEBUG - --------------------
+[11/13/2026 14:45:25] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:45:25] - DEBUG - Результат: en
+[11/13/2026 14:45:25] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:45:25] - DEBUG - --------------------
+[11/13/2026 14:45:25] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:45:25] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to 24-hour access to their place of residence.
+ .
+[11/13/2026 14:45:25] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:45:25] - DEBUG - --------------------
+[11/13/2026 14:45:25] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:45:25] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:45:25] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:25] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:45:25] - DEBUG - * cache hash_key: 9762f490c50aad6dfe7f93b84e9378d70320cb95 .
+[11/13/2026 14:45:25] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-f0fc6a23f94d0f5aa7cf1a4c62e6167cbc1ced70
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:45:25] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:45:26] - DEBUG - Результат:
+Students | live in | dormitory;
+Students | have right | 24-hour access to | residence.
+[11/13/2026 14:45:26] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=584, generated_tokens_amount=23, inference_elapsed_time=0.87, timestamp=None)
+[11/13/2026 14:45:26] - DEBUG - --------------------
+[11/13/2026 14:45:26] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:45:26] - DEBUG - Результат:
+[('students', 'live in', 'dormitory')]
+[11/13/2026 14:45:26] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:26] - DEBUG - --------------------
+[11/13/2026 14:45:26] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:45:26] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802')]
+[11/13/2026 14:45:26] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:26] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:45:32] - DEBUG - ====================
+[11/13/2026 14:45:32] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:45:32] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship)."
+}
+[11/13/2026 14:45:32] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:32] - DEBUG - --------------------
+[11/13/2026 14:45:32] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:45:32] - DEBUG - Результат: en
+[11/13/2026 14:45:32] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:45:32] - DEBUG - --------------------
+[11/13/2026 14:45:32] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:45:32] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship).
+ .
+[11/13/2026 14:45:32] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:45:32] - DEBUG - --------------------
+[11/13/2026 14:45:32] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:45:32] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:45:32] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:32] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:45:32] - DEBUG - * cache hash_key: 6742b1ef0f2807bfbd3a1507db34d0ee3f7b72f1 .
+[11/13/2026 14:45:32] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-d045af6ca5a5963f80d04d65fe7886d3460a446c
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:45:32] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:45:33] - DEBUG - Результат:
+students | live in | dormitory;
+students | have right to apply to | administration of MSG;
+application | submitted by | head of dormitory;
+relatives | can be placed in | guest rooms of dormitory;
+guest rooms | for short period stay | 2 days or more;
+parents | can apply for | placement in guest rooms;
+document | confirms | degree of kinship.
+[11/13/2026 14:45:33] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=645, generated_tokens_amount=79, inference_elapsed_time=1.63, timestamp=None)
+[11/13/2026 14:45:33] - DEBUG - --------------------
+[11/13/2026 14:45:33] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:45:33] - DEBUG - Результат:
+[('students', 'live in', 'dormitory'), ('students', 'have right to apply to', 'administration of msg'), ('application', 'submitted by', 'head of dormitory'), ('relatives', 'can be placed in', 'guest rooms of dormitory'), ('guest rooms', 'for short period stay', '2 days or more'), ('parents', 'can apply for', 'placement in guest rooms'), ('document', 'confirms', 'degree of kinship')]
+[11/13/2026 14:45:33] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:33] - DEBUG - --------------------
+[11/13/2026 14:45:33] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:45:33] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802'), Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='have right to apply to', type=<RelationType.simple: 'simple'>, prop={}, id='3d010e728a779b434b11745eb83a9754'), end_node=Node(name='administration of msg', type=<NodeType.object: 'object'>, prop={}, stringified='administration of msg', id='75299b395965c91be350c2a82ad6343e'), stringified='students have right to apply to administration of msg', id='06c70b6d71577a25423d15ec6fe94668'), Triplet(start_node=Node(name='application', type=<NodeType.object: 'object'>, prop={}, stringified='application', id='3676d55f84497cbeadfc614c1b1b62fc'), relation=Relation(name='submitted by', type=<RelationType.simple: 'simple'>, prop={}, id='4a859e27b6e752b3d4348fb6d6e83bdc'), end_node=Node(name='head of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='head of dormitory', id='e2ddf3d644d6aacf9208d027e9ea4613'), stringified='application submitted by head of dormitory', id='19615e9838d757e291a68be05ebb5074'), Triplet(start_node=Node(name='relatives', type=<NodeType.object: 'object'>, prop={}, stringified='relatives', id='e5e157178e74f0776237fee94dbbfed4'), relation=Relation(name='can be placed in', type=<RelationType.simple: 'simple'>, prop={}, id='bcf811658df392566a5f23de6038b2fe'), end_node=Node(name='guest rooms of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms of dormitory', id='3db59810fbb545f2bd95d2584b3f4b14'), stringified='relatives can be placed in guest rooms of dormitory', id='ca66df0ed25c607e3807978728aada87'), Triplet(start_node=Node(name='guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms', id='ba7ddd87e1289aa2457c8e46497f5389'), relation=Relation(name='for short period stay', type=<RelationType.simple: 'simple'>, prop={}, id='b2e4d8a3b398a63e839cddb3c7d54354'), end_node=Node(name='2 days or more', type=<NodeType.object: 'object'>, prop={}, stringified='2 days or more', id='003f790955a9a7c333d07bf949969435'), stringified='guest rooms for short period stay 2 days or more', id='75e953c49113cb3c98087d6d29758fec'), Triplet(start_node=Node(name='parents', type=<NodeType.object: 'object'>, prop={}, stringified='parents', id='c68ad910ed49ac65f21f1bf2c5dbf912'), relation=Relation(name='can apply for', type=<RelationType.simple: 'simple'>, prop={}, id='98bf67bd5df7f2dbe42b5945f0015662'), end_node=Node(name='placement in guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='placement in guest rooms', id='e444232ad8493d4ea9be504d81acec31'), stringified='parents can apply for placement in guest rooms', id='a1831cf6f3eac8a2cfc357e821f45057'), Triplet(start_node=Node(name='document', type=<NodeType.object: 'object'>, prop={}, stringified='document', id='fdc3bdefb79cec8eb8211d2499e04704'), relation=Relation(name='confirms', type=<RelationType.simple: 'simple'>, prop={}, id='76ae30999001502cbdfd5bd838c20774'), end_node=Node(name='degree of kinship', type=<NodeType.object: 'object'>, prop={}, stringified='degree of kinship', id='1109f357020363ac138dea7e6152a8ee'), stringified='document confirms degree of kinship', id='addb4ed02e8d9bc7f5b728d16fc24568')]
+[11/13/2026 14:45:33] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:33] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:47:59] - DEBUG - ====================
+[11/13/2026 14:47:59] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:47:59] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to 24-hour access to their place of residence."
+}
+[11/13/2026 14:47:59] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:47:59] - DEBUG - --------------------
+[11/13/2026 14:47:59] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:47:59] - DEBUG - Результат: en
+[11/13/2026 14:47:59] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:47:59] - DEBUG - --------------------
+[11/13/2026 14:47:59] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:47:59] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to 24-hour access to their place of residence.
+ .
+[11/13/2026 14:47:59] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:47:59] - DEBUG - --------------------
+[11/13/2026 14:47:59] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:47:59] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:47:59] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:47:59] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:47:59] - DEBUG - * cache hash_key: 9762f490c50aad6dfe7f93b84e9378d70320cb95 .
+[11/13/2026 14:47:59] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-f0fc6a23f94d0f5aa7cf1a4c62e6167cbc1ced70
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:47:59] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:48:00] - DEBUG - Результат:
+Students | live in | dormitory;
+Students | have right | 24-hour access to | residence.
+[11/13/2026 14:48:00] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=584, generated_tokens_amount=23, inference_elapsed_time=0.91, timestamp=None)
+[11/13/2026 14:48:00] - DEBUG - --------------------
+[11/13/2026 14:48:00] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:48:00] - DEBUG - Результат:
+[('students', 'live in', 'dormitory')]
+[11/13/2026 14:48:00] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:00] - DEBUG - --------------------
+[11/13/2026 14:48:00] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:48:00] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802')]
+[11/13/2026 14:48:00] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:00] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:48:05] - DEBUG - ====================
+[11/13/2026 14:48:05] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:48:05] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship)."
+}
+[11/13/2026 14:48:05] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:05] - DEBUG - --------------------
+[11/13/2026 14:48:05] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:48:05] - DEBUG - Результат: en
+[11/13/2026 14:48:05] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:48:05] - DEBUG - --------------------
+[11/13/2026 14:48:05] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:48:05] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship).
+ .
+[11/13/2026 14:48:05] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:48:05] - DEBUG - --------------------
+[11/13/2026 14:48:05] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:48:05] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:48:05] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:05] - DEBUG - * cache table_name: mem_agent_tripletextr_task_cache
+[11/13/2026 14:48:05] - DEBUG - * cache hash_key: 6742b1ef0f2807bfbd3a1507db34d0ee3f7b72f1 .
+[11/13/2026 14:48:05] - DEBUG - * hash seed: 8ced5618dd2eacf94592ac93ef035feba582c852
+-d045af6ca5a5963f80d04d65fe7886d3460a446c
+-a11d244ccbc5b34994882c1c0e09211847604c1f
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:48:05] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:48:06] - DEBUG - Результат:
+students | live in | dormitory;
+students | have right to apply to | administration of MSG;
+application | submitted by | head of dormitory;
+relatives | can be placed in | guest rooms of dormitory;
+guest rooms | for short period stay | 2 days or more;
+parents | can apply for | placement in guest rooms;
+document | confirms | degree of kinship.
+[11/13/2026 14:48:06] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=645, generated_tokens_amount=79, inference_elapsed_time=1.63, timestamp=None)
+[11/13/2026 14:48:06] - DEBUG - --------------------
+[11/13/2026 14:48:06] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:48:06] - DEBUG - Результат:
+[('students', 'live in', 'dormitory'), ('students', 'have right to apply to', 'administration of msg'), ('application', 'submitted by', 'head of dormitory'), ('relatives', 'can be placed in', 'guest rooms of dormitory'), ('guest rooms', 'for short period stay', '2 days or more'), ('parents', 'can apply for', 'placement in guest rooms'), ('document', 'confirms', 'degree of kinship')]
+[11/13/2026 14:48:06] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:06] - DEBUG - --------------------
+[11/13/2026 14:48:06] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:48:06] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802'), Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='have right to apply to', type=<RelationType.simple: 'simple'>, prop={}, id='3d010e728a779b434b11745eb83a9754'), end_node=Node(name='administration of msg', type=<NodeType.object: 'object'>, prop={}, stringified='administration of msg', id='75299b395965c91be350c2a82ad6343e'), stringified='students have right to apply to administration of msg', id='06c70b6d71577a25423d15ec6fe94668'), Triplet(start_node=Node(name='application', type=<NodeType.object: 'object'>, prop={}, stringified='application', id='3676d55f84497cbeadfc614c1b1b62fc'), relation=Relation(name='submitted by', type=<RelationType.simple: 'simple'>, prop={}, id='4a859e27b6e752b3d4348fb6d6e83bdc'), end_node=Node(name='head of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='head of dormitory', id='e2ddf3d644d6aacf9208d027e9ea4613'), stringified='application submitted by head of dormitory', id='19615e9838d757e291a68be05ebb5074'), Triplet(start_node=Node(name='relatives', type=<NodeType.object: 'object'>, prop={}, stringified='relatives', id='e5e157178e74f0776237fee94dbbfed4'), relation=Relation(name='can be placed in', type=<RelationType.simple: 'simple'>, prop={}, id='bcf811658df392566a5f23de6038b2fe'), end_node=Node(name='guest rooms of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms of dormitory', id='3db59810fbb545f2bd95d2584b3f4b14'), stringified='relatives can be placed in guest rooms of dormitory', id='ca66df0ed25c607e3807978728aada87'), Triplet(start_node=Node(name='guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms', id='ba7ddd87e1289aa2457c8e46497f5389'), relation=Relation(name='for short period stay', type=<RelationType.simple: 'simple'>, prop={}, id='b2e4d8a3b398a63e839cddb3c7d54354'), end_node=Node(name='2 days or more', type=<NodeType.object: 'object'>, prop={}, stringified='2 days or more', id='003f790955a9a7c333d07bf949969435'), stringified='guest rooms for short period stay 2 days or more', id='75e953c49113cb3c98087d6d29758fec'), Triplet(start_node=Node(name='parents', type=<NodeType.object: 'object'>, prop={}, stringified='parents', id='c68ad910ed49ac65f21f1bf2c5dbf912'), relation=Relation(name='can apply for', type=<RelationType.simple: 'simple'>, prop={}, id='98bf67bd5df7f2dbe42b5945f0015662'), end_node=Node(name='placement in guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='placement in guest rooms', id='e444232ad8493d4ea9be504d81acec31'), stringified='parents can apply for placement in guest rooms', id='a1831cf6f3eac8a2cfc357e821f45057'), Triplet(start_node=Node(name='document', type=<NodeType.object: 'object'>, prop={}, stringified='document', id='fdc3bdefb79cec8eb8211d2499e04704'), relation=Relation(name='confirms', type=<RelationType.simple: 'simple'>, prop={}, id='76ae30999001502cbdfd5bd838c20774'), end_node=Node(name='degree of kinship', type=<NodeType.object: 'object'>, prop={}, stringified='degree of kinship', id='1109f357020363ac138dea7e6152a8ee'), stringified='document confirms degree of kinship', id='addb4ed02e8d9bc7f5b728d16fc24568')]
+[11/13/2026 14:48:06] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:06] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:51:18] - DEBUG - ====================
+[11/13/2026 14:51:18] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:51:18] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to 24-hour access to their place of residence."
+}
+[11/13/2026 14:51:18] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:51:18] - DEBUG - --------------------
+[11/13/2026 14:51:18] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:51:18] - DEBUG - Результат: en
+[11/13/2026 14:51:18] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:51:18] - DEBUG - --------------------
+[11/13/2026 14:51:18] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:51:18] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to 24-hour access to their place of residence.
+ .
+[11/13/2026 14:51:18] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:51:18] - DEBUG - --------------------
+[11/13/2026 14:51:18] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:51:18] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:51:19] - DEBUG - Результат:
+Students | live in | dormitory;
+Students | have right | 24-hour access to | residence.
+[11/13/2026 14:51:19] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=584, generated_tokens_amount=23, inference_elapsed_time=0.82, timestamp=None)
+[11/13/2026 14:51:19] - DEBUG - --------------------
+[11/13/2026 14:51:19] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:51:19] - DEBUG - Результат:
+[('students', 'live in', 'dormitory')]
+[11/13/2026 14:51:19] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:51:19] - DEBUG - --------------------
+[11/13/2026 14:51:19] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:51:19] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802')]
+[11/13/2026 14:51:19] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:51:24] - DEBUG - ====================
+[11/13/2026 14:51:24] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:51:24] - DEBUG - Результат:
+ {
+ "text": "Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship)."
+}
+[11/13/2026 14:51:24] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:51:24] - DEBUG - --------------------
+[11/13/2026 14:51:24] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:51:24] - DEBUG - Результат: en
+[11/13/2026 14:51:24] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:51:24] - DEBUG - --------------------
+[11/13/2026 14:51:24] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:51:24] - DEBUG - Результат:
+ 
+[Text]:
+Students living in the dormitory have the right to apply to the administration of the Federal State Budgetary Institution 'MSG' with an application, certified by the head of the dormitory, for the placement of relatives in the guest rooms of the dormitory (for a short period of stay, at least 2 days), parents - for any period (upon presentation of a document confirming the degree of kinship).
+ .
+[11/13/2026 14:51:24] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:51:24] - DEBUG - --------------------
+[11/13/2026 14:51:24] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:51:24] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:51:25] - DEBUG - Результат:
+students | live in | dormitory;
+students | have right to apply to | administration of MSG;
+application | submitted by | head of dormitory;
+relatives | can be placed in | guest rooms of dormitory;
+guest rooms | for short period stay | 2 days or more;
+parents | can apply for | placement in guest rooms;
+document | confirms | degree of kinship.
+[11/13/2026 14:51:25] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=645, generated_tokens_amount=79, inference_elapsed_time=1.56, timestamp=None)
+[11/13/2026 14:51:25] - DEBUG - --------------------
+[11/13/2026 14:51:25] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:51:25] - DEBUG - Результат:
+[('students', 'live in', 'dormitory'), ('students', 'have right to apply to', 'administration of msg'), ('application', 'submitted by', 'head of dormitory'), ('relatives', 'can be placed in', 'guest rooms of dormitory'), ('guest rooms', 'for short period stay', '2 days or more'), ('parents', 'can apply for', 'placement in guest rooms'), ('document', 'confirms', 'degree of kinship')]
+[11/13/2026 14:51:25] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:51:25] - DEBUG - --------------------
+[11/13/2026 14:51:25] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:51:25] - DEBUG - Результат:
+[Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='live in', type=<RelationType.simple: 'simple'>, prop={}, id='2af1655272dac64a1302c4ffef517afd'), end_node=Node(name='dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='dormitory', id='2e3c815e4a35d81952d88138e144e22c'), stringified='students live in dormitory', id='694ec6e21e9b4e275867dd1c5324f802'), Triplet(start_node=Node(name='students', type=<NodeType.object: 'object'>, prop={}, stringified='students', id='75d37c6cbf460947005c97e3f12906a9'), relation=Relation(name='have right to apply to', type=<RelationType.simple: 'simple'>, prop={}, id='3d010e728a779b434b11745eb83a9754'), end_node=Node(name='administration of msg', type=<NodeType.object: 'object'>, prop={}, stringified='administration of msg', id='75299b395965c91be350c2a82ad6343e'), stringified='students have right to apply to administration of msg', id='06c70b6d71577a25423d15ec6fe94668'), Triplet(start_node=Node(name='application', type=<NodeType.object: 'object'>, prop={}, stringified='application', id='3676d55f84497cbeadfc614c1b1b62fc'), relation=Relation(name='submitted by', type=<RelationType.simple: 'simple'>, prop={}, id='4a859e27b6e752b3d4348fb6d6e83bdc'), end_node=Node(name='head of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='head of dormitory', id='e2ddf3d644d6aacf9208d027e9ea4613'), stringified='application submitted by head of dormitory', id='19615e9838d757e291a68be05ebb5074'), Triplet(start_node=Node(name='relatives', type=<NodeType.object: 'object'>, prop={}, stringified='relatives', id='e5e157178e74f0776237fee94dbbfed4'), relation=Relation(name='can be placed in', type=<RelationType.simple: 'simple'>, prop={}, id='bcf811658df392566a5f23de6038b2fe'), end_node=Node(name='guest rooms of dormitory', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms of dormitory', id='3db59810fbb545f2bd95d2584b3f4b14'), stringified='relatives can be placed in guest rooms of dormitory', id='ca66df0ed25c607e3807978728aada87'), Triplet(start_node=Node(name='guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='guest rooms', id='ba7ddd87e1289aa2457c8e46497f5389'), relation=Relation(name='for short period stay', type=<RelationType.simple: 'simple'>, prop={}, id='b2e4d8a3b398a63e839cddb3c7d54354'), end_node=Node(name='2 days or more', type=<NodeType.object: 'object'>, prop={}, stringified='2 days or more', id='003f790955a9a7c333d07bf949969435'), stringified='guest rooms for short period stay 2 days or more', id='75e953c49113cb3c98087d6d29758fec'), Triplet(start_node=Node(name='parents', type=<NodeType.object: 'object'>, prop={}, stringified='parents', id='c68ad910ed49ac65f21f1bf2c5dbf912'), relation=Relation(name='can apply for', type=<RelationType.simple: 'simple'>, prop={}, id='98bf67bd5df7f2dbe42b5945f0015662'), end_node=Node(name='placement in guest rooms', type=<NodeType.object: 'object'>, prop={}, stringified='placement in guest rooms', id='e444232ad8493d4ea9be504d81acec31'), stringified='parents can apply for placement in guest rooms', id='a1831cf6f3eac8a2cfc357e821f45057'), Triplet(start_node=Node(name='document', type=<NodeType.object: 'object'>, prop={}, stringified='document', id='fdc3bdefb79cec8eb8211d2499e04704'), relation=Relation(name='confirms', type=<RelationType.simple: 'simple'>, prop={}, id='76ae30999001502cbdfd5bd838c20774'), end_node=Node(name='degree of kinship', type=<NodeType.object: 'object'>, prop={}, stringified='degree of kinship', id='1109f357020363ac138dea7e6152a8ee'), stringified='document confirms degree of kinship', id='addb4ed02e8d9bc7f5b728d16fc24568')]
+[11/13/2026 14:51:25] - DEBUG - Статус: Операция выполнена успешно. .

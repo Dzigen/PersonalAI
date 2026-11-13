@@ -1,4 +1,4 @@
-log_path: log/qa/kg_reasoner/weak/knowledge_comparator
+log_relative_path: log/qa/kg_reasoner/weak/knowledge_comparator
 verbose: false
 log_level: 10
 reranker_driver_config:

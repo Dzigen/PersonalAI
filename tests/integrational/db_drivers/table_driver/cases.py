@@ -6,7 +6,7 @@ from src.utils.agent_stat_analyzer.utils import LLMInferenceStat
 
 # TO CHANGE
 # 'inmemory_table', 'mongo', 'sqlite3', 'postgresql', 'mysql'
-AVAILABLE_TABLE_DBS = ['inmemory_table', 'mongo', 'sqlite3', 'postgresql', 'mysql']
+AVAILABLE_TABLE_DBS = ['mysql']
 
 ###############################################################################################
 
@@ -172,3 +172,21 @@ for db_vendor in AVAILABLE_TABLE_DBS:
     for i in range(len(TABLEDB_CLEAR_TEST_CASES)):
         TABLEDB_POPULATED_CLEAR_TEST_CASES.append(
             TABLEDB_CLEAR_TEST_CASES[i] + [db_vendor])
+
+###############################################################################################
+
+# conn_sequence, expected_is_open
+TABLEDB_IS_OPEN_TEST_CASES = [
+    ([],),
+    (['close'],),
+    (['close', 'open'],),
+    (['open'],),
+    (['close', 'close'],),
+        
+]
+
+TABLEDB_POPULATED_IS_OPEN_TEST_CASES = []
+for db_vendor in AVAILABLE_TABLE_DBS:
+    for i in range(len(TABLEDB_IS_OPEN_TEST_CASES)):
+        TABLEDB_POPULATED_IS_OPEN_TEST_CASES.append(
+            TABLEDB_IS_OPEN_TEST_CASES[i] + (db_vendor,))

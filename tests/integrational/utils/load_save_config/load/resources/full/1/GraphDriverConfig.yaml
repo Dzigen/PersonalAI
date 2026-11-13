@@ -3,6 +3,7 @@ db_config:
   db_info:
     db: DefaultPersonalAIGraphDB
     table: DefaultPersonalAIGraphTable
+    expected_db_base_path: '.'
   params:
     path: ./personalai_tmp/volumes/kuzu_graph
     buffer_pool_size: 1073741824

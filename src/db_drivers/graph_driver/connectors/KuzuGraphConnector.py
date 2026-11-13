@@ -15,6 +15,7 @@ from ....utils import Triplet, NodeType
 
 
 class KuzuGraphConnector(AbstractGraphDatabaseConnection):
+    DATABASE_KW = 'kuzu'
 
     def __init__(self, config: Union[Dict, GraphDBConnectionConfig] = DEFAULT_KUZU_CONFIG) -> None:
         if isinstance(config, dict):
@@ -25,10 +26,10 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
 
     @retry
     def open_connection(self) -> None:
-        load_path = f"{self.config.params['path']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
+        load_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}/{self.config.db_info['table']}"
         if not os.path.exists(load_path):
-            print(f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
-            os.makedirs(f"{self.config.params['path']}/{self.config.db_info['db']}", exist_ok=True)
+            #print(f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
+            os.makedirs(f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}", exist_ok=True)
 
         self.db = kuzu.Database(
             load_path, buffer_pool_size=self.config.params['buffer_pool_size'])
@@ -58,14 +59,17 @@ class KuzuGraphConnector(AbstractGraphDatabaseConnection):
         try:
             self.conn.close()
             self.db.close()
-        except TypeError:
+        except (AttributeError, TypeError):
             pass
 
     def __del__(self):
         self.close_connection()
 
     def is_open(self) -> bool:
-        return not self.conn.is_closed
+        try:
+            return not self.conn.is_closed
+        except (AttributeError, TypeError):
+            return False
 
     @restore_connection
     def execute(self, query: str) -> object:

@@ -3,6 +3,7 @@ db_config:
   db_info:
     db: DefaultPersonalAITableDB
     table: DefaultPersonalAITable
+    expected_db_base_path: '.'
   params:
     database_path: ./personalai_tmp/volumes/sqlite3
   need_to_clear: false

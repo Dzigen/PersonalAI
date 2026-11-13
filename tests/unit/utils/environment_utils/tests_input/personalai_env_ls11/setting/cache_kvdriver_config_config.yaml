@@ -1,0 +1,19 @@
+db_vendor: inmemory_kv
+db_config:
+  db_info:
+    db: DefaultPersonalAIKVDB
+    table: DefaultPersonalAIKVTable
+    expected_db_base_path: .
+  params:
+    load_from_disk: true
+    load_dump_name: null
+    load_dump_dir: ./personalai_tmp/cache/inmemory_kv
+    save_on_disk: true
+    save_dump_dir: ./personalai_tmp/cache/inmemory_kv
+    max_storage: 500000000.0
+  need_to_clear: false
+  create_index: false
+  timeout: 10
+  trials: 5
+  host: localhost
+  port: null

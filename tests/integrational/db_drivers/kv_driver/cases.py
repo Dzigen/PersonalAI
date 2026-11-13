@@ -174,3 +174,21 @@ for db_vendor in AVAILABLE_KV_DBS:
     for i in range(len(KVDB_CLEAR_TEST_CASES)):
         KVDB_POPULATED_CLEAR_TEST_CASES.append(
             KVDB_CLEAR_TEST_CASES[i] + [db_vendor])
+
+###############################################################################################
+
+# conn_sequence, expected_is_open
+KVDB_IS_OPEN_TEST_CASES = [
+    ([],),
+    (['close'],),
+    (['close', 'open'],),
+    (['open'],),
+    (['close', 'close'],),
+        
+]
+
+KVDB_POPULATED_IS_OPEN_TEST_CASES = []
+for db_vendor in AVAILABLE_KV_DBS:
+    for i in range(len(KVDB_IS_OPEN_TEST_CASES)):
+        KVDB_POPULATED_IS_OPEN_TEST_CASES.append(
+            KVDB_IS_OPEN_TEST_CASES[i] + (db_vendor,))

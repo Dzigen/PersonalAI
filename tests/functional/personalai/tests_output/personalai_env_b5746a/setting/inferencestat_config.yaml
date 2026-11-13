@@ -1,0 +1,31 @@
+table_driver_config:
+  db_vendor: inmemory_table
+  db_config:
+    db_info:
+      db: defaultknowledgegraphrelateddatabase
+      table: testing
+      table_info: LLMInferenceStat
+      expected_db_base_path: functional/personalai/tests_output/personalai_env_b5746a/memory_parts/stat/agent
+    params:
+      max_storage: 500000000.0
+      save_on_disk: true
+      rewrite: true
+    need_to_clear: false
+    create_index: false
+    timeout: 10
+    trials: 5
+    host: null
+    port: null
+metrics_info:
+  count: true
+  count_not_null: true
+  min: true
+  max: true
+  median: true
+  mean: true
+  std: true
+  sum: true
+column_info:
+- prompt_tokens_amount
+- generated_tokens_amount
+- inference_elapsed_time

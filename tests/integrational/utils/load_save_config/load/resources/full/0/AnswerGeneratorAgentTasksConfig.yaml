@@ -1,2 +1,3 @@
-answer_classifier: v2
-answer_generator: v3
+answer_classifier: v4
+strict_answer_generator: v4
+casual_answer_generator: v2

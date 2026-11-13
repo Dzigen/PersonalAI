@@ -1,0 +1,117 @@
+[11/13/2026 14:34:22] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:22] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:22] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache .
+[11/13/2026 14:34:22] - DEBUG - * cache hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4.
+[11/13/2026 14:34:22] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?', 'en|None|swremoval=v4;grammarcheck=v4|None|en|None|classify=v4;decompose=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:34:22] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:22] - DEBUG - START QUERY PREPROCESSING...
+[11/13/2026 14:34:22] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:34:22] - DEBUG - * Question: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:34:22] - DEBUG - Удаление шума из запроса...
+[11/13/2026 14:34:23] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:34:23] - DEBUG - Разбиение запроса на независимые части (простые запросы)...
+[11/13/2026 14:34:25] - DEBUG - RESULT: ['What facilities are available to students living in the MSG dormitory?', 'Are there any specific rules or restrictions on using these facilities?']
+[11/13/2026 14:34:25] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:34:25] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:25] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:25] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache
+[11/13/2026 14:34:25] - DEBUG - * cahce hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4 .
+[11/13/2026 14:39:02] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:02] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:02] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache .
+[11/13/2026 14:39:02] - DEBUG - * cache hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4.
+[11/13/2026 14:39:02] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?', 'en|None|swremoval=v4;grammarcheck=v4|None|en|None|classify=v4;decompose=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:39:02] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:02] - DEBUG - START QUERY PREPROCESSING...
+[11/13/2026 14:39:02] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:39:02] - DEBUG - * Question: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:39:02] - DEBUG - Удаление шума из запроса...
+[11/13/2026 14:39:03] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:39:03] - DEBUG - Разбиение запроса на независимые части (простые запросы)...
+[11/13/2026 14:39:05] - DEBUG - RESULT: ['What facilities are available to students living in the MSG dormitory?', 'Are there any specific rules or restrictions on using these facilities?']
+[11/13/2026 14:39:05] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:39:05] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:05] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:05] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache
+[11/13/2026 14:39:05] - DEBUG - * cahce hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4 .
+[11/13/2026 14:41:34] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:34] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:34] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache .
+[11/13/2026 14:41:34] - DEBUG - * cache hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4.
+[11/13/2026 14:41:34] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?', 'en|None|swremoval=v4;grammarcheck=v4|None|en|None|classify=v4;decompose=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:41:34] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:34] - DEBUG - START QUERY PREPROCESSING...
+[11/13/2026 14:41:34] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:41:34] - DEBUG - * Question: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:41:34] - DEBUG - Удаление шума из запроса...
+[11/13/2026 14:41:36] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:41:36] - DEBUG - Разбиение запроса на независимые части (простые запросы)...
+[11/13/2026 14:41:38] - DEBUG - RESULT: ['What facilities are available to students living in the MSG dormitory?', 'Are there any specific rules or restrictions on using these facilities?']
+[11/13/2026 14:41:38] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:41:38] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:38] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:38] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache
+[11/13/2026 14:41:38] - DEBUG - * cahce hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4 .
+[11/13/2026 14:43:24] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:24] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:24] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache .
+[11/13/2026 14:43:24] - DEBUG - * cache hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4.
+[11/13/2026 14:43:24] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?', 'en|None|swremoval=v4;grammarcheck=v4|None|en|None|classify=v4;decompose=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:43:24] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:24] - DEBUG - START QUERY PREPROCESSING...
+[11/13/2026 14:43:24] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:43:24] - DEBUG - * Question: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:43:24] - DEBUG - Удаление шума из запроса...
+[11/13/2026 14:43:25] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:43:25] - DEBUG - Разбиение запроса на независимые части (простые запросы)...
+[11/13/2026 14:43:27] - DEBUG - RESULT: ['What facilities are available to students living in the MSG dormitory?', 'Are there any specific rules or restrictions on using these facilities?']
+[11/13/2026 14:43:27] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:43:27] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:27] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:27] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache
+[11/13/2026 14:43:27] - DEBUG - * cahce hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4 .
+[11/13/2026 14:45:40] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:40] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:40] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache .
+[11/13/2026 14:45:40] - DEBUG - * cache hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4.
+[11/13/2026 14:45:40] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?', 'en|None|swremoval=v4;grammarcheck=v4|None|en|None|classify=v4;decompose=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:45:40] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:40] - DEBUG - START QUERY PREPROCESSING...
+[11/13/2026 14:45:40] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:45:40] - DEBUG - * Question: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:45:40] - DEBUG - Удаление шума из запроса...
+[11/13/2026 14:45:41] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:45:41] - DEBUG - Разбиение запроса на независимые части (простые запросы)...
+[11/13/2026 14:45:43] - DEBUG - RESULT: ['What facilities are available to students living in the MSG dormitory?', 'Are there any specific rules or restrictions on using these facilities?']
+[11/13/2026 14:45:43] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:45:43] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:43] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:43] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache
+[11/13/2026 14:45:43] - DEBUG - * cahce hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4 .
+[11/13/2026 14:48:13] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:13] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:13] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache .
+[11/13/2026 14:48:13] - DEBUG - * cache hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4.
+[11/13/2026 14:48:13] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?', 'en|None|swremoval=v4;grammarcheck=v4|None|en|None|classify=v4;decompose=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:48:13] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:13] - DEBUG - START QUERY PREPROCESSING...
+[11/13/2026 14:48:13] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:48:13] - DEBUG - * Question: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:48:13] - DEBUG - Удаление шума из запроса...
+[11/13/2026 14:48:15] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:48:15] - DEBUG - Разбиение запроса на независимые части (простые запросы)...
+[11/13/2026 14:48:17] - DEBUG - RESULT: ['What facilities are available to students living in the MSG dormitory?', 'Are there any specific rules or restrictions on using these facilities?']
+[11/13/2026 14:48:17] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:48:17] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:17] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:17] - DEBUG - * cache table_name: query_preprocessing_main_stage_cache
+[11/13/2026 14:48:17] - DEBUG - * cahce hash_key: 603cddd1e254c13205fcf34e8c2d216fb3b781f4 .
+[11/13/2026 14:51:32] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:32] - DEBUG - START QUERY PREPROCESSING...
+[11/13/2026 14:51:32] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:51:32] - DEBUG - * Question: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:51:32] - DEBUG - Удаление шума из запроса...
+[11/13/2026 14:51:34] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:51:34] - DEBUG - Разбиение запроса на независимые части (простые запросы)...
+[11/13/2026 14:51:36] - DEBUG - RESULT: ['What facilities are available to students living in the MSG dormitory?', 'Are there any specific rules or restrictions on using these facilities?']
+[11/13/2026 14:51:36] - DEBUG - STATUS: ReturnStatus.success

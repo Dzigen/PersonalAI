@@ -11,14 +11,14 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 class GraphDBConnectionConfig(BaseDatabaseConfig):
     """Конфигурация подключения к графовой базе данных.
 
-    :param db_info: Информация о базе и таблице/пространстве хранения графа. По умолчанию {'db': 'DefaultPersonalAIGraphDB', 'table': 'DefaultPersonalAIGraphTable'}.
+    :param db_info: Информация о базе и таблице/пространстве хранения графа. По умолчанию {'db': 'DefaultPersonalAIGraphDB', 'table': 'DefaultPersonalAIGraphTable', 'expected_db_base_path': '.'}.
     :type db_info: Dict
     :param host: Хост, на котором развёрнута графовая БД.
     :type host: str
     :param port: Порт, по которому производится подключение к графовой БД.
     :type port: str
     """
-    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIGraphDB', 'table': 'DefaultPersonalAIGraphTable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIGraphDB', 'table': 'DefaultPersonalAIGraphTable', 'expected_db_base_path': '.'})
     host: str = None
     port: str = None
 

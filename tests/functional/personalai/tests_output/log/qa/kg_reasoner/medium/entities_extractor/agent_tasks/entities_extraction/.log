@@ -1,0 +1,1718 @@
+[11/13/2026 14:34:26] - DEBUG - ====================
+[11/13/2026 14:34:26] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:34:26] - DEBUG - Результат:
+ {
+ "query": "What facilities are available to students living in the MSG dormitory?"
+}
+[11/13/2026 14:34:26] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:26] - DEBUG - --------------------
+[11/13/2026 14:34:26] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:34:26] - DEBUG - Результат: en
+[11/13/2026 14:34:26] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:34:26] - DEBUG - --------------------
+[11/13/2026 14:34:26] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:34:26] - DEBUG - Результат:
+ 
+[Question]
+What facilities are available to students living in the MSG dormitory?
+ .
+[11/13/2026 14:34:26] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:34:26] - DEBUG - --------------------
+[11/13/2026 14:34:26] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:34:26] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:34:26] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:26] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:34:26] - DEBUG - * cache hash_key: b8e397020232d8721a663d43f651c362709a0e1d .
+[11/13/2026 14:34:26] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-65893a8f48d5eb69076ff9bb756ee5f31c33ed56
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:34:26] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:34:27] - DEBUG - Результат:
+facilities | students | MSG dormitory
+[11/13/2026 14:34:27] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=9, inference_elapsed_time=0.55, timestamp=None)
+[11/13/2026 14:34:27] - DEBUG - --------------------
+[11/13/2026 14:34:27] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:34:27] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:34:27] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:27] - DEBUG - --------------------
+[11/13/2026 14:34:27] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:34:27] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:34:27] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:27] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:34:39] - DEBUG - ====================
+[11/13/2026 14:34:39] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:34:39] - DEBUG - Результат:
+ {
+ "query": "What specific amenities are available to students in the MSG dormitory?"
+}
+[11/13/2026 14:34:39] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:39] - DEBUG - --------------------
+[11/13/2026 14:34:39] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:34:39] - DEBUG - Результат: en
+[11/13/2026 14:34:39] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:34:39] - DEBUG - --------------------
+[11/13/2026 14:34:39] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:34:39] - DEBUG - Результат:
+ 
+[Question]
+What specific amenities are available to students in the MSG dormitory?
+ .
+[11/13/2026 14:34:39] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:34:39] - DEBUG - --------------------
+[11/13/2026 14:34:39] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:34:39] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:34:39] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:39] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:34:39] - DEBUG - * cache hash_key: e0c76ddc1603d06aba2c6a40c00e10e96cfe4494 .
+[11/13/2026 14:34:39] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-4226da9657f7f3cd4243e2ca308a4a712bdb596f
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:34:39] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:34:39] - DEBUG - Результат:
+amenities | MSG dormitory
+[11/13/2026 14:34:39] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=7, inference_elapsed_time=0.44, timestamp=None)
+[11/13/2026 14:34:39] - DEBUG - --------------------
+[11/13/2026 14:34:39] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:34:39] - DEBUG - Результат:
+['amenities', 'MSG dormitory']
+[11/13/2026 14:34:39] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:39] - DEBUG - --------------------
+[11/13/2026 14:34:39] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:34:39] - DEBUG - Результат:
+['amenities', 'MSG dormitory']
+[11/13/2026 14:34:39] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:39] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:34:50] - DEBUG - ====================
+[11/13/2026 14:34:50] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:34:50] - DEBUG - Результат:
+ {
+ "query": "What specific amenities are available to students in the MSG dormitory regarding recreational facilities?"
+}
+[11/13/2026 14:34:50] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:50] - DEBUG - --------------------
+[11/13/2026 14:34:50] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:34:50] - DEBUG - Результат: en
+[11/13/2026 14:34:50] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:34:50] - DEBUG - --------------------
+[11/13/2026 14:34:50] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:34:50] - DEBUG - Результат:
+ 
+[Question]
+What specific amenities are available to students in the MSG dormitory regarding recreational facilities?
+ .
+[11/13/2026 14:34:50] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:34:50] - DEBUG - --------------------
+[11/13/2026 14:34:50] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:34:50] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:34:50] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:50] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:34:50] - DEBUG - * cache hash_key: 6c93ee7bce7d774011ba75dbf0c9108d2afb6672 .
+[11/13/2026 14:34:50] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-6e7afbb4115a218a9d03bbef2e4a503159938a71
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:34:50] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:34:50] - DEBUG - Результат:
+amenities | recreational facilities | MSG dormitory | students
+[11/13/2026 14:34:50] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=242, generated_tokens_amount=12, inference_elapsed_time=0.56, timestamp=None)
+[11/13/2026 14:34:50] - DEBUG - --------------------
+[11/13/2026 14:34:50] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:34:50] - DEBUG - Результат:
+['amenities', 'recreational facilities', 'MSG dormitory', 'students']
+[11/13/2026 14:34:50] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:50] - DEBUG - --------------------
+[11/13/2026 14:34:50] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:34:50] - DEBUG - Результат:
+['amenities', 'recreational facilities', 'MSG dormitory', 'students']
+[11/13/2026 14:34:50] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:34:50] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:35:01] - DEBUG - ====================
+[11/13/2026 14:35:01] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:35:01] - DEBUG - Результат:
+ {
+ "query": "What specific amenities are available to students in the MSG dormitory regarding study and learning resources?"
+}
+[11/13/2026 14:35:01] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:01] - DEBUG - --------------------
+[11/13/2026 14:35:01] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:35:01] - DEBUG - Результат: en
+[11/13/2026 14:35:01] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:35:01] - DEBUG - --------------------
+[11/13/2026 14:35:01] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:35:01] - DEBUG - Результат:
+ 
+[Question]
+What specific amenities are available to students in the MSG dormitory regarding study and learning resources?
+ .
+[11/13/2026 14:35:01] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:35:01] - DEBUG - --------------------
+[11/13/2026 14:35:01] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:35:01] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:35:01] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:01] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:35:01] - DEBUG - * cache hash_key: ab6a4b94465bb32dd50e5dd4a12d9db974ad5ab0 .
+[11/13/2026 14:35:01] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-a0c24e0cda3d1e019a1a83bc8a1b79350edb5c1f
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:35:01] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:35:01] - DEBUG - Результат:
+amenities | study | learning resources | MSG dormitory
+[11/13/2026 14:35:01] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=244, generated_tokens_amount=12, inference_elapsed_time=0.52, timestamp=None)
+[11/13/2026 14:35:01] - DEBUG - --------------------
+[11/13/2026 14:35:01] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:35:01] - DEBUG - Результат:
+['amenities', 'study', 'learning resources', 'MSG dormitory']
+[11/13/2026 14:35:01] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:01] - DEBUG - --------------------
+[11/13/2026 14:35:01] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:35:01] - DEBUG - Результат:
+['amenities', 'study', 'learning resources', 'MSG dormitory']
+[11/13/2026 14:35:01] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:01] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:35:13] - DEBUG - ====================
+[11/13/2026 14:35:13] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:35:13] - DEBUG - Результат:
+ {
+ "query": "What specific amenities are available to students in the MSG dormitory regarding dining options?"
+}
+[11/13/2026 14:35:13] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:13] - DEBUG - --------------------
+[11/13/2026 14:35:13] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:35:13] - DEBUG - Результат: en
+[11/13/2026 14:35:13] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:35:13] - DEBUG - --------------------
+[11/13/2026 14:35:13] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:35:13] - DEBUG - Результат:
+ 
+[Question]
+What specific amenities are available to students in the MSG dormitory regarding dining options?
+ .
+[11/13/2026 14:35:13] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:35:13] - DEBUG - --------------------
+[11/13/2026 14:35:13] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:35:13] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:35:13] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:13] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:35:13] - DEBUG - * cache hash_key: 911479c5f51333252debd48d56807a70b8296dd7 .
+[11/13/2026 14:35:13] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-93f18e5512b738a80194fc01286ef4e3a3904c23
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:35:13] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:35:13] - DEBUG - Результат:
+amenities | dining options | MSG dormitory
+[11/13/2026 14:35:13] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=242, generated_tokens_amount=10, inference_elapsed_time=0.47, timestamp=None)
+[11/13/2026 14:35:13] - DEBUG - --------------------
+[11/13/2026 14:35:13] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:35:13] - DEBUG - Результат:
+['amenities', 'dining options', 'MSG dormitory']
+[11/13/2026 14:35:13] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:13] - DEBUG - --------------------
+[11/13/2026 14:35:13] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:35:13] - DEBUG - Результат:
+['amenities', 'dining options', 'MSG dormitory']
+[11/13/2026 14:35:13] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:13] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:35:24] - DEBUG - ====================
+[11/13/2026 14:35:24] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:35:24] - DEBUG - Результат:
+ {
+ "query": "What specific amenities are available to students in the MSG dormitory regarding laundry facilities?"
+}
+[11/13/2026 14:35:24] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:24] - DEBUG - --------------------
+[11/13/2026 14:35:24] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:35:24] - DEBUG - Результат: en
+[11/13/2026 14:35:24] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:35:24] - DEBUG - --------------------
+[11/13/2026 14:35:24] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:35:24] - DEBUG - Результат:
+ 
+[Question]
+What specific amenities are available to students in the MSG dormitory regarding laundry facilities?
+ .
+[11/13/2026 14:35:24] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:35:24] - DEBUG - --------------------
+[11/13/2026 14:35:24] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:35:24] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:35:24] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:24] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:35:24] - DEBUG - * cache hash_key: e0473c68b8f26e4ade78c499baec13218ffa79c6 .
+[11/13/2026 14:35:24] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-0f7d23d8708c03cad29fb1288902707f2cb6064f
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:35:24] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:35:24] - DEBUG - Результат:
+amenities | laundry facilities | MSG dormitory | students
+[11/13/2026 14:35:24] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=242, generated_tokens_amount=12, inference_elapsed_time=0.52, timestamp=None)
+[11/13/2026 14:35:24] - DEBUG - --------------------
+[11/13/2026 14:35:24] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:35:24] - DEBUG - Результат:
+['amenities', 'laundry facilities', 'MSG dormitory', 'students']
+[11/13/2026 14:35:24] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:24] - DEBUG - --------------------
+[11/13/2026 14:35:24] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:35:24] - DEBUG - Результат:
+['amenities', 'laundry facilities', 'MSG dormitory', 'students']
+[11/13/2026 14:35:24] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:24] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:35:37] - DEBUG - ====================
+[11/13/2026 14:35:37] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:35:37] - DEBUG - Результат:
+ {
+ "query": "What recreational facilities are available for students living in the MSG dormitory?"
+}
+[11/13/2026 14:35:37] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:37] - DEBUG - --------------------
+[11/13/2026 14:35:37] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:35:37] - DEBUG - Результат: en
+[11/13/2026 14:35:37] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:35:37] - DEBUG - --------------------
+[11/13/2026 14:35:37] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:35:37] - DEBUG - Результат:
+ 
+[Question]
+What recreational facilities are available for students living in the MSG dormitory?
+ .
+[11/13/2026 14:35:37] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:35:37] - DEBUG - --------------------
+[11/13/2026 14:35:37] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:35:37] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:35:37] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:37] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:35:37] - DEBUG - * cache hash_key: 0d06525a6044369d81b38f17ad9887191c0d6a17 .
+[11/13/2026 14:35:37] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-d3fd09313fd3c240f871c76200a370313f82ae83
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:35:37] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:35:37] - DEBUG - Результат:
+recreational facilities | students | MSG dormitory
+[11/13/2026 14:35:37] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=240, generated_tokens_amount=11, inference_elapsed_time=0.51, timestamp=None)
+[11/13/2026 14:35:37] - DEBUG - --------------------
+[11/13/2026 14:35:37] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:35:37] - DEBUG - Результат:
+['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:35:37] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:37] - DEBUG - --------------------
+[11/13/2026 14:35:37] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:35:37] - DEBUG - Результат:
+['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:35:37] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:37] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:35:49] - DEBUG - ====================
+[11/13/2026 14:35:49] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:35:49] - DEBUG - Результат:
+ {
+ "query": "What study and learning resources are available for students living in the MSG dormitory?"
+}
+[11/13/2026 14:35:49] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:49] - DEBUG - --------------------
+[11/13/2026 14:35:49] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:35:49] - DEBUG - Результат: en
+[11/13/2026 14:35:49] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:35:49] - DEBUG - --------------------
+[11/13/2026 14:35:49] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:35:49] - DEBUG - Результат:
+ 
+[Question]
+What study and learning resources are available for students living in the MSG dormitory?
+ .
+[11/13/2026 14:35:49] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:35:49] - DEBUG - --------------------
+[11/13/2026 14:35:49] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:35:49] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:35:49] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:49] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:35:49] - DEBUG - * cache hash_key: 508cf0733efb3c810559ce2cb4d2d2b4374eec92 .
+[11/13/2026 14:35:49] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-c1d8addf16708f7fbc7b38acbf48cb7f1b670e1c
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:35:49] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:35:50] - DEBUG - Результат:
+study and learning resources | MSG dormitory
+[11/13/2026 14:35:50] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=242, generated_tokens_amount=9, inference_elapsed_time=0.53, timestamp=None)
+[11/13/2026 14:35:50] - DEBUG - --------------------
+[11/13/2026 14:35:50] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:35:50] - DEBUG - Результат:
+['study and learning resources', 'MSG dormitory']
+[11/13/2026 14:35:50] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:50] - DEBUG - --------------------
+[11/13/2026 14:35:50] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:35:50] - DEBUG - Результат:
+['study and learning resources', 'MSG dormitory']
+[11/13/2026 14:35:50] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:50] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:36:01] - DEBUG - ====================
+[11/13/2026 14:36:01] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:36:01] - DEBUG - Результат:
+ {
+ "query": "What are the specific rules and restrictions for using [facility type]?"
+}
+[11/13/2026 14:36:01] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:36:01] - DEBUG - --------------------
+[11/13/2026 14:36:01] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:36:01] - DEBUG - Результат: en
+[11/13/2026 14:36:01] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:36:01] - DEBUG - --------------------
+[11/13/2026 14:36:01] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:36:01] - DEBUG - Результат:
+ 
+[Question]
+What are the specific rules and restrictions for using [facility type]?
+ .
+[11/13/2026 14:36:01] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:36:01] - DEBUG - --------------------
+[11/13/2026 14:36:01] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:36:01] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:36:01] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:36:01] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:36:01] - DEBUG - * cache hash_key: b8cc77c05937ec54b75584bb6f4630b750b71910 .
+[11/13/2026 14:36:01] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-a31d08dc1a6c340f1aa36bd1a5b04a46c43cf838
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:36:01] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:36:02] - DEBUG - Результат:
+rules | restrictions | facility type
+[11/13/2026 14:36:02] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=240, generated_tokens_amount=7, inference_elapsed_time=0.45, timestamp=None)
+[11/13/2026 14:36:02] - DEBUG - --------------------
+[11/13/2026 14:36:02] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:36:02] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:36:02] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:36:02] - DEBUG - --------------------
+[11/13/2026 14:36:02] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:36:02] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:36:02] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:36:02] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:39:06] - DEBUG - ====================
+[11/13/2026 14:39:06] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:39:06] - DEBUG - Результат:
+ {
+ "query": "What facilities are available to students living in the MSG dormitory?"
+}
+[11/13/2026 14:39:06] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:39:06] - DEBUG - --------------------
+[11/13/2026 14:39:06] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:39:06] - DEBUG - Результат: en
+[11/13/2026 14:39:06] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:39:06] - DEBUG - --------------------
+[11/13/2026 14:39:06] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:39:06] - DEBUG - Результат:
+ 
+[Question]
+What facilities are available to students living in the MSG dormitory?
+ .
+[11/13/2026 14:39:06] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:39:06] - DEBUG - --------------------
+[11/13/2026 14:39:06] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:39:06] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:39:06] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:06] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:39:06] - DEBUG - * cache hash_key: b8e397020232d8721a663d43f651c362709a0e1d .
+[11/13/2026 14:39:06] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-65893a8f48d5eb69076ff9bb756ee5f31c33ed56
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:39:06] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:39:06] - DEBUG - Результат:
+facilities | students | MSG dormitory
+[11/13/2026 14:39:06] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=9, inference_elapsed_time=0.45, timestamp=None)
+[11/13/2026 14:39:06] - DEBUG - --------------------
+[11/13/2026 14:39:06] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:39:06] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:39:06] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:39:06] - DEBUG - --------------------
+[11/13/2026 14:39:06] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:39:06] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:39:06] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:39:06] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:39:17] - DEBUG - ====================
+[11/13/2026 14:39:17] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:39:17] - DEBUG - Результат:
+ {
+ "query": "What specific amenities and facilities are available to students in the MSG dormitory?"
+}
+[11/13/2026 14:39:17] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:39:17] - DEBUG - --------------------
+[11/13/2026 14:39:17] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:39:17] - DEBUG - Результат: en
+[11/13/2026 14:39:17] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:39:17] - DEBUG - --------------------
+[11/13/2026 14:39:17] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:39:17] - DEBUG - Результат:
+ 
+[Question]
+What specific amenities and facilities are available to students in the MSG dormitory?
+ .
+[11/13/2026 14:39:17] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:39:17] - DEBUG - --------------------
+[11/13/2026 14:39:17] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:39:17] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:39:17] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:17] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:39:17] - DEBUG - * cache hash_key: a21d0ec1c4f42854392faf275fd13450a8fcc97d .
+[11/13/2026 14:39:17] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-a0d0934ac1a87b8f20d2d558953d32f431cc3a44
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:39:17] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:39:18] - DEBUG - Результат:
+amenities | facilities | MSG dormitory
+[11/13/2026 14:39:18] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=241, generated_tokens_amount=9, inference_elapsed_time=0.5, timestamp=None)
+[11/13/2026 14:39:18] - DEBUG - --------------------
+[11/13/2026 14:39:18] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:39:18] - DEBUG - Результат:
+['amenities', 'facilities', 'MSG dormitory']
+[11/13/2026 14:39:18] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:39:18] - DEBUG - --------------------
+[11/13/2026 14:39:18] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:39:18] - DEBUG - Результат:
+['amenities', 'facilities', 'MSG dormitory']
+[11/13/2026 14:39:18] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:39:18] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:39:30] - DEBUG - ====================
+[11/13/2026 14:39:30] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:39:30] - DEBUG - Результат:
+ {
+ "query": "What are the specific rules and restrictions for using [facility type]?"
+}
+[11/13/2026 14:39:30] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:39:30] - DEBUG - --------------------
+[11/13/2026 14:39:30] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:39:30] - DEBUG - Результат: en
+[11/13/2026 14:39:30] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:39:30] - DEBUG - --------------------
+[11/13/2026 14:39:30] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:39:30] - DEBUG - Результат:
+ 
+[Question]
+What are the specific rules and restrictions for using [facility type]?
+ .
+[11/13/2026 14:39:30] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:39:30] - DEBUG - --------------------
+[11/13/2026 14:39:30] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:39:30] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:39:30] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:30] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:39:30] - DEBUG - * cache hash_key: b8cc77c05937ec54b75584bb6f4630b750b71910 .
+[11/13/2026 14:39:30] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-a31d08dc1a6c340f1aa36bd1a5b04a46c43cf838
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:39:30] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:39:30] - DEBUG - Результат:
+rules | restrictions | facility type
+[11/13/2026 14:39:30] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=240, generated_tokens_amount=7, inference_elapsed_time=0.49, timestamp=None)
+[11/13/2026 14:39:30] - DEBUG - --------------------
+[11/13/2026 14:39:30] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:39:30] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:39:30] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:39:30] - DEBUG - --------------------
+[11/13/2026 14:39:30] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:39:30] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:39:30] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:39:30] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:41:38] - DEBUG - ====================
+[11/13/2026 14:41:38] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:41:38] - DEBUG - Результат:
+ {
+ "query": "What facilities are available to students living in the MSG dormitory?"
+}
+[11/13/2026 14:41:38] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:38] - DEBUG - --------------------
+[11/13/2026 14:41:38] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:41:38] - DEBUG - Результат: en
+[11/13/2026 14:41:38] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:41:38] - DEBUG - --------------------
+[11/13/2026 14:41:38] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:41:38] - DEBUG - Результат:
+ 
+[Question]
+What facilities are available to students living in the MSG dormitory?
+ .
+[11/13/2026 14:41:38] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:41:38] - DEBUG - --------------------
+[11/13/2026 14:41:38] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:41:38] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:41:38] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:38] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:41:38] - DEBUG - * cache hash_key: b8e397020232d8721a663d43f651c362709a0e1d .
+[11/13/2026 14:41:38] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-65893a8f48d5eb69076ff9bb756ee5f31c33ed56
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:41:38] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:41:39] - DEBUG - Результат:
+facilities | students | MSG dormitory
+[11/13/2026 14:41:39] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=9, inference_elapsed_time=0.49, timestamp=None)
+[11/13/2026 14:41:39] - DEBUG - --------------------
+[11/13/2026 14:41:39] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:41:39] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:41:39] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:39] - DEBUG - --------------------
+[11/13/2026 14:41:39] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:41:39] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:41:39] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:39] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:41:51] - DEBUG - ====================
+[11/13/2026 14:41:51] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:41:51] - DEBUG - Результат:
+ {
+ "query": "What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?"
+}
+[11/13/2026 14:41:51] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:51] - DEBUG - --------------------
+[11/13/2026 14:41:51] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:41:51] - DEBUG - Результат: en
+[11/13/2026 14:41:51] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:41:51] - DEBUG - --------------------
+[11/13/2026 14:41:51] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:41:51] - DEBUG - Результат:
+ 
+[Question]
+What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?
+ .
+[11/13/2026 14:41:51] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:41:51] - DEBUG - --------------------
+[11/13/2026 14:41:51] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:41:51] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:41:51] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:41:51] - DEBUG - * cache hash_key: f4b7a86e643fef0365bf40eaf5e6b21d94f77a58 .
+[11/13/2026 14:41:51] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-0b11a068bcd28e7b5e7ced0b11f414da2b4d413b
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:41:51] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:41:51] - DEBUG - Результат:
+facilities | amenities | MSG dormitory | 24-hour access | guest room placement
+[11/13/2026 14:41:51] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=251, generated_tokens_amount=19, inference_elapsed_time=0.57, timestamp=None)
+[11/13/2026 14:41:51] - DEBUG - --------------------
+[11/13/2026 14:41:51] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:41:51] - DEBUG - Результат:
+['facilities', 'amenities', 'MSG dormitory', '24-hour access', 'guest room placement']
+[11/13/2026 14:41:51] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:51] - DEBUG - --------------------
+[11/13/2026 14:41:51] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:41:51] - DEBUG - Результат:
+['facilities', 'amenities', 'MSG dormitory', '24-hour access', 'guest room placement']
+[11/13/2026 14:41:51] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:41:51] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:42:06] - DEBUG - ====================
+[11/13/2026 14:42:06] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:42:06] - DEBUG - Результат:
+ {
+ "query": "What are the specific rules and restrictions for using [facility type]?"
+}
+[11/13/2026 14:42:06] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:42:06] - DEBUG - --------------------
+[11/13/2026 14:42:06] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:42:06] - DEBUG - Результат: en
+[11/13/2026 14:42:06] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:42:06] - DEBUG - --------------------
+[11/13/2026 14:42:06] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:42:06] - DEBUG - Результат:
+ 
+[Question]
+What are the specific rules and restrictions for using [facility type]?
+ .
+[11/13/2026 14:42:06] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:42:06] - DEBUG - --------------------
+[11/13/2026 14:42:06] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:42:06] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:42:06] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:42:06] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:42:06] - DEBUG - * cache hash_key: b8cc77c05937ec54b75584bb6f4630b750b71910 .
+[11/13/2026 14:42:06] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-a31d08dc1a6c340f1aa36bd1a5b04a46c43cf838
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:42:06] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:42:07] - DEBUG - Результат:
+rules | restrictions | facility type
+[11/13/2026 14:42:07] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=240, generated_tokens_amount=7, inference_elapsed_time=0.46, timestamp=None)
+[11/13/2026 14:42:07] - DEBUG - --------------------
+[11/13/2026 14:42:07] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:42:07] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:42:07] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:42:07] - DEBUG - --------------------
+[11/13/2026 14:42:07] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:42:07] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:42:07] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:42:07] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:43:28] - DEBUG - ====================
+[11/13/2026 14:43:28] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:43:28] - DEBUG - Результат:
+ {
+ "query": "What facilities are available to students living in the MSG dormitory?"
+}
+[11/13/2026 14:43:28] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:28] - DEBUG - --------------------
+[11/13/2026 14:43:28] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:43:28] - DEBUG - Результат: en
+[11/13/2026 14:43:28] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:43:28] - DEBUG - --------------------
+[11/13/2026 14:43:28] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:43:28] - DEBUG - Результат:
+ 
+[Question]
+What facilities are available to students living in the MSG dormitory?
+ .
+[11/13/2026 14:43:28] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:43:28] - DEBUG - --------------------
+[11/13/2026 14:43:28] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:43:28] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:43:28] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:28] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:43:28] - DEBUG - * cache hash_key: b8e397020232d8721a663d43f651c362709a0e1d .
+[11/13/2026 14:43:28] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-65893a8f48d5eb69076ff9bb756ee5f31c33ed56
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:43:28] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:43:28] - DEBUG - Результат:
+facilities | students | MSG dormitory
+[11/13/2026 14:43:28] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=9, inference_elapsed_time=0.52, timestamp=None)
+[11/13/2026 14:43:28] - DEBUG - --------------------
+[11/13/2026 14:43:28] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:43:28] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:43:28] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:28] - DEBUG - --------------------
+[11/13/2026 14:43:28] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:43:28] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:43:28] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:28] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:43:40] - DEBUG - ====================
+[11/13/2026 14:43:40] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:43:40] - DEBUG - Результат:
+ {
+ "query": "What specific amenities are available to students in the MSG dormitory?"
+}
+[11/13/2026 14:43:40] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:40] - DEBUG - --------------------
+[11/13/2026 14:43:40] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:43:40] - DEBUG - Результат: en
+[11/13/2026 14:43:40] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:43:40] - DEBUG - --------------------
+[11/13/2026 14:43:40] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:43:40] - DEBUG - Результат:
+ 
+[Question]
+What specific amenities are available to students in the MSG dormitory?
+ .
+[11/13/2026 14:43:40] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:43:40] - DEBUG - --------------------
+[11/13/2026 14:43:40] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:43:40] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:43:40] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:40] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:43:40] - DEBUG - * cache hash_key: e0c76ddc1603d06aba2c6a40c00e10e96cfe4494 .
+[11/13/2026 14:43:40] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-4226da9657f7f3cd4243e2ca308a4a712bdb596f
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:43:40] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:43:41] - DEBUG - Результат:
+amenities | MSG dormitory
+[11/13/2026 14:43:41] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=7, inference_elapsed_time=0.48, timestamp=None)
+[11/13/2026 14:43:41] - DEBUG - --------------------
+[11/13/2026 14:43:41] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:43:41] - DEBUG - Результат:
+['amenities', 'MSG dormitory']
+[11/13/2026 14:43:41] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:41] - DEBUG - --------------------
+[11/13/2026 14:43:41] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:43:41] - DEBUG - Результат:
+['amenities', 'MSG dormitory']
+[11/13/2026 14:43:41] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:41] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:43:52] - DEBUG - ====================
+[11/13/2026 14:43:52] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:43:52] - DEBUG - Результат:
+ {
+ "query": "What recreational facilities are available to students in the MSG dormitory?"
+}
+[11/13/2026 14:43:52] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:52] - DEBUG - --------------------
+[11/13/2026 14:43:52] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:43:52] - DEBUG - Результат: en
+[11/13/2026 14:43:52] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:43:52] - DEBUG - --------------------
+[11/13/2026 14:43:52] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:43:52] - DEBUG - Результат:
+ 
+[Question]
+What recreational facilities are available to students in the MSG dormitory?
+ .
+[11/13/2026 14:43:52] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:43:52] - DEBUG - --------------------
+[11/13/2026 14:43:52] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:43:52] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:43:52] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:52] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:43:52] - DEBUG - * cache hash_key: c790e3d88b6d12d87773c50300365db714849ff4 .
+[11/13/2026 14:43:52] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-62b37376d3faaa6bfc60aed8336ff51bfebc327a
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:43:52] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:43:53] - DEBUG - Результат:
+recreational facilities | students | MSG dormitory
+[11/13/2026 14:43:53] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=11, inference_elapsed_time=0.5, timestamp=None)
+[11/13/2026 14:43:53] - DEBUG - --------------------
+[11/13/2026 14:43:53] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:43:53] - DEBUG - Результат:
+['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:43:53] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:53] - DEBUG - --------------------
+[11/13/2026 14:43:53] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:43:53] - DEBUG - Результат:
+['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:43:53] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:43:53] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:44:04] - DEBUG - ====================
+[11/13/2026 14:44:04] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:44:04] - DEBUG - Результат:
+ {
+ "query": "What amenities are available in the MSG dormitory for student residents?"
+}
+[11/13/2026 14:44:04] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:44:04] - DEBUG - --------------------
+[11/13/2026 14:44:04] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:44:04] - DEBUG - Результат: en
+[11/13/2026 14:44:04] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:44:04] - DEBUG - --------------------
+[11/13/2026 14:44:04] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:44:04] - DEBUG - Результат:
+ 
+[Question]
+What amenities are available in the MSG dormitory for student residents?
+ .
+[11/13/2026 14:44:04] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:44:04] - DEBUG - --------------------
+[11/13/2026 14:44:04] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:44:04] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:44:04] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:44:04] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:44:04] - DEBUG - * cache hash_key: 62dea05939b16188bfb2126b4be1b53105443679 .
+[11/13/2026 14:44:04] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-b2a25137655ab890277c877e427e225c3ac15963
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:44:04] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:44:05] - DEBUG - Результат:
+amenities | MSG dormitory | student residents
+[11/13/2026 14:44:05] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=10, inference_elapsed_time=0.5, timestamp=None)
+[11/13/2026 14:44:05] - DEBUG - --------------------
+[11/13/2026 14:44:05] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:44:05] - DEBUG - Результат:
+['amenities', 'MSG dormitory', 'student residents']
+[11/13/2026 14:44:05] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:44:05] - DEBUG - --------------------
+[11/13/2026 14:44:05] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:44:05] - DEBUG - Результат:
+['amenities', 'MSG dormitory', 'student residents']
+[11/13/2026 14:44:05] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:44:05] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:44:17] - DEBUG - ====================
+[11/13/2026 14:44:17] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:44:17] - DEBUG - Результат:
+ {
+ "query": "What are the specific rules and restrictions for using [facility type]?"
+}
+[11/13/2026 14:44:17] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:44:17] - DEBUG - --------------------
+[11/13/2026 14:44:17] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:44:17] - DEBUG - Результат: en
+[11/13/2026 14:44:17] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:44:17] - DEBUG - --------------------
+[11/13/2026 14:44:17] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:44:17] - DEBUG - Результат:
+ 
+[Question]
+What are the specific rules and restrictions for using [facility type]?
+ .
+[11/13/2026 14:44:17] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:44:17] - DEBUG - --------------------
+[11/13/2026 14:44:17] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:44:17] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:44:17] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:44:17] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:44:17] - DEBUG - * cache hash_key: b8cc77c05937ec54b75584bb6f4630b750b71910 .
+[11/13/2026 14:44:17] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-a31d08dc1a6c340f1aa36bd1a5b04a46c43cf838
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:44:17] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:44:18] - DEBUG - Результат:
+rules | restrictions | facility type
+[11/13/2026 14:44:18] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=240, generated_tokens_amount=7, inference_elapsed_time=0.5, timestamp=None)
+[11/13/2026 14:44:18] - DEBUG - --------------------
+[11/13/2026 14:44:18] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:44:18] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:44:18] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:44:18] - DEBUG - --------------------
+[11/13/2026 14:44:18] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:44:18] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:44:18] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:44:18] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:45:44] - DEBUG - ====================
+[11/13/2026 14:45:44] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:45:44] - DEBUG - Результат:
+ {
+ "query": "What facilities are available to students living in the MSG dormitory?"
+}
+[11/13/2026 14:45:44] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:44] - DEBUG - --------------------
+[11/13/2026 14:45:44] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:45:44] - DEBUG - Результат: en
+[11/13/2026 14:45:44] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:45:44] - DEBUG - --------------------
+[11/13/2026 14:45:44] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:45:44] - DEBUG - Результат:
+ 
+[Question]
+What facilities are available to students living in the MSG dormitory?
+ .
+[11/13/2026 14:45:44] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:45:44] - DEBUG - --------------------
+[11/13/2026 14:45:44] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:45:44] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:45:44] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:44] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:45:44] - DEBUG - * cache hash_key: b8e397020232d8721a663d43f651c362709a0e1d .
+[11/13/2026 14:45:44] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-65893a8f48d5eb69076ff9bb756ee5f31c33ed56
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:45:44] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:45:45] - DEBUG - Результат:
+facilities | students | MSG dormitory
+[11/13/2026 14:45:45] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=9, inference_elapsed_time=0.52, timestamp=None)
+[11/13/2026 14:45:45] - DEBUG - --------------------
+[11/13/2026 14:45:45] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:45:45] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:45:45] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:45] - DEBUG - --------------------
+[11/13/2026 14:45:45] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:45:45] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:45:45] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:45] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:45:56] - DEBUG - ====================
+[11/13/2026 14:45:56] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:45:56] - DEBUG - Результат:
+ {
+ "query": "What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?"
+}
+[11/13/2026 14:45:56] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:56] - DEBUG - --------------------
+[11/13/2026 14:45:56] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:45:56] - DEBUG - Результат: en
+[11/13/2026 14:45:56] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:45:56] - DEBUG - --------------------
+[11/13/2026 14:45:56] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:45:56] - DEBUG - Результат:
+ 
+[Question]
+What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?
+ .
+[11/13/2026 14:45:56] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:45:56] - DEBUG - --------------------
+[11/13/2026 14:45:56] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:45:56] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:45:56] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:56] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:45:56] - DEBUG - * cache hash_key: f4b7a86e643fef0365bf40eaf5e6b21d94f77a58 .
+[11/13/2026 14:45:56] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-0b11a068bcd28e7b5e7ced0b11f414da2b4d413b
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:45:56] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:45:57] - DEBUG - Результат:
+facilities | amenities | MSG dormitory | 24-hour access | guest room placement
+[11/13/2026 14:45:57] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=251, generated_tokens_amount=19, inference_elapsed_time=0.63, timestamp=None)
+[11/13/2026 14:45:57] - DEBUG - --------------------
+[11/13/2026 14:45:57] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:45:57] - DEBUG - Результат:
+['facilities', 'amenities', 'MSG dormitory', '24-hour access', 'guest room placement']
+[11/13/2026 14:45:57] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:57] - DEBUG - --------------------
+[11/13/2026 14:45:57] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:45:57] - DEBUG - Результат:
+['facilities', 'amenities', 'MSG dormitory', '24-hour access', 'guest room placement']
+[11/13/2026 14:45:57] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:45:57] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:46:08] - DEBUG - ====================
+[11/13/2026 14:46:08] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:46:08] - DEBUG - Результат:
+ {
+ "query": "What specific amenities are included in the MSG dormitory?"
+}
+[11/13/2026 14:46:08] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:08] - DEBUG - --------------------
+[11/13/2026 14:46:08] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:46:08] - DEBUG - Результат: en
+[11/13/2026 14:46:08] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:46:08] - DEBUG - --------------------
+[11/13/2026 14:46:08] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:46:08] - DEBUG - Результат:
+ 
+[Question]
+What specific amenities are included in the MSG dormitory?
+ .
+[11/13/2026 14:46:08] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:46:08] - DEBUG - --------------------
+[11/13/2026 14:46:08] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:46:08] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:46:08] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:08] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:46:08] - DEBUG - * cache hash_key: 770cc62e08469652e3eff41500221f7bd8d82379 .
+[11/13/2026 14:46:08] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-dbdf5f106ffab366d7bb4c46d3d80b44eda471d8
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:46:08] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:46:09] - DEBUG - Результат:
+amenities | MSG dormitory
+[11/13/2026 14:46:09] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=237, generated_tokens_amount=7, inference_elapsed_time=0.46, timestamp=None)
+[11/13/2026 14:46:09] - DEBUG - --------------------
+[11/13/2026 14:46:09] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:46:09] - DEBUG - Результат:
+['amenities', 'MSG dormitory']
+[11/13/2026 14:46:09] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:09] - DEBUG - --------------------
+[11/13/2026 14:46:09] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:46:09] - DEBUG - Результат:
+['amenities', 'MSG dormitory']
+[11/13/2026 14:46:09] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:09] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:46:20] - DEBUG - ====================
+[11/13/2026 14:46:20] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:46:20] - DEBUG - Результат:
+ {
+ "query": "Are there any recreational facilities available for students in the MSG dormitory?"
+}
+[11/13/2026 14:46:20] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:20] - DEBUG - --------------------
+[11/13/2026 14:46:20] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:46:20] - DEBUG - Результат: en
+[11/13/2026 14:46:20] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:46:20] - DEBUG - --------------------
+[11/13/2026 14:46:20] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:46:20] - DEBUG - Результат:
+ 
+[Question]
+Are there any recreational facilities available for students in the MSG dormitory?
+ .
+[11/13/2026 14:46:20] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:46:20] - DEBUG - --------------------
+[11/13/2026 14:46:20] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:46:20] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:46:20] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:20] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:46:20] - DEBUG - * cache hash_key: 12ceff315c05b6937a0cf924f6e7a816ef2c1b89 .
+[11/13/2026 14:46:20] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-dec9ef3e7918f76e358a4f676bc361246d6fba21
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:46:20] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:46:20] - DEBUG - Результат:
+recreational facilities | students | MSG dormitory
+[11/13/2026 14:46:20] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=240, generated_tokens_amount=11, inference_elapsed_time=0.51, timestamp=None)
+[11/13/2026 14:46:20] - DEBUG - --------------------
+[11/13/2026 14:46:20] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:46:20] - DEBUG - Результат:
+['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:46:20] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:20] - DEBUG - --------------------
+[11/13/2026 14:46:20] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:46:20] - DEBUG - Результат:
+['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:46:20] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:20] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:46:32] - DEBUG - ====================
+[11/13/2026 14:46:32] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:46:32] - DEBUG - Результат:
+ {
+ "query": "What amenities and services are typically included in university dormitories?"
+}
+[11/13/2026 14:46:32] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:32] - DEBUG - --------------------
+[11/13/2026 14:46:32] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:46:32] - DEBUG - Результат: en
+[11/13/2026 14:46:32] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:46:32] - DEBUG - --------------------
+[11/13/2026 14:46:32] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:46:32] - DEBUG - Результат:
+ 
+[Question]
+What amenities and services are typically included in university dormitories?
+ .
+[11/13/2026 14:46:32] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:46:32] - DEBUG - --------------------
+[11/13/2026 14:46:32] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:46:32] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:46:32] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:32] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:46:32] - DEBUG - * cache hash_key: 7c4cfd52ca33c68e2c5ae4b9f09f5d03892a69b7 .
+[11/13/2026 14:46:32] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-2aa02590a179b80b691d60ce3037e60a07b9d901
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:46:32] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:46:32] - DEBUG - Результат:
+amenities | services | university dormitories
+[11/13/2026 14:46:32] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=238, generated_tokens_amount=9, inference_elapsed_time=0.54, timestamp=None)
+[11/13/2026 14:46:32] - DEBUG - --------------------
+[11/13/2026 14:46:32] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:46:32] - DEBUG - Результат:
+['amenities', 'services', 'university dormitories']
+[11/13/2026 14:46:32] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:32] - DEBUG - --------------------
+[11/13/2026 14:46:32] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:46:32] - DEBUG - Результат:
+['amenities', 'services', 'university dormitories']
+[11/13/2026 14:46:32] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:32] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:46:45] - DEBUG - ====================
+[11/13/2026 14:46:45] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:46:45] - DEBUG - Результат:
+ {
+ "query": "What are the specific rules and restrictions for using [facility type]?"
+}
+[11/13/2026 14:46:45] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:45] - DEBUG - --------------------
+[11/13/2026 14:46:45] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:46:45] - DEBUG - Результат: en
+[11/13/2026 14:46:45] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:46:45] - DEBUG - --------------------
+[11/13/2026 14:46:45] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:46:45] - DEBUG - Результат:
+ 
+[Question]
+What are the specific rules and restrictions for using [facility type]?
+ .
+[11/13/2026 14:46:45] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:46:45] - DEBUG - --------------------
+[11/13/2026 14:46:45] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:46:45] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:46:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:45] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:46:45] - DEBUG - * cache hash_key: b8cc77c05937ec54b75584bb6f4630b750b71910 .
+[11/13/2026 14:46:45] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-a31d08dc1a6c340f1aa36bd1a5b04a46c43cf838
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:46:45] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:46:45] - DEBUG - Результат:
+rules | restrictions | facility type
+[11/13/2026 14:46:45] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=240, generated_tokens_amount=7, inference_elapsed_time=0.5, timestamp=None)
+[11/13/2026 14:46:45] - DEBUG - --------------------
+[11/13/2026 14:46:45] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:46:45] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:46:45] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:45] - DEBUG - --------------------
+[11/13/2026 14:46:45] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:46:45] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:46:45] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:46:45] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:48:18] - DEBUG - ====================
+[11/13/2026 14:48:18] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:48:18] - DEBUG - Результат:
+ {
+ "query": "What facilities are available to students living in the MSG dormitory?"
+}
+[11/13/2026 14:48:18] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:18] - DEBUG - --------------------
+[11/13/2026 14:48:18] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:48:18] - DEBUG - Результат: en
+[11/13/2026 14:48:18] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:48:18] - DEBUG - --------------------
+[11/13/2026 14:48:18] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:48:18] - DEBUG - Результат:
+ 
+[Question]
+What facilities are available to students living in the MSG dormitory?
+ .
+[11/13/2026 14:48:18] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:48:18] - DEBUG - --------------------
+[11/13/2026 14:48:18] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:48:18] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:48:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:18] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:48:18] - DEBUG - * cache hash_key: b8e397020232d8721a663d43f651c362709a0e1d .
+[11/13/2026 14:48:18] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-65893a8f48d5eb69076ff9bb756ee5f31c33ed56
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:48:18] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:48:18] - DEBUG - Результат:
+facilities | students | MSG dormitory
+[11/13/2026 14:48:18] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=9, inference_elapsed_time=0.51, timestamp=None)
+[11/13/2026 14:48:18] - DEBUG - --------------------
+[11/13/2026 14:48:18] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:48:18] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:48:18] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:18] - DEBUG - --------------------
+[11/13/2026 14:48:18] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:48:18] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:48:18] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:18] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:48:30] - DEBUG - ====================
+[11/13/2026 14:48:30] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:48:30] - DEBUG - Результат:
+ {
+ "query": "What specific amenities are available to students in the MSG dormitory?"
+}
+[11/13/2026 14:48:30] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:30] - DEBUG - --------------------
+[11/13/2026 14:48:30] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:48:30] - DEBUG - Результат: en
+[11/13/2026 14:48:30] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:48:30] - DEBUG - --------------------
+[11/13/2026 14:48:30] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:48:30] - DEBUG - Результат:
+ 
+[Question]
+What specific amenities are available to students in the MSG dormitory?
+ .
+[11/13/2026 14:48:30] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:48:30] - DEBUG - --------------------
+[11/13/2026 14:48:30] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:48:30] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:48:30] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:30] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:48:30] - DEBUG - * cache hash_key: e0c76ddc1603d06aba2c6a40c00e10e96cfe4494 .
+[11/13/2026 14:48:30] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-4226da9657f7f3cd4243e2ca308a4a712bdb596f
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:48:30] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:48:31] - DEBUG - Результат:
+amenities | MSG dormitory
+[11/13/2026 14:48:31] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=7, inference_elapsed_time=0.46, timestamp=None)
+[11/13/2026 14:48:31] - DEBUG - --------------------
+[11/13/2026 14:48:31] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:48:31] - DEBUG - Результат:
+['amenities', 'MSG dormitory']
+[11/13/2026 14:48:31] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:31] - DEBUG - --------------------
+[11/13/2026 14:48:31] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:48:31] - DEBUG - Результат:
+['amenities', 'MSG dormitory']
+[11/13/2026 14:48:31] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:31] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:48:42] - DEBUG - ====================
+[11/13/2026 14:48:42] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:48:42] - DEBUG - Результат:
+ {
+ "query": "What recreational facilities are available to students in the MSG dormitory?"
+}
+[11/13/2026 14:48:42] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:42] - DEBUG - --------------------
+[11/13/2026 14:48:42] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:48:42] - DEBUG - Результат: en
+[11/13/2026 14:48:42] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:48:42] - DEBUG - --------------------
+[11/13/2026 14:48:42] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:48:42] - DEBUG - Результат:
+ 
+[Question]
+What recreational facilities are available to students in the MSG dormitory?
+ .
+[11/13/2026 14:48:42] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:48:42] - DEBUG - --------------------
+[11/13/2026 14:48:42] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:48:42] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:48:42] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:42] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:48:42] - DEBUG - * cache hash_key: c790e3d88b6d12d87773c50300365db714849ff4 .
+[11/13/2026 14:48:42] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-62b37376d3faaa6bfc60aed8336ff51bfebc327a
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:48:42] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:48:42] - DEBUG - Результат:
+recreational facilities | students | MSG dormitory
+[11/13/2026 14:48:42] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=11, inference_elapsed_time=0.49, timestamp=None)
+[11/13/2026 14:48:42] - DEBUG - --------------------
+[11/13/2026 14:48:42] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:48:42] - DEBUG - Результат:
+['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:48:42] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:42] - DEBUG - --------------------
+[11/13/2026 14:48:42] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:48:42] - DEBUG - Результат:
+['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:48:42] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:42] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:48:54] - DEBUG - ====================
+[11/13/2026 14:48:54] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:48:54] - DEBUG - Результат:
+ {
+ "query": "What amenities are available in the MSG dormitory?"
+}
+[11/13/2026 14:48:54] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:54] - DEBUG - --------------------
+[11/13/2026 14:48:54] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:48:54] - DEBUG - Результат: en
+[11/13/2026 14:48:54] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:48:54] - DEBUG - --------------------
+[11/13/2026 14:48:54] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:48:54] - DEBUG - Результат:
+ 
+[Question]
+What amenities are available in the MSG dormitory?
+ .
+[11/13/2026 14:48:54] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:48:54] - DEBUG - --------------------
+[11/13/2026 14:48:54] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:48:54] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:48:54] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:54] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:48:54] - DEBUG - * cache hash_key: 7199118506306a2f6fc1579357a23c523af62113 .
+[11/13/2026 14:48:54] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-286b508958ff7c3b5b3779afb91706982a0701aa
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:48:54] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:48:55] - DEBUG - Результат:
+amenities | MSG dormitory
+[11/13/2026 14:48:55] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=236, generated_tokens_amount=7, inference_elapsed_time=0.53, timestamp=None)
+[11/13/2026 14:48:55] - DEBUG - --------------------
+[11/13/2026 14:48:55] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:48:55] - DEBUG - Результат:
+['amenities', 'MSG dormitory']
+[11/13/2026 14:48:55] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:55] - DEBUG - --------------------
+[11/13/2026 14:48:55] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:48:55] - DEBUG - Результат:
+['amenities', 'MSG dormitory']
+[11/13/2026 14:48:55] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:48:55] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:49:07] - DEBUG - ====================
+[11/13/2026 14:49:07] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:49:07] - DEBUG - Результат:
+ {
+ "query": "What amenities and facilities are available in the MSG dormitory for student use?"
+}
+[11/13/2026 14:49:07] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:07] - DEBUG - --------------------
+[11/13/2026 14:49:07] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:49:07] - DEBUG - Результат: en
+[11/13/2026 14:49:07] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:49:07] - DEBUG - --------------------
+[11/13/2026 14:49:07] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:49:07] - DEBUG - Результат:
+ 
+[Question]
+What amenities and facilities are available in the MSG dormitory for student use?
+ .
+[11/13/2026 14:49:07] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:49:07] - DEBUG - --------------------
+[11/13/2026 14:49:07] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:49:07] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:49:07] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:07] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:49:07] - DEBUG - * cache hash_key: 9cb0f4edfa966e43d26bd4c66922ab25573e5b06 .
+[11/13/2026 14:49:07] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-b85eb9c5d4b783a28956891abb9124617ee11137
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:49:07] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:49:08] - DEBUG - Результат:
+amenities | facilities | MSG dormitory | student
+[11/13/2026 14:49:08] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=241, generated_tokens_amount=11, inference_elapsed_time=0.55, timestamp=None)
+[11/13/2026 14:49:08] - DEBUG - --------------------
+[11/13/2026 14:49:08] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:49:08] - DEBUG - Результат:
+['amenities', 'facilities', 'MSG dormitory', 'student']
+[11/13/2026 14:49:08] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:08] - DEBUG - --------------------
+[11/13/2026 14:49:08] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:49:08] - DEBUG - Результат:
+['amenities', 'facilities', 'MSG dormitory', 'student']
+[11/13/2026 14:49:08] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:08] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:49:20] - DEBUG - ====================
+[11/13/2026 14:49:20] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:49:20] - DEBUG - Результат:
+ {
+ "query": "What specific amenities and facilities are available for student use in the MSG dormitory?"
+}
+[11/13/2026 14:49:20] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:20] - DEBUG - --------------------
+[11/13/2026 14:49:20] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:49:20] - DEBUG - Результат: en
+[11/13/2026 14:49:20] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:49:20] - DEBUG - --------------------
+[11/13/2026 14:49:20] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:49:20] - DEBUG - Результат:
+ 
+[Question]
+What specific amenities and facilities are available for student use in the MSG dormitory?
+ .
+[11/13/2026 14:49:20] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:49:20] - DEBUG - --------------------
+[11/13/2026 14:49:20] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:49:20] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:49:20] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:20] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:49:20] - DEBUG - * cache hash_key: dd41da814438ca16c1027a98d5908398a747044f .
+[11/13/2026 14:49:20] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-acbaa3254d73558b2a75828242f0641385db7a28
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:49:20] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:49:21] - DEBUG - Результат:
+amenities | facilities | student | MSG dormitory
+[11/13/2026 14:49:21] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=242, generated_tokens_amount=11, inference_elapsed_time=0.55, timestamp=None)
+[11/13/2026 14:49:21] - DEBUG - --------------------
+[11/13/2026 14:49:21] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:49:21] - DEBUG - Результат:
+['amenities', 'facilities', 'student', 'MSG dormitory']
+[11/13/2026 14:49:21] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:21] - DEBUG - --------------------
+[11/13/2026 14:49:21] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:49:21] - DEBUG - Результат:
+['amenities', 'facilities', 'student', 'MSG dormitory']
+[11/13/2026 14:49:21] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:21] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:49:34] - DEBUG - ====================
+[11/13/2026 14:49:34] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:49:34] - DEBUG - Результат:
+ {
+ "query": "Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?"
+}
+[11/13/2026 14:49:34] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:34] - DEBUG - --------------------
+[11/13/2026 14:49:34] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:49:34] - DEBUG - Результат: en
+[11/13/2026 14:49:34] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:49:34] - DEBUG - --------------------
+[11/13/2026 14:49:34] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:49:34] - DEBUG - Результат:
+ 
+[Question]
+Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?
+ .
+[11/13/2026 14:49:34] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:49:34] - DEBUG - --------------------
+[11/13/2026 14:49:34] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:49:34] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:49:34] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:34] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:49:34] - DEBUG - * cache hash_key: b636c934fd81f93196cb75ad0f26237e8c46bba6 .
+[11/13/2026 14:49:34] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-99cc5199d143bf655a5e1ebf64bf0a89189a9bf7
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:49:34] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:49:34] - DEBUG - Результат:
+recreational facilities | common areas | students | MSG dormitory
+[11/13/2026 14:49:34] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=244, generated_tokens_amount=14, inference_elapsed_time=0.57, timestamp=None)
+[11/13/2026 14:49:34] - DEBUG - --------------------
+[11/13/2026 14:49:34] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:49:34] - DEBUG - Результат:
+['recreational facilities', 'common areas', 'students', 'MSG dormitory']
+[11/13/2026 14:49:34] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:34] - DEBUG - --------------------
+[11/13/2026 14:49:34] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:49:34] - DEBUG - Результат:
+['recreational facilities', 'common areas', 'students', 'MSG dormitory']
+[11/13/2026 14:49:34] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:34] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:49:45] - DEBUG - ====================
+[11/13/2026 14:49:45] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:49:45] - DEBUG - Результат:
+ {
+ "query": "What amenities and services are available to students living in the MSG dormitory?"
+}
+[11/13/2026 14:49:45] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:45] - DEBUG - --------------------
+[11/13/2026 14:49:45] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:49:45] - DEBUG - Результат: en
+[11/13/2026 14:49:45] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:49:45] - DEBUG - --------------------
+[11/13/2026 14:49:45] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:49:45] - DEBUG - Результат:
+ 
+[Question]
+What amenities and services are available to students living in the MSG dormitory?
+ .
+[11/13/2026 14:49:45] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:49:45] - DEBUG - --------------------
+[11/13/2026 14:49:45] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:49:45] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:49:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:45] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:49:45] - DEBUG - * cache hash_key: a4bf19cc7fa1c2667767b6b243910b56e6a15a81 .
+[11/13/2026 14:49:45] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-0f416c852f3023a404a426461dd604b4b4222849
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:49:45] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:49:46] - DEBUG - Результат:
+amenities | services | students | MSG dormitory
+[11/13/2026 14:49:46] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=241, generated_tokens_amount=11, inference_elapsed_time=0.5, timestamp=None)
+[11/13/2026 14:49:46] - DEBUG - --------------------
+[11/13/2026 14:49:46] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:49:46] - DEBUG - Результат:
+['amenities', 'services', 'students', 'MSG dormitory']
+[11/13/2026 14:49:46] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:46] - DEBUG - --------------------
+[11/13/2026 14:49:46] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:49:46] - DEBUG - Результат:
+['amenities', 'services', 'students', 'MSG dormitory']
+[11/13/2026 14:49:46] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:46] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:49:58] - DEBUG - ====================
+[11/13/2026 14:49:58] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:49:58] - DEBUG - Результат:
+ {
+ "query": "What are the specific rules and restrictions for using [facility type]?"
+}
+[11/13/2026 14:49:58] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:58] - DEBUG - --------------------
+[11/13/2026 14:49:58] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:49:58] - DEBUG - Результат: en
+[11/13/2026 14:49:58] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:49:58] - DEBUG - --------------------
+[11/13/2026 14:49:58] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:49:58] - DEBUG - Результат:
+ 
+[Question]
+What are the specific rules and restrictions for using [facility type]?
+ .
+[11/13/2026 14:49:58] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:49:58] - DEBUG - --------------------
+[11/13/2026 14:49:58] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:49:58] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:49:58] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:58] - DEBUG - * cache table_name: medreasn_entextr_agent_task_cache
+[11/13/2026 14:49:58] - DEBUG - * cache hash_key: b8cc77c05937ec54b75584bb6f4630b750b71910 .
+[11/13/2026 14:49:58] - DEBUG - * hash seed: b1f178b71c2b76b7b055d489163d27917a652939
+-a31d08dc1a6c340f1aa36bd1a5b04a46c43cf838
+-be6a190f8fcf79931e969d8c9bc9ba1d6bd4ba53
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:49:58] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:49:59] - DEBUG - Результат:
+rules | restrictions | facility type
+[11/13/2026 14:49:59] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=240, generated_tokens_amount=7, inference_elapsed_time=0.5, timestamp=None)
+[11/13/2026 14:49:59] - DEBUG - --------------------
+[11/13/2026 14:49:59] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:49:59] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:49:59] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:59] - DEBUG - --------------------
+[11/13/2026 14:49:59] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:49:59] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:49:59] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:59] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:51:36] - DEBUG - ====================
+[11/13/2026 14:51:36] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:51:36] - DEBUG - Результат:
+ {
+ "query": "What facilities are available to students living in the MSG dormitory?"
+}
+[11/13/2026 14:51:36] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:51:36] - DEBUG - --------------------
+[11/13/2026 14:51:36] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:51:36] - DEBUG - Результат: en
+[11/13/2026 14:51:36] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:51:36] - DEBUG - --------------------
+[11/13/2026 14:51:36] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:51:36] - DEBUG - Результат:
+ 
+[Question]
+What facilities are available to students living in the MSG dormitory?
+ .
+[11/13/2026 14:51:36] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:51:36] - DEBUG - --------------------
+[11/13/2026 14:51:36] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:51:36] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:51:37] - DEBUG - Результат:
+facilities | students | MSG dormitory
+[11/13/2026 14:51:37] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=239, generated_tokens_amount=9, inference_elapsed_time=0.45, timestamp=None)
+[11/13/2026 14:51:37] - DEBUG - --------------------
+[11/13/2026 14:51:37] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:51:37] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:51:37] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:51:37] - DEBUG - --------------------
+[11/13/2026 14:51:37] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:51:37] - DEBUG - Результат:
+['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:51:37] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:51:53] - DEBUG - ====================
+[11/13/2026 14:51:53] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:51:53] - DEBUG - Результат:
+ {
+ "query": "What other facilities or amenities are available to students in the MSG dormitory besides guest room access?"
+}
+[11/13/2026 14:51:53] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:51:53] - DEBUG - --------------------
+[11/13/2026 14:51:53] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:51:53] - DEBUG - Результат: en
+[11/13/2026 14:51:53] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:51:53] - DEBUG - --------------------
+[11/13/2026 14:51:53] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:51:53] - DEBUG - Результат:
+ 
+[Question]
+What other facilities or amenities are available to students in the MSG dormitory besides guest room access?
+ .
+[11/13/2026 14:51:53] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:51:53] - DEBUG - --------------------
+[11/13/2026 14:51:53] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:51:53] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:51:53] - DEBUG - Результат:
+facilities | amenities | guest room access | MSG dormitory | students
+[11/13/2026 14:51:53] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=245, generated_tokens_amount=15, inference_elapsed_time=0.58, timestamp=None)
+[11/13/2026 14:51:53] - DEBUG - --------------------
+[11/13/2026 14:51:53] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:51:53] - DEBUG - Результат:
+['facilities', 'amenities', 'guest room access', 'MSG dormitory', 'students']
+[11/13/2026 14:51:53] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:51:53] - DEBUG - --------------------
+[11/13/2026 14:51:53] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:51:53] - DEBUG - Результат:
+['facilities', 'amenities', 'guest room access', 'MSG dormitory', 'students']
+[11/13/2026 14:51:53] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:52:09] - DEBUG - ====================
+[11/13/2026 14:52:09] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:52:09] - DEBUG - Результат:
+ {
+ "query": "What are the specific rules and restrictions for using [facility type]?"
+}
+[11/13/2026 14:52:09] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:52:09] - DEBUG - --------------------
+[11/13/2026 14:52:09] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:52:09] - DEBUG - Результат: en
+[11/13/2026 14:52:09] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:52:09] - DEBUG - --------------------
+[11/13/2026 14:52:09] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:52:09] - DEBUG - Результат:
+ 
+[Question]
+What are the specific rules and restrictions for using [facility type]?
+ .
+[11/13/2026 14:52:09] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:52:09] - DEBUG - --------------------
+[11/13/2026 14:52:09] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:52:09] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:52:10] - DEBUG - Результат:
+rules | restrictions | facility type
+[11/13/2026 14:52:10] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=240, generated_tokens_amount=7, inference_elapsed_time=0.47, timestamp=None)
+[11/13/2026 14:52:10] - DEBUG - --------------------
+[11/13/2026 14:52:10] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:52:10] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:52:10] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:52:10] - DEBUG - --------------------
+[11/13/2026 14:52:10] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:52:10] - DEBUG - Результат:
+['rules', 'restrictions', 'facility type']
+[11/13/2026 14:52:10] - DEBUG - Статус: Операция выполнена успешно. .

@@ -15,6 +15,7 @@ from .....utils.errors import ReturnInfo
 
 
 class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
+    DATABASE_KW = 'inmemory_bm25'
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_INMEMORY_BM25_CONFIG, **kwargs) -> None:
         if isinstance(config, dict):
@@ -29,19 +30,14 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
     def open_connection(self) -> ReturnInfo:
         self.db_conn = InMemoryDocumentStore()
 
-        if self.config.params['load_from_disk']:
-            if self.config.params['load_dump_name'] is None:
-                load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}.json"
-            else:
-                load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['load_dump_name']}"
+        load_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}/{self.config.db_info['table']}.json"
 
-            if os.path.exists(load_path):
-                self.db_conn = self.db_conn.load_from_disk(load_path)
-            else:
-                # print(f"warning: inmemory_sparse-dump '{load_path}' doesnt exists. creating empty store")
-                os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
+        if os.path.exists(load_path):
+            self.db_conn = self.db_conn.load_from_disk(load_path)
         else:
-            os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
+            # print(f"warning: inmemory_sparse-dump '{load_path}' doesnt exists. creating empty store")
+            os.makedirs(f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}", exist_ok=True)
+
 
         self.retriever = InMemoryBM25Retriever(document_store=self.db_conn)
 
@@ -49,20 +45,25 @@ class InMemoryBM25Connector(AbstractVectorDatabaseConnection):
             self.clear()
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            return self.db_conn is not None
+        except AttributeError as e:
+            return False
 
     def close_connection(self) -> ReturnInfo:
         # print("closing inmemory bm25 connection...")
         if self.db_conn is None:
             return
-        elif self.config.params['save_on_disk']:
-            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
-            if os.path.exists(save_path) and not self.config.params['rewrite']:
+        if self.config.params['save_on_disk']:
+            base_save_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}"
+            os.makedirs(base_save_path, exist_ok=True)
+            if os.path.exists(f"{base_save_path}/{self.config.db_info['table']}.json") and not self.config.params['rewrite']:
                 # print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
-                save_path += f'({postfix})'
-            save_path += '.json'
+                save_path = f"{base_save_path}/{self.config.db_info['table']}({postfix}).json"
+            else:
+                save_path = f"{base_save_path}/{self.config.db_info['table']}.json"
+            
 
             self.db_conn.save_to_disk(save_path)
             # print(f"inmemory bm25-store saved in: {save_path}")

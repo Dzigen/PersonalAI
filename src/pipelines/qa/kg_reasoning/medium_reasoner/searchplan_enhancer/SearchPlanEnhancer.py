@@ -4,8 +4,8 @@ from copy import deepcopy
 
 from .config import PLANENH_MAIN_LOG_PATH
 from .utils import MediumPlanEnhancerTaskSolvers, SearchPlanEnhancerAgentTasksConfig
-from ......utils import ReturnInfo, Logger, AgentTaskSolverConfig, AgentTaskSolver, accumulate_stage_info, \
-    CompositeModuleDetailedResult, ModuleType, CompositeModuleResult
+from ......utils import ReturnInfo, Logger, AgentTaskSolver, accumulate_stage_info, \
+    CompositeModuleDetailedResult, ModuleType
 from ......utils.errors import ReturnStatus
 from ......agents.utils import AbstractAgentConnector
 from ......utils.data_structs import create_id, SearchPlanInfo, BaseComponentConfig, LanguageConfig
@@ -14,7 +14,7 @@ from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ......utils.cache_kv.CacheOperations import CacheOperations
 from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
-
+from ......environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class SearchPlanEnhancerConfig(BaseComponentConfig, LanguageConfig):
@@ -37,7 +37,7 @@ class SearchPlanEnhancerConfig(BaseComponentConfig, LanguageConfig):
     agent_tasks_config: Union[SearchPlanEnhancerAgentTasksConfig, Dict] = field(default_factory=lambda: SearchPlanEnhancerAgentTasksConfig())
 
     cache_table_name: str = 'medreasn_planenh_main_stage_cache'
-    log_path: str = PLANENH_MAIN_LOG_PATH
+    log_relative_path: str = PLANENH_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.plan_enhancment}|{self.enable_enhance_classifier}"
@@ -54,7 +54,7 @@ class SearchPlanEnhancerConfig(BaseComponentConfig, LanguageConfig):
             self.agent_tasks_config = SearchPlanEnhancerAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
-class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
+class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс стадии #1 medium QA-конвейера для выполнения генерации/модификации плана поиска/извлечения информации из графа знаний.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -78,7 +78,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level, self.config.log_base_path)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -103,7 +103,7 @@ class SearchPlanEnhancer(CacheUtils, CacheOperations, AgentStatOperations):
                 agents_cache_config, inferencestat_config)
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 

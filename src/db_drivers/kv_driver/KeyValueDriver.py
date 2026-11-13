@@ -38,8 +38,8 @@ class KeyValueDriverConfig(BaseConfigOperations):
 class KeyValueDriver:
     """Компонента для инициализации подключения к key-value хранилищу по конфигурации."""
     @staticmethod
-    def connect(config: Union[Dict, KeyValueDriverConfig] = KeyValueDriverConfig()) -> AbstractKVDatabaseConnection:
-        """Создаёт и открывает подключение к key-value хранилищу.
+    def select(config: Union[Dict, KeyValueDriverConfig] = KeyValueDriverConfig()) -> AbstractKVDatabaseConnection:
+        """Метод предназначен для выбора способа подключения к key-value хранилищу.
 
         :param config: Конфигурация драйвера, либо словарь с её параметрами.
         :type config: Union[Dict, KeyValueDriverConfig]
@@ -52,5 +52,4 @@ class KeyValueDriver:
             config.formate_fields()
 
         kv_conn: AbstractKVDatabaseConnection = AVAILABLE_KVDB_CONNECTORS[config.db_vendor](config.db_config)
-        kv_conn.open_connection()
         return kv_conn

@@ -16,6 +16,7 @@ from ......utils import ReturnStatus
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ......utils.cache_kv.CacheOperations import CacheOperations
+from ......environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 
 @dataclass
@@ -34,7 +35,7 @@ class ClueAnswerGeneratorConfig(BaseComponentConfig, LanguageConfig):
     agent_tasks_config: Union[ClueAnswerGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueAnswerGeneratorAgentTasksConfig())
 
     cache_table_name: str = 'medreasn_cagen_main_stage_cache'
-    log_path: str = CAGEN_MAIN_LOG_PATH
+    log_relative_path: str = CAGEN_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
@@ -51,7 +52,7 @@ class ClueAnswerGeneratorConfig(BaseComponentConfig, LanguageConfig):
             self.agent_tasks_config = ClueAnswerGeneratorAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
-class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
+class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс стадии #3.1.2 MediumQA-конвейера для суммаризации/резюмирования информации, извлечённой из графа знаний (памяти ассистента) по clue-запросу.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -75,7 +76,7 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level, self.config.log_base_path)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -90,7 +91,7 @@ class ClueAnswerGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 self.agent, self.config.agent_tasks_config.cagen, agents_cache_config, inferencestat_config)
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 

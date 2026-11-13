@@ -1,0 +1,70 @@
+[11/13/2026 14:34:09] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:34:09] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:34:14] - DEBUG - RESULT:
+[11/13/2026 14:34:14] - DEBUG - * Relations info (all / unique / existed count): 10 / 3 / 3 .
+[11/13/2026 14:34:14] - DEBUG - * Nodes info ( all / unique / existed count): 20 / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:34:18] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:34:18] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:34:22] - DEBUG - RESULT:
+[11/13/2026 14:34:22] - DEBUG - * Relations info (all / unique / existed count): 57 / 14 / 13 .
+[11/13/2026 14:34:22] - DEBUG - * Nodes info ( all / unique / existed count): 114 / {<NodeType.object: 'object'>: 24, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 21, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:38:49] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:38:49] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:38:53] - DEBUG - RESULT:
+[11/13/2026 14:38:53] - DEBUG - * Relations info (all / unique / existed count): 10 / 3 / 3 .
+[11/13/2026 14:38:53] - DEBUG - * Nodes info ( all / unique / existed count): 20 / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:38:58] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:38:58] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:39:02] - DEBUG - RESULT:
+[11/13/2026 14:39:02] - DEBUG - * Relations info (all / unique / existed count): 57 / 14 / 13 .
+[11/13/2026 14:39:02] - DEBUG - * Nodes info ( all / unique / existed count): 114 / {<NodeType.object: 'object'>: 24, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 21, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:41:22] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:41:22] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:41:26] - DEBUG - RESULT:
+[11/13/2026 14:41:26] - DEBUG - * Relations info (all / unique / existed count): 10 / 3 / 3 .
+[11/13/2026 14:41:26] - DEBUG - * Nodes info ( all / unique / existed count): 20 / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:41:30] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:41:30] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:41:34] - DEBUG - RESULT:
+[11/13/2026 14:41:34] - DEBUG - * Relations info (all / unique / existed count): 57 / 14 / 13 .
+[11/13/2026 14:41:34] - DEBUG - * Nodes info ( all / unique / existed count): 114 / {<NodeType.object: 'object'>: 24, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 21, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:43:11] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:43:11] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:43:15] - DEBUG - RESULT:
+[11/13/2026 14:43:15] - DEBUG - * Relations info (all / unique / existed count): 10 / 3 / 3 .
+[11/13/2026 14:43:15] - DEBUG - * Nodes info ( all / unique / existed count): 20 / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:43:19] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:43:19] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:43:24] - DEBUG - RESULT:
+[11/13/2026 14:43:24] - DEBUG - * Relations info (all / unique / existed count): 57 / 14 / 13 .
+[11/13/2026 14:43:24] - DEBUG - * Nodes info ( all / unique / existed count): 114 / {<NodeType.object: 'object'>: 24, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 21, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:45:27] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:45:27] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:45:31] - DEBUG - RESULT:
+[11/13/2026 14:45:31] - DEBUG - * Relations info (all / unique / existed count): 10 / 3 / 3 .
+[11/13/2026 14:45:31] - DEBUG - * Nodes info ( all / unique / existed count): 20 / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:45:36] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:45:36] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:45:40] - DEBUG - RESULT:
+[11/13/2026 14:45:40] - DEBUG - * Relations info (all / unique / existed count): 57 / 14 / 13 .
+[11/13/2026 14:45:40] - DEBUG - * Nodes info ( all / unique / existed count): 114 / {<NodeType.object: 'object'>: 24, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 21, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:48:01] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:48:01] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:48:05] - DEBUG - RESULT:
+[11/13/2026 14:48:05] - DEBUG - * Relations info (all / unique / existed count): 10 / 3 / 3 .
+[11/13/2026 14:48:05] - DEBUG - * Nodes info ( all / unique / existed count): 20 / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:48:09] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:48:09] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:48:13] - DEBUG - RESULT:
+[11/13/2026 14:48:13] - DEBUG - * Relations info (all / unique / existed count): 57 / 14 / 13 .
+[11/13/2026 14:48:13] - DEBUG - * Nodes info ( all / unique / existed count): 114 / {<NodeType.object: 'object'>: 24, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 21, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:51:20] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:51:20] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:51:24] - DEBUG - RESULT:
+[11/13/2026 14:51:24] - DEBUG - * Relations info (all / unique / existed count): 10 / 3 / 3 .
+[11/13/2026 14:51:24] - DEBUG - * Nodes info ( all / unique / existed count): 20 / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 4, <NodeType.hyper: 'hyper'>: 1, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .
+[11/13/2026 14:51:28] - DEBUG - ADDING TRIPLES TO EMBEDDINGS-STRUCT...
+[11/13/2026 14:51:28] - DEBUG - * Also adding triplet-nodes.
+[11/13/2026 14:51:32] - DEBUG - RESULT:
+[11/13/2026 14:51:32] - DEBUG - * Relations info (all / unique / existed count): 57 / 14 / 13 .
+[11/13/2026 14:51:32] - DEBUG - * Nodes info ( all / unique / existed count): 114 / {<NodeType.object: 'object'>: 24, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} / {<NodeType.object: 'object'>: 21, <NodeType.hyper: 'hyper'>: 6, <NodeType.episodic: 'episodic'>: 1, <NodeType.time: 'time'>: 0} .

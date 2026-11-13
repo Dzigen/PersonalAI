@@ -1,0 +1,1 @@
+{"type": "haystack.document_stores.in_memory.document_store.InMemoryDocumentStore", "init_parameters": {"bm25_tokenization_regex": "(?u)\\b\\w+\\b", "bm25_algorithm": "BM25L", "bm25_parameters": {}, "embedding_similarity_function": "dot_product", "index": "4671ad36-3878-4afa-a80e-2a3c473098d5", "return_embedding": true}, "documents": []}

@@ -38,8 +38,8 @@ class GraphDriverConfig(BaseConfigOperations):
 class GraphDriver:
     """Компонента для инициализации подключения к графовой базе данных."""
     @staticmethod
-    def connect(config: Union[Dict, GraphDriverConfig] = GraphDriverConfig()) -> AbstractGraphDatabaseConnection:
-        """Метод предназначен для создания и открытия подключения к графовой БД.
+    def select(config: Union[Dict, GraphDriverConfig] = GraphDriverConfig()) -> AbstractGraphDatabaseConnection:
+        """Метод предназначен для выбора способа подключения к графовой БД.
 
         :param config: Конфигурация драйвера (GraphDriverConfig) либо словарь с её параметрами.
         :type config: Union[Dict, GraphDriverConfig]
@@ -52,5 +52,4 @@ class GraphDriver:
             config.formate_fields()
 
         graph_conn: AbstractGraphDatabaseConnection = AVAILABLE_GRAPHDB_CONNECTORS[config.db_vendor](config.db_config)
-        graph_conn.open_connection()
         return graph_conn

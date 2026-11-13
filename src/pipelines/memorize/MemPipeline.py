@@ -17,7 +17,7 @@ from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...utils.cache_kv.CacheOperations import CacheOperations
 from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ...utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
-
+from ...environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class MemPipelineConfig(BaseComponentConfig, LanguageConfig):
@@ -33,7 +33,7 @@ class MemPipelineConfig(BaseComponentConfig, LanguageConfig):
     updator_config: Union[Dict, LLMUpdatorConfig] = field(
         default_factory=lambda: LLMUpdatorConfig())
 
-    log_path: str = MEMORIZE_MAIN_LOG_PATH
+    log_relative_path: str = MEMORIZE_MAIN_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -58,7 +58,7 @@ class MemPipelineConfig(BaseComponentConfig, LanguageConfig):
             self.updator_config.formate_fields()
 
 
-class MemPipeline(CacheOperations, AgentStatOperations):
+class MemPipeline(CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс Memorize-конвейера, отвечающий за изменение знаний в памяти ассистента.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -87,7 +87,7 @@ class MemPipeline(CacheOperations, AgentStatOperations):
                 kg_model, config.updator_config, cache_kvdriver_config, inferencestat_config)
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
 

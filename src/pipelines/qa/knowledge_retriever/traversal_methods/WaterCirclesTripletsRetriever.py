@@ -123,7 +123,7 @@ class WaterCirclesSearchConfig(BaseGraphSearchConfig):
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
 
     cache_table_name: str = 'qa_watercircles_t_retriever_cache'
-    log_path: str = WATERCIRCLES_RETRIEVER_LOG_PATH
+    log_relative_path: str = WATERCIRCLES_RETRIEVER_LOG_PATH
 
     def to_str(self):
         str_values = f"{self.hyper_num};{self.episodic_num};{self.chain_triplets_num};{self.other_triplets_num}"
@@ -163,12 +163,12 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
             search_config.formate_fields()
         self.config: WaterCirclesSearchConfig = search_config
 
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
 
-        self.log = Logger(search_config.log_path)
+        self.log = Logger(search_config.log_relative_path, search_config.log_base_path)
         self.verbose = search_config.verbose
         self.log_level = search_config.log_level
 
@@ -178,10 +178,6 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
             'MATCH (a:object)-[r]-(b:object) WHERE b.name="{name2}" RETURN a, r, b'
         self.extract_triplets_rel_prop_template = \
             'MATCH (a:object)-[r]-(b:object) WHERE r.{prop_name}="{prop_value}" RETURN a, r, b'
-
-    def close_connections(self):
-        if self.cachekv is not None:
-            self.cachekv.close_connection()
 
     def clear_traversal_cache(self) -> None:
         return None
@@ -216,7 +212,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         inters_chains1, inters_chains2 = [], []
         try:
             subj_name, obj_name, obj_type = query
-            res = self.kg_model.graph_struct.db_conn.get_triplets_by_name(
+            res = self.kgmodel_ref.graph_struct.db_conn.get_triplets_by_name(
                 subj_name, obj_name, obj_type)
             for triplet_raw in res:
                 triplet = [{"id": triplet_raw.start_node.id,
@@ -550,7 +546,7 @@ class WaterCirclesRetriever(AbstractTripletsRetriever, CacheUtils):
         for seed_entity, *_ in entities_list:
             another_entities_list = [entities_list2 for entities_list2 in seed_entities
                                      if entities_list2 != entities_list]
-            res = self.kg_model.graph_struct.db_conn.get_triplets_by_name(
+            res = self.kgmodel_ref.graph_struct.db_conn.get_triplets_by_name(
                 [seed_entity, seed_entity.lower(), seed_entity.replace(" ", "_"), seed_entity.lower().replace(" ", "_")],
                 [],
                 entity_type

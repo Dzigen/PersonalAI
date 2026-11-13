@@ -17,7 +17,7 @@ from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ......utils.cache_kv.CacheOperations import CacheOperations
 from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
-
+from ......environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
@@ -27,7 +27,7 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     :type agent_gen_stategy: Union[None,Dict[str, Union[str, int, float]]], optional
     :param agent_tasks_config: Конфигурации LLM-промптов для решения заданных задач с помощью LLM-агента. Значение по умолчанию ClueQueriesGeneratorAgentTasksConfig().
     :type agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict], optional
-    :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 8.
+    :param max_cqueries_amount: Максимальное количество clue-запросов, которое может быть сгенерировано. Значение по умолчанию 4.
     :type max_cqueries_amount: int, optional
     :param return_only_unique_cqueries: Если True, то из набора сгенерированных clue-вопросов будут удалены дубликаты (по строковому представлению и без учёта вершин, по которым данные clue-вопросы были получены), иначе False. Значение по умолчанию False.
     :type return_only_unique_cqueries: bool, optional
@@ -38,12 +38,12 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
     """
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[ClueQueriesGeneratorAgentTasksConfig, Dict] = field(default_factory=lambda: ClueQueriesGeneratorAgentTasksConfig())
-    max_cqueries_amount: int = 8
+    max_cqueries_amount: int = 4
     return_only_unique_cqueries: bool = False
     use_basequery_as_cqueries: bool = False
 
     cache_table_name: str = 'medreasn_cquerygen_main_stage_cache'
-    log_path: str = CQGEN_MAIN_LOG_PATH
+    log_relative_path: str = CQGEN_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}|{self.max_cqueries_amount}|{self.return_only_unique_cqueries}{self.use_basequery_as_cqueries}"
@@ -60,7 +60,7 @@ class ClueQueriesGeneratorConfig(BaseComponentConfig, LanguageConfig):
             self.agent_tasks_config = ClueQueriesGeneratorAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
-class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
+class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс стадии #2.2 MediumQA-конвейера для генерации clue-запросов поиска на графе знаний.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -84,7 +84,7 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level, self.config.log_base_path)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -99,7 +99,7 @@ class ClueQueriesGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 self.agent, self.config.agent_tasks_config.cquerie_generator, agents_cache_config, inferencestat_config)
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 

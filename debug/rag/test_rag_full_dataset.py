@@ -47,11 +47,11 @@ Answer: '''
 
 n_utt, n_dia, n_utt_mix, n_dia_mix = [5, 10, 15, 20, 25], [
     3, 5, 7, 10, 15], [5, 7, 10, 12, 15], [2, 3, 5, 7, 10]
-log_path = "test_rag/full_1"
+log_relative_path = "test_rag/full_1"
 batch_size = 16
 
 embedder = Retriever("cpu")
-log = Logger(log_path)
+log = Logger(log_relative_path)
 agent = LLaMAagent("You are a helpful assistant")
 
 with open("testDiaASQ/Augment_DiaASQ.json") as f:
@@ -95,21 +95,21 @@ names = list(dataset.keys())
 
 for n_u in n_utt:
     for question_type in names:
-        log.__init__(log_path + f"/utt_only_{n_u}_{question_type}")
+        log.__init__(log_relative_path + f"/utt_only_{n_u}_{question_type}")
         add_manf_info = question_type in for_manufactured_info
         test(n_u, 0, utt_emb, dialogs_emb,
              dataset[question_type], utterances, dialogs, add_manf_info, agent, log)
 
 for n_d in n_dia:
     for question_type in names:
-        log.__init__(log_path + f"/dia_only_{n_d}_{question_type}")
+        log.__init__(log_relative_path + f"/dia_only_{n_d}_{question_type}")
         add_manf_info = question_type in for_manufactured_info
         test(0, n_d, utt_emb, dialogs_emb,
              dataset[question_type], utterances, dialogs, add_manf_info, agent, log)
 
 for n_u, n_d in zip(n_utt_mix, n_dia_mix):
     for question_type in names:
-        log.__init__(log_path + f"/mix_{n_u}_{n_d}_{question_type}")
+        log.__init__(log_relative_path + f"/mix_{n_u}_{n_d}_{question_type}")
         add_manf_info = question_type in for_manufactured_info
         test(n_u, n_d, utt_emb, dialogs_emb,
              dataset[question_type], utterances, dialogs, add_manf_info, agent, log)

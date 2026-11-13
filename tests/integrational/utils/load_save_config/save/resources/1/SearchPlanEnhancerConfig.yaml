@@ -1,5 +1,5 @@
 lang: auto
-log_path: log/qa/kg_reasoner/medium/plan_enhancer/main
+log_relative_path: log/qa/kg_reasoner/medium/plan_enhancer/main
 verbose: false
 log_level: 10
 plan_enhancment: true

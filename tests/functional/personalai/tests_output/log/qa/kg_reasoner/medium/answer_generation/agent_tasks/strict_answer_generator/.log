@@ -1,0 +1,239 @@
+[11/13/2026 14:35:58] - DEBUG - ====================
+[11/13/2026 14:35:58] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:35:58] - DEBUG - Результат:
+ {
+ "query": "What facilities are available to students living in the MSG dormitory?",
+ "search_info": "[Search Query #0]\nWhat facilities are available to students living in the MSG dormitory?\n[Finded Information]\nStudents living in the MSG dormitory have 24-hour access and can apply to the administration. Relatives, including parents, can be placed in guest rooms for short periods (at least 2 days) or longer with a valid degree of kinship document.\n\n[Search Query #1]\nWhat specific amenities are available to students in the MSG dormitory?\n[Finded Information]\nStudents in the MSG dormitory have 24-hour access and can accommodate relatives (for at least 2 days) and parents. A document confirming the degree of kinship is required for parents.\n\n[Search Query #2]\nWhat specific amenities are available to students in the MSG dormitory regarding recreational facilities?\n[Finded Information]\nThere is no specific information provided about recreational facilities or amenities available to students in the MSG dormitory.\n\n[Search Query #3]\nWhat specific amenities are available to students in the MSG dormitory regarding study and learning resources?\n[Finded Information]\nBased on the provided information, no specific study and learning resources are mentioned as being available to students in the MSG dormitory. The only detail given is that students have 24-hour access to the dormitory, but this does not specify any particular amenities or learning resources.\n\n[Search Query #4]\nWhat specific amenities are available to students in the MSG dormitory regarding dining options?\n[Finded Information]\nStudents in the MSG dormitory have access to 24-hour dining options.\n\n[Search Query #5]\nWhat specific amenities are available to students in the MSG dormitory regarding laundry facilities?\n[Finded Information]\nBased on the provided information, it is unclear what specific laundry facilities are available to students in the MSG dormitory. The only known detail is that students have 24-hour access to the MSG dormitory.\n\n[Search Query #6]\nWhat recreational facilities are available for students living in the MSG dormitory?\n[Finded Information]\nBased on the provided information, there is no specific mention of recreational facilities available for students living in the MSG dormitory. The information pertains to accommodation arrangements for relatives and parents but does not detail any recreational amenities.\n\n[Search Query #7]\nWhat study and learning resources are available for students living in the MSG dormitory?\n[Finded Information]\nBased on the provided information, it is unclear what specific study and learning resources are available for students living in the MSG dormitory. The information focuses on access permissions and guest accommodations rather than detailing academic support or facilities."
+}
+[11/13/2026 14:35:58] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:35:58] - DEBUG - --------------------
+[11/13/2026 14:35:58] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:35:58] - DEBUG - Результат: en
+[11/13/2026 14:35:58] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:35:58] - DEBUG - --------------------
+[11/13/2026 14:35:58] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:35:58] - DEBUG - Результат:
+ 
+[Question]
+What facilities are available to students living in the MSG dormitory?
+[Search info]
+[Search Query #0]
+What facilities are available to students living in the MSG dormitory?
+[Finded Information]
+Students living in the MSG dormitory have 24-hour access and can apply to the administration. Relatives, including parents, can be placed in guest rooms for short periods (at least 2 days) or longer with a valid degree of kinship document.
+
+[Search Query #1]
+What specific amenities are available to students in the MSG dormitory?
+[Finded Information]
+Students in the MSG dormitory have 24-hour access and can accommodate relatives (for at least 2 days) and parents. A document confirming the degree of kinship is required for parents.
+
+[Search Query #2]
+What specific amenities are available to students in the MSG dormitory regarding recreational facilities?
+[Finded Information]
+There is no specific information provided about recreational facilities or amenities available to students in the MSG dormitory.
+
+[Search Query #3]
+What specific amenities are available to students in the MSG dormitory regarding study and learning resources?
+[Finded Information]
+Based on the provided information, no specific study and learning resources are mentioned as being available to students in the MSG dormitory. The only detail given is that students have 24-hour access to the dormitory, but this does not specify any particular amenities or learning resources.
+
+[Search Query #4]
+What specific amenities are available to students in the MSG dormitory regarding dining options?
+[Finded Information]
+Students in the MSG dormitory have access to 24-hour dining options.
+
+[Search Query #5]
+What specific amenities are available to students in the MSG dormitory regarding laundry facilities?
+[Finded Information]
+Based on the provided information, it is unclear what specific laundry facilities are available to students in the MSG dormitory. The only known detail is that students have 24-hour access to the MSG dormitory.
+
+[Search Query #6]
+What recreational facilities are available for students living in the MSG dormitory?
+[Finded Information]
+Based on the provided information, there is no specific mention of recreational facilities available for students living in the MSG dormitory. The information pertains to accommodation arrangements for relatives and parents but does not detail any recreational amenities.
+
+[Search Query #7]
+What study and learning resources are available for students living in the MSG dormitory?
+[Finded Information]
+Based on the provided information, it is unclear what specific study and learning resources are available for students living in the MSG dormitory. The information focuses on access permissions and guest accommodations rather than detailing academic support or facilities.
+ .
+[11/13/2026 14:35:58] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:35:58] - DEBUG - --------------------
+[11/13/2026 14:35:58] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:35:58] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:35:58] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:58] - DEBUG - * cache table_name: medreasn_sanswgen_agent_task_cache
+[11/13/2026 14:35:58] - DEBUG - * cache hash_key: e6eb220c6e4ce80c265c3bfef8c1180770c323d4 .
+[11/13/2026 14:35:58] - DEBUG - * hash seed: 5f208894d8e3fe44e156f18f4fd5cefc9b06cdd8
+-b064a7c24aba77b21224fdea7db121616132f4b8
+-4630251792c23bbfbeebb465731c29033dadd192
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:35:58] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:36:00] - DEBUG - Результат:
+The search queries provide some details about the MSG dormitory's policies regarding guests and 24-hour access, but do not specify any recreational facilities, study resources, or dining options in detail. The only clear information is that students have 24-hour access to the dormitory and can accommodate relatives for at least two days.
+
+[Answer] 
+Based on the provided information, specific details about recreational facilities, study and learning resources, and dining options are not available. Students have 24-hour access and can accommodate relatives for at least two days.
+[11/13/2026 14:36:00] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=1242, generated_tokens_amount=112, inference_elapsed_time=2.17, timestamp=None)
+[11/13/2026 14:36:00] - DEBUG - --------------------
+[11/13/2026 14:36:00] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:36:00] - DEBUG - Результат:
+Based on the provided information, specific details about recreational facilities, study and learning resources, and dining options are not available. Students have 24-hour access and can accommodate relatives for at least two days.
+[11/13/2026 14:36:00] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:36:00] - DEBUG - --------------------
+[11/13/2026 14:36:00] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:36:00] - DEBUG - Результат:
+Based on the provided information, specific details about recreational facilities, study and learning resources, and dining options are not available. Students have 24-hour access and can accommodate relatives for at least two days.
+[11/13/2026 14:36:00] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:36:00] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:42:04] - DEBUG - ====================
+[11/13/2026 14:42:04] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:42:04] - DEBUG - Результат:
+ {
+ "query": "What facilities are available to students living in the MSG dormitory?",
+ "search_info": "[Search Query #0]\nWhat facilities are available to students living in the MSG dormitory?\n[Finded Information]\nStudents living in the MSG dormitory have 24-hour access and can apply to place relatives in guest rooms. Parents can also apply for placement, which can be for any period. A document confirming the degree of kinship is required for both students and parents.\n\n[Search Query #1]\nWhat other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?\n[Finded Information]\nBased on the information provided, besides 24-hour access and guest room placement, no other specific facilities or amenities are explicitly stated to be available to students in the MSG dormitory."
+}
+[11/13/2026 14:42:04] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:42:04] - DEBUG - --------------------
+[11/13/2026 14:42:04] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:42:04] - DEBUG - Результат: en
+[11/13/2026 14:42:04] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:42:04] - DEBUG - --------------------
+[11/13/2026 14:42:04] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:42:04] - DEBUG - Результат:
+ 
+[Question]
+What facilities are available to students living in the MSG dormitory?
+[Search info]
+[Search Query #0]
+What facilities are available to students living in the MSG dormitory?
+[Finded Information]
+Students living in the MSG dormitory have 24-hour access and can apply to place relatives in guest rooms. Parents can also apply for placement, which can be for any period. A document confirming the degree of kinship is required for both students and parents.
+
+[Search Query #1]
+What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?
+[Finded Information]
+Based on the information provided, besides 24-hour access and guest room placement, no other specific facilities or amenities are explicitly stated to be available to students in the MSG dormitory.
+ .
+[11/13/2026 14:42:04] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:42:04] - DEBUG - --------------------
+[11/13/2026 14:42:04] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:42:04] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:42:04] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:42:04] - DEBUG - * cache table_name: medreasn_sanswgen_agent_task_cache
+[11/13/2026 14:42:04] - DEBUG - * cache hash_key: 5d19ea8d13d2658fec8cae4e09fa3751f3c826ca .
+[11/13/2026 14:42:04] - DEBUG - * hash seed: 5f208894d8e3fe44e156f18f4fd5cefc9b06cdd8
+-108baaf9288278a6d1a10ab94e5a42776229a88d
+-4630251792c23bbfbeebb465731c29033dadd192
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:42:04] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:42:05] - DEBUG - Результат:
+The search results indicate that students have 24-hour access and can apply for placing relatives in guest rooms. However, there is no explicit mention of any additional facilities or amenities provided by the MSG dormitory.
+
+[Answer] <|NotEnoughtInfo|>
+[11/13/2026 14:42:05] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=871, generated_tokens_amount=53, inference_elapsed_time=1.28, timestamp=None)
+[11/13/2026 14:42:05] - DEBUG - --------------------
+[11/13/2026 14:42:05] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:42:05] - DEBUG - Результат:
+<|NotEnoughtInfo|>
+[11/13/2026 14:42:05] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:42:05] - DEBUG - --------------------
+[11/13/2026 14:42:05] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:42:05] - DEBUG - Результат:
+<|NotEnoughtInfo|>
+[11/13/2026 14:42:05] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:42:05] - DEBUG - Кешируем генерацию LLM-модели.
+[11/13/2026 14:49:55] - DEBUG - ====================
+[11/13/2026 14:49:55] - DEBUG - 1. Предобработка данных для их дальнейшней вставки в user-prompt...
+[11/13/2026 14:49:55] - DEBUG - Результат:
+ {
+ "query": "What facilities are available to students living in the MSG dormitory?",
+ "search_info": "[Search Query #0]\nWhat facilities are available to students living in the MSG dormitory?\n[Finded Information]\nStudents living in the MSG dormitory have 24-hour access and can apply to the administration. Relatives, including parents, can be placed in guest rooms for short periods (at least 2 days) or longer with a valid degree of kinship document.\n\n[Search Query #1]\nWhat specific amenities are available to students in the MSG dormitory?\n[Finded Information]\nThe specific amenities available to students in the MSG dormitory include 24-hour guest rooms for relatives, with a minimum stay of 2 days for relatives and any period for parents, provided that a document confirming the degree of kinship is presented for parents.\n\n[Search Query #2]\nWhat recreational facilities are available to students in the MSG dormitory?\n[Finded Information]\nBased on the provided information, there is no mention of recreational facilities available to students in the MSG dormitory. The only related information pertains to guest rooms for relatives and parents.\n\n[Search Query #3]\nWhat amenities are available in the MSG dormitory?\n[Finded Information]\nGuests in the MSG dormitory can stay in guest rooms for at least 2 days and have 24-hour access to the dormitory, provided they present a document confirming their relationship as parents.\n\n[Search Query #4]\nWhat amenities and facilities are available in the MSG dormitory for student use?\n[Finded Information]\nBased on the provided information, the main amenity available for student use in the MSG dormitory is 24-hour access. Other details such as guest room accommodations for relatives are not directly related to student amenities.\n\n[Search Query #5]\nWhat specific amenities and facilities are available for student use in the MSG dormitory?\n[Finded Information]\nBased on the available information, the specific amenities and facilities for student use in the MSG dormitory are not detailed. The only information given is that relatives can be accommodated in guest rooms for short periods (at least 2 days) and parents can stay for any duration, with a document confirming the degree of kinship required. Additionally, students have 24-hour access to the dormitory.\n\n[Search Query #6]\nAre there any recreational facilities or common areas specifically designated for students in the MSG dormitory?\n[Finded Information]\nNo, there are no recreational facilities or common areas specifically designated for students in the MSG dormitory.\n\n[Search Query #7]\nWhat amenities and services are available to students living in the MSG dormitory?\n[Finded Information]\nStudents living in the MSG dormitory have 24-hour access and can host relatives in guest rooms for at least a 2-day stay, with parents able to apply for longer periods; however, the degree of kinship must be confirmed by a document."
+}
+[11/13/2026 14:49:55] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:55] - DEBUG - --------------------
+[11/13/2026 14:49:55] - DEBUG - 2. Детекция используемого языка...
+[11/13/2026 14:49:55] - DEBUG - Результат: en
+[11/13/2026 14:49:55] - DEBUG - Статус: Операция выполнена успешно. , en .
+[11/13/2026 14:49:55] - DEBUG - --------------------
+[11/13/2026 14:49:55] - DEBUG - 3. Добавление информации в user-prompt...
+[11/13/2026 14:49:55] - DEBUG - Результат:
+ 
+[Question]
+What facilities are available to students living in the MSG dormitory?
+[Search info]
+[Search Query #0]
+What facilities are available to students living in the MSG dormitory?
+[Finded Information]
+Students living in the MSG dormitory have 24-hour access and can apply to the administration. Relatives, including parents, can be placed in guest rooms for short periods (at least 2 days) or longer with a valid degree of kinship document.
+
+[Search Query #1]
+What specific amenities are available to students in the MSG dormitory?
+[Finded Information]
+The specific amenities available to students in the MSG dormitory include 24-hour guest rooms for relatives, with a minimum stay of 2 days for relatives and any period for parents, provided that a document confirming the degree of kinship is presented for parents.
+
+[Search Query #2]
+What recreational facilities are available to students in the MSG dormitory?
+[Finded Information]
+Based on the provided information, there is no mention of recreational facilities available to students in the MSG dormitory. The only related information pertains to guest rooms for relatives and parents.
+
+[Search Query #3]
+What amenities are available in the MSG dormitory?
+[Finded Information]
+Guests in the MSG dormitory can stay in guest rooms for at least 2 days and have 24-hour access to the dormitory, provided they present a document confirming their relationship as parents.
+
+[Search Query #4]
+What amenities and facilities are available in the MSG dormitory for student use?
+[Finded Information]
+Based on the provided information, the main amenity available for student use in the MSG dormitory is 24-hour access. Other details such as guest room accommodations for relatives are not directly related to student amenities.
+
+[Search Query #5]
+What specific amenities and facilities are available for student use in the MSG dormitory?
+[Finded Information]
+Based on the available information, the specific amenities and facilities for student use in the MSG dormitory are not detailed. The only information given is that relatives can be accommodated in guest rooms for short periods (at least 2 days) and parents can stay for any duration, with a document confirming the degree of kinship required. Additionally, students have 24-hour access to the dormitory.
+
+[Search Query #6]
+Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?
+[Finded Information]
+No, there are no recreational facilities or common areas specifically designated for students in the MSG dormitory.
+
+[Search Query #7]
+What amenities and services are available to students living in the MSG dormitory?
+[Finded Information]
+Students living in the MSG dormitory have 24-hour access and can host relatives in guest rooms for at least a 2-day stay, with parents able to apply for longer periods; however, the degree of kinship must be confirmed by a document.
+ .
+[11/13/2026 14:49:55] - DEBUG - Статус: Операция выполнена успешно.
+[11/13/2026 14:49:55] - DEBUG - --------------------
+[11/13/2026 14:49:55] - DEBUG - 4. Генерация ответа с помощью LLM-агента.
+[11/13/2026 14:49:55] - DEBUG - Поиск ответа в кеше...
+[11/13/2026 14:49:55] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:55] - DEBUG - * cache table_name: medreasn_sanswgen_agent_task_cache
+[11/13/2026 14:49:55] - DEBUG - * cache hash_key: 600be01924bb5df2c4fa17d6c6cc77f95e4aff73 .
+[11/13/2026 14:49:55] - DEBUG - * hash seed: 5f208894d8e3fe44e156f18f4fd5cefc9b06cdd8
+-3f7ac13fe559cd3c80542a5ce07e05d8e0c512ce
+-4630251792c23bbfbeebb465731c29033dadd192
+-num_predict=2048;seed=42;temperature=0.0;top_k=1
+-model=qwen2.5:7b .
+[11/13/2026 14:49:55] - DEBUG - Выполняем инференс llm...
+[11/13/2026 14:49:57] - DEBUG - Результат:
+The search queries indicate that students living in the MSG dormitory have 24-hour access and can host relatives (at least 2 days) or parents (any period), provided they present a valid degree of kinship document. There is no mention of specific amenities, recreational facilities, common areas, or other services for student use.
+
+[Answer]
+Based on the available information, students living in the MSG dormitory have 24-hour access and can host relatives or parents under certain conditions; however, there are no specific details about other amenities or recreational facilities.
+[11/13/2026 14:49:57] - DEBUG - LLM-inference stat:
+LLMInferenceStat(prompt_tokens_amount=1298, generated_tokens_amount=114, inference_elapsed_time=2.14, timestamp=None)
+[11/13/2026 14:49:57] - DEBUG - --------------------
+[11/13/2026 14:49:57] - DEBUG - 5. Разбор ответа, сгенерированного LLM-агентом.
+[11/13/2026 14:49:57] - DEBUG - Результат:
+Based on the available information, students living in the MSG dormitory have 24-hour access and can host relatives or parents under certain conditions; however, there are no specific details about other amenities or recreational facilities.
+[11/13/2026 14:49:57] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:57] - DEBUG - --------------------
+[11/13/2026 14:49:57] - DEBUG - 6. Постобработка ответа от LLM-агента.
+[11/13/2026 14:49:57] - DEBUG - Результат:
+Based on the available information, students living in the MSG dormitory have 24-hour access and can host relatives or parents under certain conditions; however, there are no specific details about other amenities or recreational facilities.
+[11/13/2026 14:49:57] - DEBUG - Статус: Операция выполнена успешно. .
+[11/13/2026 14:49:57] - DEBUG - Кешируем генерацию LLM-модели.

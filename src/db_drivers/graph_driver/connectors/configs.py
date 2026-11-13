@@ -4,17 +4,14 @@ from ....utils.data_structs import NodeType, RelationType
 
 DEFAULT_INMEMORYGRAPH_CONFIG = GraphDBConnectionConfig(
     params={
-        'load_from_disk': False,
-        'load_dump_name': None,
-        'load_dump_dir': "./personalai_tmp/volumes/inmemory_graph",
-        'save_on_disk': True, 'save_dump_dir': "./personalai_tmp/volumes/inmemory_graph",
+        'save_on_disk': True,
         'rewrite': False
     }
 )
 
 DEFAULT_KUZU_CONFIG = GraphDBConnectionConfig(
     params={
-        'path': "./personalai_tmp/volumes/kuzu_graph", 'buffer_pool_size': 1024**3,
+        'buffer_pool_size': 1024**3,
         'table_type_map': {
             'relations': {'forward': {RelationType.simple.value: 'simple', RelationType.hyper.value: 'hyper_rel', RelationType.episodic.value: 'episodic_rel', RelationType.time.value: 'time_rel'}, },
             'nodes': {'forward': {NodeType.object.value: 'object', NodeType.hyper.value: 'hyper', NodeType.episodic.value: 'episodic', NodeType.time.value: 'time'}}
@@ -23,7 +20,7 @@ DEFAULT_KUZU_CONFIG = GraphDBConnectionConfig(
 )
 
 DEFAULT_NEO4J_CONFIG = GraphDBConnectionConfig(
-    host='localhost', port=7687, params={'user': "neo4j", 'pwd': 'password'})
+    host='localhost', port=7680, params={'user': "neo4j", 'pwd': 'password'})
 
 
 BG_NAMESPACE_CONFIG_TEMPLATE = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>

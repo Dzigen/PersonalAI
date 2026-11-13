@@ -1,10 +1,10 @@
 lang: auto
-log_path: log/qa/kg_reasoner/medium/main
+log_relative_path: log/qa/kg_reasoner/medium/main
 verbose: false
 log_level: 10
 searchplan_enhancer_config:
   lang: auto
-  log_path: log/qa/kg_reasoner/medium/plan_enhancer/main
+  log_relative_path: log/qa/kg_reasoner/medium/plan_enhancer/main
   verbose: false
   log_level: 10
   plan_enhancment: true
@@ -16,7 +16,7 @@ searchplan_enhancer_config:
   cache_table_name: medreasn_planenh_main_stage_cache
 entities_extractor_config:
   lang: auto
-  log_path: log/qa/kg_reasoner/medium/entities_extractor/main
+  log_relative_path: log/qa/kg_reasoner/medium/entities_extractor/main
   verbose: false
   log_level: 10
   agent_gen_stategy: null
@@ -25,7 +25,7 @@ entities_extractor_config:
   max_entities: 20
   cache_table_name: medreasn_entextr_main_stage_cache
 e2n_matcher_config:
-  log_path: log/qa/kg_reasoner/medium/entities2nodes_matching/main
+  log_relative_path: log/qa/kg_reasoner/medium/entities2nodes_matching/main
   verbose: false
   log_level: 10
   use_tree: false
@@ -45,7 +45,7 @@ e2n_matcher_config:
   cache_table_name: medreasn_e2nmatcher_main_stage_cache
 cluequeries_generator_config:
   lang: auto
-  log_path: log/qa/kg_reasoner/medium/cluequeries_generator/main
+  log_relative_path: log/qa/kg_reasoner/medium/cluequeries_generator/main
   verbose: false
   log_level: 10
   agent_gen_stategy: null
@@ -55,12 +55,12 @@ cluequeries_generator_config:
   return_only_unique_cqueires: true
   cache_table_name: medreasn_cquerygen_main_stage_cache
 knowledge_retriever_config:
-  log_path: log/qa/kg_reasoner/weak/knowledge_retriever/main
+  log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/main
   verbose: false
   log_level: 10
   retriever_method: mixture
   retriever_config:
-    log_path: log/qa/kg_reasoner/weak/knowledge_retriever/mixtured_retriever
+    log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/mixtured_retriever
     verbose: false
     log_level: 10
     accepted_node_types:
@@ -70,7 +70,7 @@ knowledge_retriever_config:
     - time
     retriever1_name: beamsearch
     retriever1_config:
-      log_path: log/qa/kg_reasoner/weak/knowledge_retriever/beamsearch_retriever
+      log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/beamsearch_retriever
       verbose: false
       log_level: 10
       accepted_node_types:
@@ -94,7 +94,7 @@ knowledge_retriever_config:
       cache_table_name: qa_beamsearch_t_retriever_cache
     retriever2_name: watercircles
     retriever2_config:
-      log_path: log/qa/kg_reasoner/weak/knowledge_retriever/watercircles_retriever
+      log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/watercircles_retriever
       verbose: false
       log_level: 10
       accepted_node_types:
@@ -111,7 +111,7 @@ knowledge_retriever_config:
     cache_table_name: qa_mixture_t_retriever_cache
   filter_method: naive
   filter_config:
-    log_path: log/qa/kg_reasoner/weak/knowledge_retriever/triples_filter
+    log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/triples_filter
     verbose: false
     log_level: 10
     reranker_driver_config:
@@ -137,7 +137,7 @@ knowledge_retriever_config:
   cache_table_name: qa_kretriever_stage_cache
 clueanswer_generator_config:
   lang: auto
-  log_path: log/qa/kg_reasoner/medium/clueansw_generation/main
+  log_relative_path: log/qa/kg_reasoner/medium/clueansw_generation/main
   verbose: false
   log_level: 10
   agent_gen_stategy: null
@@ -146,7 +146,7 @@ clueanswer_generator_config:
   cache_table_name: medreasn_cagen_main_stage_cache
 clueanswers_summarizer_config:
   lang: auto
-  log_path: log/qa/kg_reasoner/medium/clueanswers_summarisation/main
+  log_relative_path: log/qa/kg_reasoner/medium/clueanswers_summarisation/main
   verbose: false
   log_level: 10
   agent_gen_stategy: null
@@ -155,7 +155,7 @@ clueanswers_summarizer_config:
   cache_table_name: medreasn_cquerysumm_main_stage_cache
 answer_generator_config:
   lang: auto
-  log_path: log/qa/kg_reasoner/medium/answer_generation/main
+  log_relative_path: log/qa/kg_reasoner/medium/answer_generation/main
   verbose: false
   log_level: 10
   agent_gen_stategy: null

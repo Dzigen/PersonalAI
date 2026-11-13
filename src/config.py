@@ -1,4 +1,5 @@
 from .db_drivers.kv_driver import KeyValueDriverConfig, KVDBConnectionConfig
+from .utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 
 PAI_MAIN_LOG_PATH = "log/main"
 
@@ -10,10 +11,9 @@ DEFAULT_PERSONALAI_KVCACHE_CONFIG = KeyValueDriverConfig(
         host='localhost',
         params={
             'load_from_disk': True,
-            'load_dump_name': None,
-            'load_dump_dir': './personalai_tmp/cache/inmemory_kv',
-            'save_on_disk': True, 'save_dump_dir': './personalai_tmp/cache/inmemory_kv',
-            'max_storage': 5e+8
+            'save_on_disk': True,
+            'max_storage': 5e+8,
+            'rewrite': True
         },
         need_to_clear=False
     ),
@@ -26,10 +26,9 @@ DEFAULT_TEXTTOTRIPLETS_STORE_CONFIG = KeyValueDriverConfig(
         db_info={'db': 'DefaultPersonalAIKVDB', 'table': 'textidtotripletsidmaptable'},
         params={
             'load_from_disk': True,
-            'load_dump_name': None,
-            'load_dump_dir': './personalai_tmp/cache/inmemory_kv',
-            'save_on_disk': True, 'save_dump_dir': './personalai_tmp/cache/inmemory_kv',
-            'max_storage': 5e+8
+            'save_on_disk': True,
+            'max_storage': 5e+8,
+            'rewrite': True
         },
         need_to_clear=False
     ),
@@ -42,11 +41,12 @@ DEFAULT_TRIPLETTOTEXTS_STORE_CONFIG = KeyValueDriverConfig(
         db_info={'db': 'DefaultPersonalAIKVDB', 'table': 'tripletidtotextsidmaptable'},
         params={
             'load_from_disk': True,
-            'load_dump_name': None,
-            'load_dump_dir': './personalai_tmp/cache/inmemory_kv',
-            'save_on_disk': True, 'save_dump_dir': './personalai_tmp/cache/inmemory_kv',
-            'max_storage': 5e+8
+            'save_on_disk': True,
+            'max_storage': 5e+8,
+            'rewrite': True
         },
         need_to_clear=False
     ),
 )
+
+DEFAULT_AGENTSTAT_CONFIG = AgentStatAnalyzerConfig()

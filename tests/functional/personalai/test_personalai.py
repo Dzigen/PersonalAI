@@ -8,6 +8,9 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src import PersonalAI
 from .cases import POPULATED_QUERIES_TEST_CASES
+from .conftest import clear_tests_output
+
+clear_tests_output()
 
 @pytest.mark.parametrize("query, personal_ai", POPULATED_QUERIES_TEST_CASES, indirect=['personal_ai'])
 def test_personalai(query: str, personal_ai: PersonalAI):

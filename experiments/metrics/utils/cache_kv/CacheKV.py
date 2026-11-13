@@ -11,7 +11,7 @@ class CacheKV:
     kv_conn: AbstractKVDatabaseConnection
 
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):
-        self.kv_conn = KeyValueDriver.connect(kvdriver_config)
+        self.kv_conn = KeyValueDriver.select(kvdriver_config)
 
     def close_connection(self):
         # print("closing kv-cache conn")

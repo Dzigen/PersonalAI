@@ -30,12 +30,11 @@ class TreeDriverConfig(BaseConfigOperations):
 
 class TreeDriver:
     @staticmethod
-    def connect(config: Union[Dict, TreeDriverConfig] = TreeDriverConfig()) -> AbstractTreeDatabaseConnection:
+    def select(config: Union[Dict, TreeDriverConfig] = TreeDriverConfig()) -> AbstractTreeDatabaseConnection:
         if isinstance(config, dict):
             config: TreeDriverConfig = TreeDriverConfig.from_dict(config)
         else:
             config.formate_fields()
 
         tree_conn: AbstractTreeDatabaseConnection = AVAILABLE_TREEDB_CONNECTORS[config.db_vendor](config.db_config)
-        tree_conn.open_connection()
         return tree_conn

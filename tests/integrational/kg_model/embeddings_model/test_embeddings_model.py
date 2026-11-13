@@ -14,10 +14,12 @@ from src.utils import Triplet
 def test_create_triplets(init_triplets: List[Triplet], add_nodes_flag: bool, expected_init_count: Dict[str, int],
                          expected_creation_info: Dict[str, Set[str]], embeddings_model: EmbeddingsModel):
     embeddings_model.clear()
+    print("after clear: ", embeddings_model.count_items(detailed=True))
+    print("number of triples:", len(init_triplets))
     real_creation_info = embeddings_model.create_triplets(init_triplets, create_nodes=add_nodes_flag)
 
     #
-    print(real_creation_info)
+    print("init info: ",real_creation_info)
     assert real_creation_info.keys() == expected_creation_info.keys()
     for expexted_k, expected_val in expected_creation_info.items():
         if expexted_k == 'nodes':
@@ -29,7 +31,7 @@ def test_create_triplets(init_triplets: List[Triplet], add_nodes_flag: bool, exp
             raise KeyError
     #
     embeddings_model_count = embeddings_model.count_items()
-    print(embeddings_model_count)
+    print("after init: ", embeddings_model.count_items(detailed=True))
     assert embeddings_model_count.keys() == expected_init_count.keys()
     for expexted_k, expected_val in expected_init_count.items():
         assert embeddings_model_count[expexted_k] == expected_val

@@ -280,3 +280,21 @@ for db_vendor in AVAILABLE_VECTOR_DBS:
     for i in range(len(VECTORDB_CLEAR_TEST_CASES)):
         VECTORDB_POPULATED_CLEAR_TEST_CASES.append(
             VECTORDB_CLEAR_TEST_CASES[i] + [db_vendor])
+
+###############################################################################################
+
+# conn_sequence, expected_is_open
+VECTORDB_IS_OPEN_TEST_CASES = [
+    ([],),
+    (['close'],),
+    (['close', 'open'],),
+    (['open'],),
+    (['close', 'close'],),
+        
+]
+
+VECTORDB_POPULATED_IS_OPEN_TEST_CASES = []
+for db_vendor in AVAILABLE_VECTOR_DBS:
+    for i in range(len(VECTORDB_IS_OPEN_TEST_CASES)):
+        VECTORDB_POPULATED_IS_OPEN_TEST_CASES.append(
+            VECTORDB_IS_OPEN_TEST_CASES[i] + (db_vendor,))

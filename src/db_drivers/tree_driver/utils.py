@@ -42,14 +42,14 @@ class TreeNode:
 class TreeDBConnectionConfig(BaseDatabaseConfig):
     """Конфигурация подключения к БД, в которой хранится дерево вершин.
 
-    :param db_info: Информация о БД и таблице, в которой хранится дерево. По умолчанию {'db': 'DefaultPersonalAITreeDB', 'table': 'DefaultPersonalAITreeTable'}.
+    :param db_info: Информация о БД и таблице, в которой хранится дерево. По умолчанию {'db': 'DefaultPersonalAITreeDB', 'table': 'DefaultPersonalAITreeTable', 'expected_db_base_path': '.'}.
     :type db_info: Dict
     :param host: Хост, на котором развернута БД.
     :type host: str
     :param port: Порт подключения к БД.
     :type port: str
     """
-    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAITreeDB', 'table': 'DefaultPersonalAITreeTable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAITreeDB', 'table': 'DefaultPersonalAITreeTable', 'expected_db_base_path': '.'})
     host: str = None
     port: str = None
 

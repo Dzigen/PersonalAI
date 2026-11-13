@@ -21,6 +21,7 @@ class LocalAgentConnector(AbstractAgentConnector):
 
         self.CONNECTOR_KW = 'local'
 
+    def open_connection(self) -> None:
         self.pipeline = pipeline(
             "text-generation",
             model=self.config.credentials['model_name_or_path'],
@@ -28,11 +29,10 @@ class LocalAgentConnector(AbstractAgentConnector):
             device_map="auto"
         )
 
-    def check_connection(self):
-        # TODO
-        pass
+    def check_connection(self) -> bool:
+        return hasattr(self, 'client')
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         try:
             del self.pipeline
             gc.collect()

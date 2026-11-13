@@ -4,6 +4,7 @@ db_config:
   db_info:
     db: defaultpersonalaivectordb
     table: defaultpersonalaivectortable
+    expected_db_base_path: '.'
   params:
     hnsw:space: ip
     hnsw:M: 4096

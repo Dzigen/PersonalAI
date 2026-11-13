@@ -8,19 +8,21 @@ from copy import deepcopy
 from .config import GRAPH_DB_DEFAULT_DRIVER_CONFIG, GRAPH_MODEL_LOG_PATH
 from ...db_drivers.graph_driver import GraphDriver, GraphDriverConfig
 from ...utils.data_structs import Triplet, RelationType, NodeType, NODES_TYPES_MAP, \
-    RELATIONS_TYPES_MAP, BaseComponentConfig
+    RELATIONS_TYPES_MAP, BaseComponentConfig, EnvironmentConfig
 from ...utils import Logger
+from ...environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
+from ...environment.config import PAI_FILESTRUCTURE
 
 
 @dataclass
-class GraphModelConfig(BaseComponentConfig):
+class GraphModelConfig(BaseComponentConfig, EnvironmentConfig):
     """Конфигурация графовой структуры данных.
 
     :param driver_config: Конфигурация графовой БД. Значение по умолчанию GRAPH_DB_DEFAULT_DRIVER_CONFIG.
     :type driver_config: Union[Dict,GraphDriverConfig], optional
     """
     driver_config: Union[Dict, GraphDriverConfig] = field(default_factory=lambda: GRAPH_DB_DEFAULT_DRIVER_CONFIG)
-    log_path: str = GRAPH_MODEL_LOG_PATH
+    log_relative_path: str = GRAPH_MODEL_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -39,8 +41,12 @@ class GraphModelConfig(BaseComponentConfig):
         else:
             self.driver_config.formate_fields()
 
+    def synchronize_database(self):
+        graph_store_path = f"{self.pai_base_path}/{self.pai_name}/{PAI_FILESTRUCTURE['directories']['graph_part']}"
+        self.driver_config.db_config.db_info['db'] = self.kg_related_database_name
+        self.driver_config.db_config.db_info['expected_db_base_path'] = graph_store_path
 
-class GraphModel:
+class GraphModel(EnvironmentConnectionUtils):
     """Структура данных, предназначенная для хранения информации в формате графа.
 
     :param config: Конфигурация графовой структуры. Значение по умолчанию GraphModelConfig().
@@ -54,9 +60,9 @@ class GraphModel:
             config.formate_fields()
         self.config = config
 
-        self.db_conn = GraphDriver.connect(self.config.driver_config)
+        self.db_conn = GraphDriver.select(self.config.driver_config)
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 
@@ -199,6 +205,9 @@ class GraphModel:
     def clear(self) -> None:
         """Метод предназначен для удаления содержимого графовой структуры данных."""
         self.db_conn.clear()
+
+    def open_connections(self):
+        self.db_conn.open_connection()
 
     def close_connections(self):
         self.db_conn.close_connection()

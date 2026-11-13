@@ -7,10 +7,10 @@ from .instances import SIMPLE_TRIPLET2, SIMPLE_TRIPLET1_2, SIMPLE_TRIPLET1, \
     SIMPLE_TRIPLET3, THESIS_TRIPLET1, THESIS_TRIPLET2
 
 # TO CHANGE
-AVAILABLE_GRAPH_MODELS = ['neo4j', 'kuzu', 'inmemory_graph', 'blazegraph', 'falkordb']  # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph', 'falkordb'
-
-AVAILABLE_EMBEDDING_MODELS = ['chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant']  # 'chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant' | 'milvus'
-
+AVAILABLE_GRAPH_DBS = ['kuzu']  # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph', 'falkordb'
+AVAILABLE_DENSE_DBS = ['chroma']  # 'chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant' | 'milvus'
+AVAILABLE_SPARSEBM25_DBS = ['inmemory']  # 'opensearch', 'elasticsearch', 'inmemory', 'weaviate'
+AVAILABLE_NODESTREE_MODELS = ['None'] # 'qdrant_kuzu', 'qdrant_neo4j', 'chroma_kuzu', 'chroma_neo4j'
 
 ###############################################################################################
 
@@ -24,11 +24,14 @@ KG_CREATE_TEST_CASES = [
     for EM_T_CASE, GM_T_CASE in zip(EM_CREATE_TEST_CASES, GM_CREATE_TEST_CASES)]
 
 KG_POPULATED_CREATE_TEST_CASES = []
-for vector_vendor in AVAILABLE_EMBEDDING_MODELS:
-    for graph_vendor in AVAILABLE_GRAPH_MODELS:
-        for i in range(len(KG_CREATE_TEST_CASES)):
-            KG_POPULATED_CREATE_TEST_CASES.append(
-                KG_CREATE_TEST_CASES[i] + [f"{vector_vendor}/{graph_vendor}"])
+for graphdb_vendor in AVAILABLE_GRAPH_DBS:
+    for densedb_vendor in AVAILABLE_DENSE_DBS:
+        for sparsedb_vendor in AVAILABLE_SPARSEBM25_DBS:
+            for nodestreedb_vendor in AVAILABLE_NODESTREE_MODELS:
+                for i in range(len(KG_CREATE_TEST_CASES)):
+                    kw_config = f"{densedb_vendor}/{sparsedb_vendor}/{graphdb_vendor}/{nodestreedb_vendor}"
+                    KG_POPULATED_CREATE_TEST_CASES.append(
+                        KG_CREATE_TEST_CASES[i] + [kw_config])
 
 print("Количество порождённых тестов для KG_CREATE:",
       len(KG_POPULATED_CREATE_TEST_CASES))
@@ -73,11 +76,14 @@ KG_DELETE_TEST_CASES = [
 ]
 
 KG_POPULATED_DELETE_TEST_CASES = []
-for vector_vendor in AVAILABLE_EMBEDDING_MODELS:
-    for graph_vendor in AVAILABLE_GRAPH_MODELS:
-        for i in range(len(KG_DELETE_TEST_CASES)):
-            KG_POPULATED_DELETE_TEST_CASES.append(
-                KG_DELETE_TEST_CASES[i] + [f"{vector_vendor}/{graph_vendor}"])
+for graphdb_vendor in AVAILABLE_GRAPH_DBS:
+    for densedb_vendor in AVAILABLE_DENSE_DBS:
+        for sparsedb_vendor in AVAILABLE_SPARSEBM25_DBS:
+            for nodestreedb_vendor in AVAILABLE_NODESTREE_MODELS:
+                for i in range(len(KG_DELETE_TEST_CASES)):
+                    kw_config = f"{densedb_vendor}/{sparsedb_vendor}/{graphdb_vendor}/{nodestreedb_vendor}"
+                    KG_POPULATED_DELETE_TEST_CASES.append(
+                        KG_DELETE_TEST_CASES[i] + [kw_config])
 
 print("Количество порождённых тестов для KG_DELETE:",
       len(KG_POPULATED_DELETE_TEST_CASES))
@@ -89,11 +95,14 @@ KG_CLEAR_TEST_CASES = [
     for GM_T_CASE, EM_T_CASE in zip(GM_CREATE_TEST_CASES, EM_CREATE_TEST_CASES)]
 
 KG_POPULATED_CLEAR_TEST_CASES = []
-for vector_vendor in AVAILABLE_EMBEDDING_MODELS:
-    for graph_vendor in AVAILABLE_GRAPH_MODELS:
-        for i in range(len(KG_CLEAR_TEST_CASES)):
-            KG_POPULATED_CLEAR_TEST_CASES.append(
-                KG_CLEAR_TEST_CASES[i] + [f"{vector_vendor}/{graph_vendor}"])
+for graphdb_vendor in AVAILABLE_GRAPH_DBS:
+    for densedb_vendor in AVAILABLE_DENSE_DBS:
+        for sparsedb_vendor in AVAILABLE_SPARSEBM25_DBS:
+            for nodestreedb_vendor in AVAILABLE_NODESTREE_MODELS:
+                for i in range(len(KG_CLEAR_TEST_CASES)):
+                    kw_config = f"{densedb_vendor}/{sparsedb_vendor}/{graphdb_vendor}/{nodestreedb_vendor}"
+                    KG_POPULATED_CLEAR_TEST_CASES.append(
+                        KG_CLEAR_TEST_CASES[i] + [kw_config])
 
 print("Количество порождённых тестов для KG_CLEAR:",
       len(KG_POPULATED_CLEAR_TEST_CASES))

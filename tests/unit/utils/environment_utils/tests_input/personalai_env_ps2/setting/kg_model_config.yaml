@@ -1,0 +1,156 @@
+pai_base_path: unit/utils/environment_utils/tests_input
+pai_name: personalai_env_ps2
+kg_related_database_name: DefaultKnowledgeGraphRelatedDatabase
+log_base_path: .
+log_relative_path: log/kg_model/main
+verbose: false
+log_level: 10
+graph_struct_config:
+  log_base_path: .
+  log_relative_path: log/kg_model/graph
+  verbose: false
+  log_level: 10
+  driver_config:
+    db_vendor: kuzu
+    db_config:
+      db_info:
+        db: DefaultDB
+        table: KuzuGraph
+      params:
+        path: ./personalai_tmp/memory_parts/graph_model/kuzu
+        buffer_pool_size: 1073741824
+        table_type_map:
+          relations:
+            forward:
+              simple: simple
+              hyper: hyper_rel
+              episodic: episodic_rel
+              time: time_rel
+          nodes:
+            forward:
+              object: object
+              hyper: hyper
+              episodic: episodic
+              time: time
+      need_to_clear: false
+      create_index: false
+      timeout: 10
+      trials: 5
+      host: null
+      port: null
+graph_embeddings_config:
+  log_base_path: .
+  log_relative_path: log/kg_model/embeddings
+  verbose: false
+  log_level: 10
+  nodesdb_driver_configs_mapping:
+    dense_nodes:
+      db_vendor: chroma
+      vector_category: dense
+      db_config:
+        db_info:
+          db: default_db
+          table: dense_nodes
+        params:
+          hnsw:space: ip
+          hnsw:M: 4096
+        need_to_clear: false
+        create_index: false
+        timeout: 10
+        trials: 5
+        conn:
+          path: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/chroma
+    bm25_nodes:
+      db_vendor: inmemory
+      vector_category: sparse_bm25
+      db_config:
+        db_info:
+          db: default_db
+          table: sparsebm25_nodes
+        params:
+          store_dump_name: inmemory_bm25
+          load_from_disk: true
+          load_dump_name: null
+          load_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/inmemory_bm25
+          save_on_disk: true
+          save_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/inmemory_bm25
+        need_to_clear: false
+        create_index: false
+        timeout: 10
+        trials: 5
+        conn: {}
+  tripletsdb_driver_configs_mapping:
+    dense_triplets:
+      db_vendor: chroma
+      vector_category: dense
+      db_config:
+        db_info:
+          db: default_db
+          table: vectorized_triplets
+        params:
+          hnsw:space: ip
+          hnsw:M: 4096
+        need_to_clear: false
+        create_index: false
+        timeout: 10
+        trials: 5
+        conn:
+          path: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/chroma
+    bm25_triplets:
+      db_vendor: inmemory
+      vector_category: sparse_bm25
+      db_config:
+        db_info:
+          db: default_db
+          table: sparsebm25_triplets
+        params:
+          store_dump_name: inmemory_bm25
+          load_from_disk: true
+          load_dump_name: null
+          load_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/inmemory_bm25
+          save_on_disk: true
+          save_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/inmemory_bm25
+        need_to_clear: false
+        create_index: false
+        timeout: 10
+        trials: 5
+        conn: {}
+nodestree_config: null
+embedders_configs:
+  default_embedder:
+    model_name_or_path: ../models/intfloat/multilingual-e5-base
+    prompts:
+      query: 'query: '
+      passage: 'passage: '
+    query_prompt_name: query
+    passage_prompt_name: passage
+    device: cuda
+    normalize_embeddings: true
+embedders_map:
+  embeddings_model:
+    dense_nodes: default_embedder
+    dense_triplets: default_embedder
+  nodestree_model:
+    leaf_dense_nodes: default_embedder
+    summ_dense_nodes: default_embedder
+agents_configs:
+  default_llmagent:
+    name: ollama
+    agent_config:
+      gen_strategy:
+        num_predict: 2048
+        seed: 42
+        top_k: 1
+        temperature: 0.0
+      credentials:
+        model: qwen2.5:7b
+        host: localhost
+        port: 11437
+      ext_params:
+        timeout: 560
+        keep_alive: 240
+        trials: 5
+agents_map:
+  qa_pipeline: default_llmagent
+  mem_pipeline: default_llmagent
+  kg_nodestree_model: default_llmagent

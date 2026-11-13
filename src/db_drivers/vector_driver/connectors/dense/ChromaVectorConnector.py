@@ -25,6 +25,7 @@ settings = Settings(
 
 
 class ChromaVectorConnection(AbstractVectorDatabaseConnection):
+    DATABASE_KW = 'chroma'
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_CHROMA_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
@@ -45,7 +46,8 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
         # )
 
     def open_connection(self) -> ReturnInfo:
-        self.client = chromadb.PersistentClient(path=f"{self.config.conn['path']}/{self.config.db_info['db']}")
+        self.client = chromadb.PersistentClient(
+            path=f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}")
         self.collection = self.client.get_or_create_collection(
             name=self.config.db_info['table'], metadata=self.config.params)
 
@@ -53,8 +55,11 @@ class ChromaVectorConnection(AbstractVectorDatabaseConnection):
             self.clear()
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            self.client.list_collections()
+            return True
+        except (ConnectionError, AttributeError) as e:
+            return False
 
     def close_connection(self) -> ReturnInfo:
         self.collection = None

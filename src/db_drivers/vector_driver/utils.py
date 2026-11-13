@@ -12,12 +12,12 @@ from ..utils import AbstractDatabaseConnection, AbstractDatabaseConnection, Base
 class VectorDBConnectionConfig(BaseDatabaseConfig):
     """Конфигурация подключения к векторной БД (dense/sparse).
 
-    :param db_info: Информация о БД и коллекции/таблице. По умолчанию {'db': 'defaultpersonalaivectordb', 'table': 'defaultpersonalaivectortable'}.
+    :param db_info: Информация о БД и коллекции/таблице. По умолчанию {'db': 'defaultpersonalaivectordb', 'table': 'defaultpersonalaivectortable', 'expected_db_base_path': '.'}.
     :type db_info: Dict
     :param conn: Дополнительные параметры подключения к конкретному векторному движку.
     :type conn: Dict
     """
-    db_info: Dict = field(default_factory=lambda: {'db': 'defaultpersonalaivectordb', 'table': 'defaultpersonalaivectortable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'defaultpersonalaivectordb', 'table': 'defaultpersonalaivectortable', 'expected_db_base_path': '.'})
     conn: Dict = field(default_factory=lambda: dict())
 
     def to_str(self):

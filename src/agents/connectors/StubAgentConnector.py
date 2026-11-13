@@ -17,11 +17,17 @@ class StubAgentConnector(AbstractAgentConnector):
 
         self.looped_answers = deque(stub_answers)
 
-    def check_connection(self) -> bool:
-        return True
+    def open_connection(self) -> None:
+        self.client = 'stub'
 
-    def close_connection(self):
-        pass
+    def check_connection(self) -> bool:
+        return hasattr(self, 'client')
+
+    def close_connection(self) -> None:
+        try:
+            del self.client
+        except (AttributeError, TypeError) as e:
+            pass
 
     def generate(self, system_prompt: str, user_prompt: Union[None, str] = None, assistant_prompt: Union[None, str] = None,
                  gen_strategy: Union[None, Dict[str, str]] = None, content_fname: str = "content") -> Tuple[str, LLMInferenceStat]:

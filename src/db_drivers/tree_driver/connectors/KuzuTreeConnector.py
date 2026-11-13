@@ -12,6 +12,7 @@ from ...utils import restore_connection, retry
 
 
 class KuzuTreeConnector(AbstractTreeDatabaseConnection):
+    DATABASE_KW = 'kuzu'
 
     def __init__(self, config: Union[Dict, TreeDBConnectionConfig] = DEFAULT_KUZUTREE_CONFIG):
         if isinstance(config, dict):
@@ -22,12 +23,12 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
 
     @retry
     def open_connection(self) -> None:
-        os.makedirs(self.config.params['path'], exist_ok=True)
-        load_path = f"{self.config.params['path']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
+        os.makedirs(f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}", exist_ok=True)
+        load_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}/{self.config.db_info['table']}"
 
         if not os.path.exists(load_path):
-            print(f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
-            os.makedirs(f"{self.config.params['path']}/{self.config.db_info['db']}", exist_ok=True)
+            #print(f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
+            os.makedirs(f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}", exist_ok=True)
 
         self.db = kuzu.Database(load_path, buffer_pool_size=self.config.params['buffer_pool_size'])
         self.conn = kuzu.Connection(self.db)
@@ -66,14 +67,16 @@ class KuzuTreeConnector(AbstractTreeDatabaseConnection):
         # print("after: ", self.count_items())
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            return not self.conn.is_closed
+        except (AttributeError, TypeError) as e:
+            return False
 
     def close_connection(self) -> None:
         try:
             self.conn.close()
             self.db.close()
-        except TypeError:
+        except (AttributeError, TypeError) as e:
             pass
 
     def __del__(self):

@@ -9,6 +9,7 @@ from ...utils import retry, restore_connection
 
 
 class MySQLTableConnector(AbstractTableDatabaseConnection):
+    DATABASE_KW = 'mysql'
 
     def __init__(self, config: Union[Dict, TableDBConnectionConfig] = DEFAULT_MYSQLTABLE_CONFIG) -> None:
         if isinstance(config, dict):
@@ -18,7 +19,10 @@ class MySQLTableConnector(AbstractTableDatabaseConnection):
         self.config = config
 
     def is_open(self) -> bool:
-        return self.conn.is_connected()
+        try:
+            return self.conn.is_connected()
+        except AttributeError as e:
+            return False
 
     @retry
     def open_connection(self) -> None:
@@ -38,7 +42,7 @@ class MySQLTableConnector(AbstractTableDatabaseConnection):
         try:
             self.cursor.close()
             self.conn.close()
-        except TypeError:
+        except (AttributeError, TypeError) as e:
             pass
 
     def create_table(self, query: str) -> None:

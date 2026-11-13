@@ -17,7 +17,7 @@ from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ......utils.cache_kv.CacheOperations import CacheOperations
 from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
-
+from ......environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class QALLMGeneratorConfig(BaseComponentConfig, LanguageConfig):
@@ -38,7 +38,7 @@ class QALLMGeneratorConfig(BaseComponentConfig, LanguageConfig):
     relation_type: List[Union[str, RelationType]] = field(default_factory=lambda: [RelationType.hyper, RelationType.simple])
 
     cache_table_name: Union[str, None] = 'qa_agenerator_stage_cache'
-    log_path: str = AG_MAIN_LOG_PATH
+    log_relative_path: str = AG_MAIN_LOG_PATH
 
     def to_str(self):
         str_relations = ";".join(
@@ -61,7 +61,7 @@ class QALLMGeneratorConfig(BaseComponentConfig, LanguageConfig):
             self.agent_tasks_config = QALLMGeneratorAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
-class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
+class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс четвёртой стадии QA-конвейера для генерации ответа на user-вопрос,
     обусловленного извлечённой информацией из памяти (графа знаний) ассистента.
 
@@ -86,7 +86,7 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level, self.config.log_base_path)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -101,7 +101,7 @@ class QALLMGenerator(CacheUtils, CacheOperations, AgentStatOperations):
                 self.agent, self.config.agent_tasks_config.ag, ag_task_cache_config, inferencestat_config)
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 

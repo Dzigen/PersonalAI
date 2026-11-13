@@ -1,6 +1,7 @@
 import sys
 from copy import deepcopy
 from functools import reduce
+from typing import List
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
@@ -12,10 +13,10 @@ from src.pipelines.qa.query_preprocessing.denoising import QueryDenoiserConfig
 from src.pipelines.qa.query_preprocessing.enhancing import QueryEnhancerConfig
 
 QUERIES = [ # with mistakes
-    "Кгда родился Алксандр Сергеевич Пушкин и как звли его родителей?",
-    "Чем отличаются параметры от аргументов функций?",
-    "When was Alexander Sergeevich Pushkin born and wht were his parnts names?",
-    "What is the difference btween parameters and fnction arguments?"
+    ("Кгда родился Алксандр Сергеевич Пушкин и как звли его родителей?", 'ru'),
+    ("Чем отличаются параметры от аргументов функций?", 'ru'),
+    ("When was Alexander Sergeevich Pushkin born and wht were his parnts names?", 'en'),
+    ("What is the difference btween parameters and fnction arguments?", 'en')
 ]
 
 denoise_config = QueryDenoiserConfig()
@@ -24,26 +25,30 @@ decomposition_config = QueryDecomposerConfig()
 
 
 # query, query preproc config,
-QUERY_PREPROC_TEST_CASES = [
+QUERY_PREPROC_TEST_CASES: List[QueryPreprocessorConfig] = [
     # all none
-    QueryPreprocessorConfig(lang='en', denoising_config=None, enhancing_config=None, decomposition_config=None),
+    QueryPreprocessorConfig(denoising_config=None, enhancing_config=None, decomposition_config=None),
     # only decomposer
-    QueryPreprocessorConfig(lang='en', denoising_config=None, enhancing_config=None, decomposition_config=decomposition_config),
+    QueryPreprocessorConfig(denoising_config=None, enhancing_config=None, decomposition_config=decomposition_config),
     # only enhancer
-    QueryPreprocessorConfig(lang='en', denoising_config=None, enhancing_config=enhance_config, decomposition_config=None),
+    QueryPreprocessorConfig(denoising_config=None, enhancing_config=enhance_config, decomposition_config=None),
     # only denoiser
-    QueryPreprocessorConfig(lang='en', denoising_config=denoise_config, enhancing_config=None, decomposition_config=None),
+    QueryPreprocessorConfig(denoising_config=denoise_config, enhancing_config=None, decomposition_config=None),
     # only decomposer + enhancer
-    QueryPreprocessorConfig(lang='en', denoising_config=None, enhancing_config=enhance_config, decomposition_config=decomposition_config),
+    QueryPreprocessorConfig(denoising_config=None, enhancing_config=enhance_config, decomposition_config=decomposition_config),
     # only decomposer + denoiser
-    QueryPreprocessorConfig(lang='en', denoising_config=denoise_config, enhancing_config=None, decomposition_config=decomposition_config),
+    QueryPreprocessorConfig(denoising_config=denoise_config, enhancing_config=None, decomposition_config=decomposition_config),
     # only denoiser + enhancer
-    QueryPreprocessorConfig(lang='en', denoising_config=denoise_config, enhancing_config=enhance_config, decomposition_config=None),
+    QueryPreprocessorConfig(denoising_config=denoise_config, enhancing_config=enhance_config, decomposition_config=None),
     # all not None
-    QueryPreprocessorConfig(lang='en', denoising_config=denoise_config, enhancing_config=enhance_config, decomposition_config=decomposition_config),
+    QueryPreprocessorConfig(denoising_config=denoise_config, enhancing_config=enhance_config, decomposition_config=decomposition_config),
 ]
+for config in QUERY_PREPROC_TEST_CASES:
+    config.log_base_path = TEST_VOLUME_DIR
+    config.synchronize_logging()
+
 
 QP_POPULATED_TEST_CASES = []
 for query in QUERIES:
     for qpp_config in QUERY_PREPROC_TEST_CASES:
-        QP_POPULATED_TEST_CASES.append([query, qpp_config])
+        QP_POPULATED_TEST_CASES.append([query[0], query[1], qpp_config])

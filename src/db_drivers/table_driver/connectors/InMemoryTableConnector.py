@@ -11,6 +11,7 @@ from ....utils.data_structs import create_id
 
 
 class InMemoryTableConnector(AbstractTableDatabaseConnection):
+    DATABASE_KW = 'inmemory_table'
 
     def __init__(self, config: Union[Dict, TableDBConnectionConfig] = DEFAULT_INMEMORYTABLE_CONFIG) -> None:
         if isinstance(config, dict):
@@ -22,28 +23,24 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
         self.table_store = None
 
     def is_open(self) -> bool:
-        return hasattr(self, 'table_store')
+        try:
+            return type(self.table_store) is dict
+        except AttributeError:
+            return False
 
     def open_connection(self) -> None:
-        if self.config.params['load_from_disk']:
-            if self.config.params['load_dump_name'] is None:
-                load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
-            else:
-                load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['load_dump_name']}"
+        load_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}/{self.config.db_info['table']}.pkl"
 
-            if os.path.exists(load_path):
-                try:
-                    with open(load_path, 'rb') as fd:
-                        self.table_store = pickle.load(fd)
-                except EOFError:
-                    # print(f"The pickle file '{load_path}' is empty or corrupted.")
-                    self.create_table()
-            else:
-                # print(f"warning: tablestore-dump '{load_path}' doesnt exists. creating empty table-store")
-                os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
+        if os.path.exists(load_path):
+            try:
+                with open(load_path, 'rb') as fd:
+                    self.table_store = pickle.load(fd)
+            except EOFError:
+                # print(f"The pickle file '{load_path}' is empty or corrupted.")
                 self.create_table()
         else:
-            os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
+            # print(f"warning: tablestore-dump '{load_path}' doesnt exists. creating empty table-store")
+            os.makedirs(f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}", exist_ok=True)
             self.create_table()
 
         if self.config.need_to_clear:
@@ -52,13 +49,15 @@ class InMemoryTableConnector(AbstractTableDatabaseConnection):
     def close_connection(self) -> None:
         # print("closing inmemory table connection...")
         if self.config.params['save_on_disk']:
-            os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
-            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
-            if os.path.exists(save_path) and not self.config.params['rewrite']:
+            base_save_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}"
+            os.makedirs(base_save_path, exist_ok=True)
+            if os.path.exists(f"{base_save_path}/{self.config.db_info['table']}.pkl") and not self.config.params['rewrite']:
                 # print("warning: file on that path is already exists")
-                postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
-                save_path += postfix
-            save_path += '.pkl'
+                postfix = hashlib.md5(str(time()).encode()).hexdigest()
+                save_path = f"{base_save_path}/{self.config.db_info['table']}({postfix}).pkl"
+            else:
+                save_path = f"{base_save_path}/{self.config.db_info['table']}.pkl"
+            
             with open(save_path, 'wb') as fd:
                 pickle.dump(self.table_store, fd)
 

@@ -7,7 +7,7 @@ from ....utils import ReturnInfo
 from ....utils.cache_kv.CacheOperations import CacheOperations
 from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ....utils.data_structs import BaseConfigOperations
-
+from ....environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class QueryReasoningInfo:
@@ -27,7 +27,7 @@ class QueryReasoningInfo:
         return f"{str_sq};{str_sa}"
 
 
-class AbstractKGReasoner(CacheOperations, AgentStatOperations):
+class AbstractKGReasoner(CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Абстрактный класс алгоритма обхода/ризонинга по графу знаний.
 
     Определяет интерфейс для конкретных реализаций reasoner'ов (weak/medium).

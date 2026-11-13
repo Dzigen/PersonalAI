@@ -1,13 +1,13 @@
 lang: auto
-log_path: log/main
+log_relative_path: log/main
 verbose: false
 log_level: 10
 kg_model_config:
-  log_path: log/kg_model/main
+  log_relative_path: log/kg_model/main
   verbose: false
   log_level: 10
   graph_struct_config:
-    log_path: log/kg_model/graph
+    log_relative_path: log/kg_model/graph
     verbose: false
     log_level: 10
     driver_config:
@@ -37,7 +37,7 @@ kg_model_config:
         host: null
         port: null
   graph_embeddings_config:
-    log_path: log/kg_model/embeddings
+    log_relative_path: log/kg_model/embeddings
     verbose: false
     log_level: 10
     nodesdb_driver_configs_mapping:
@@ -145,19 +145,19 @@ kg_model_config:
     kg_nodestree_model: qwen2.5:7b
 qa_pipeline_config:
   lang: auto
-  log_path: log/qa/main
+  log_relative_path: log/qa/main
   verbose: false
   log_level: 10
   preprocessor_config:
     lang: auto
-    log_path: log/qa/query_preprocessing/main
+    log_relative_path: log/qa/query_preprocessing/main
     verbose: false
     log_level: 10
     denoising_config: null
     enhancing_config: null
     decomposition_config:
       lang: auto
-      log_path: log/qa/query_preprocessing/decomposition/main
+      log_relative_path: log/qa/query_preprocessing/decomposition/main
       verbose: false
       log_level: 10
       agent_gen_stategy: null
@@ -168,18 +168,18 @@ qa_pipeline_config:
     cache_table_name: query_preprocessing_main_stage_cache
   reasoner_config:
     lang: auto
-    log_path: log/qa/kg_reasoner/main
+    log_relative_path: log/qa/kg_reasoner/main
     verbose: false
     log_level: 10
     reasoner_name: weak
     reasoner_config:
       lang: auto
-      log_path: log/qa/kg_reasoner/weak/main
+      log_relative_path: log/qa/kg_reasoner/weak/main
       verbose: false
       log_level: 10
       query_parser_config:
         lang: auto
-        log_path: log/qa/kg_reasoner/weak/query_parser/main
+        log_relative_path: log/qa/kg_reasoner/weak/query_parser/main
         verbose: false
         log_level: 10
         agent_gen_stategy: null
@@ -188,7 +188,7 @@ qa_pipeline_config:
         max_entities: 20
         cache_table_name: qa_queryparser_stage_cache
       knowledge_comparator_config:
-        log_path: log/qa/kg_reasoner/weak/knowledge_comparator
+        log_relative_path: log/qa/kg_reasoner/weak/knowledge_comparator
         verbose: false
         log_level: 10
         reranker_driver_config:
@@ -207,12 +207,12 @@ qa_pipeline_config:
         k_compare: 5
         cache_table_name: qa_kcomparator_stage_cache
       knowledge_retriever_config:
-        log_path: log/qa/kg_reasoner/weak/knowledge_retriever/main
+        log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/main
         verbose: false
         log_level: 10
         retriever_method: mixture
         retriever_config:
-          log_path: log/qa/kg_reasoner/weak/knowledge_retriever/mixtured_retriever
+          log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/mixtured_retriever
           verbose: false
           log_level: 10
           accepted_node_types:
@@ -222,7 +222,7 @@ qa_pipeline_config:
           - time
           retriever1_name: beamsearch
           retriever1_config:
-            log_path: log/qa/kg_reasoner/weak/knowledge_retriever/beamsearch_retriever
+            log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/beamsearch_retriever
             verbose: false
             log_level: 10
             accepted_node_types:
@@ -246,7 +246,7 @@ qa_pipeline_config:
             cache_table_name: qa_beamsearch_t_retriever_cache
           retriever2_name: watercircles
           retriever2_config:
-            log_path: log/qa/kg_reasoner/weak/knowledge_retriever/watercircles_retriever
+            log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/watercircles_retriever
             verbose: false
             log_level: 10
             accepted_node_types:
@@ -263,7 +263,7 @@ qa_pipeline_config:
           cache_table_name: qa_mixture_t_retriever_cache
         filter_method: naive
         filter_config:
-          log_path: log/qa/kg_reasoner/weak/knowledge_retriever/triples_filter
+          log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/triples_filter
           verbose: false
           log_level: 10
           reranker_driver_config:
@@ -289,7 +289,7 @@ qa_pipeline_config:
         cache_table_name: qa_kretriever_stage_cache
       answer_generator_config:
         lang: auto
-        log_path: log/qa/kg_reasoner/weak/answer_generation/main
+        log_relative_path: log/qa/kg_reasoner/weak/answer_generation/main
         verbose: false
         log_level: 10
         agent_gen_stategy: null
@@ -302,7 +302,7 @@ qa_pipeline_config:
       cache_table_name: qa_weakreasoner_cache
   aggregator_config:
     lang: auto
-    log_path: log/qa/answers_aggregation/main
+    log_relative_path: log/qa/answers_aggregation/main
     verbose: false
     log_level: 10
     agent_gen_stategy: null
@@ -312,12 +312,12 @@ qa_pipeline_config:
   cache_table_name: qa_pipeline_cache
 mem_pipeline_config:
   lang: auto
-  log_path: log/memorize/main
+  log_relative_path: log/memorize/main
   verbose: false
   log_level: 10
   extractor_config:
     lang: auto
-    log_path: log/memorize/extractor/main
+    log_relative_path: log/memorize/extractor/main
     verbose: false
     log_level: 10
     agent_gen_stategy: null
@@ -329,7 +329,7 @@ mem_pipeline_config:
     need_episodic: true
   updator_config:
     lang: auto
-    log_path: log/memorize/updator/main
+    log_relative_path: log/memorize/updator/main
     verbose: false
     log_level: 10
     agent_gen_stategy: null
@@ -338,7 +338,7 @@ mem_pipeline_config:
       replace_thesis: v1
     delete_obsolete_info: false
 textidstore_config:
-  log_path: log/textid_store
+  log_relative_path: log/textid_store
   verbose: false
   log_level: 10
   texttotriplets_store_config:

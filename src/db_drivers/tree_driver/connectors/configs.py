@@ -6,7 +6,7 @@ DEFAULT_NEO4JTREE_CONFIG = TreeDBConnectionConfig(
     need_to_clear=False)
 
 DEFAULT_KUZUTREE_CONFIG = TreeDBConnectionConfig(
-    params={'path': "./personalai_tmp/volumes/kuzu_tree", 'buffer_pool_size': 1024**3,
+    params={'buffer_pool_size': 1024**3,
             'table_type_map': {
                 'nodes': {
                     'forward': {

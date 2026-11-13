@@ -10,6 +10,9 @@ from src import PersonalAI
 from src.utils.data_structs import Triplet
 
 from .cases import POPULATED_CLEARMEMORY_TEST_CASES
+from .conftest import clear_tests_output
+
+clear_tests_output()
 
 @pytest.mark.parametrize("triplet_groups_to_create, expected_pre_memorysize, textids_to_delete, expected_post_memorysize, personalai_inst",
                          POPULATED_CLEARMEMORY_TEST_CASES, indirect=['personalai_inst'])

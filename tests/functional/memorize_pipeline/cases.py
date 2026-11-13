@@ -9,12 +9,9 @@ from src.pipelines.memorize.extractor.utils import MemExtractorAgentTasksConfig
 from src.pipelines.memorize import MemPipelineConfig, LLMExtractorConfig, LLMUpdatorConfig
 
 # TO CHANGE
-AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph'
-
-# TO CHANGE
-AVAILABLE_EMBEDDING_MODELS = ['qdrant', 'opensearch']  # 'chroma', 'inmemory', 'opensearch', 'elasticsearch', 'weaviate', 'qdrant'
-
-# TO CHANGE
+AVAILABLE_GRAPH_MODELS = ['kuzu']  # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph'
+AVAILABLE_EMBEDDINGMODEL_DENSE_DBS = ['chroma']  # 'chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant' | 'milvus'
+AVAILABLE_EMBEDDINGMODEL_SPARSEBM25_DBS = ['inmemory']  # 'opensearch', 'elasticsearch', 'inmemory', 'weaviate'
 AVAILABLE_NODESTREE_MODELS = ['None'] # 'qdrant_kuzu', 'qdrant_neo4j', 'chroma_kuzu', 'chroma_neo4j', 'None
 
 RAW_TEXTS_RU = [
@@ -75,14 +72,14 @@ KV_CACHE_CONFIG = KeyValueDriverConfig(
         need_to_clear=False,
         params={
             'mongo_config': KVDBConnectionConfig(
-                host='localhost', port=27010,
+                host='localhost', port=27017,
                 db_info={'db': 'memorize_db', 'table': None},
                 params={'username': 'user',
                         'password': 'pass', 'max_storage': -1},
                 need_to_clear=False
             ),
             'redis_config': KVDBConnectionConfig(
-                host='localhost', port=6370,
+                host='localhost', port=6380,
                 db_info={'db': 0, 'table': None},
                 params={'ss_name': 'sorted_node_pairs',
                         'hs_name': 'node_pairs', 'max_storage': 50000000},
@@ -113,7 +110,8 @@ EN_MEM_CONFIG2 = MemPipelineConfig(
     ),
     updator_config=LLMUpdatorConfig(
         lang='en', delete_obsolete_info=False
-    )
+    ),
+    log_base_path=TEST_VOLUME_DIR
 )
 
 # RU_MEM_CONFIG3 = MemPipelineConfig(
@@ -136,7 +134,8 @@ RU_MEM_CONFIG4 = MemPipelineConfig(
     ),
     updator_config=LLMUpdatorConfig(
         lang='ru', delete_obsolete_info=False
-    )
+    ),
+    log_base_path=TEST_VOLUME_DIR
 )
 
 
@@ -147,9 +146,10 @@ MEM_TEST_CASES = [
 ]
 
 MEM_POPULATED_TEST_CASES = []
-for vector_vendor in AVAILABLE_EMBEDDING_MODELS:
-    for graph_vendor in AVAILABLE_GRAPH_MODELS:
-        for tree_vendor in AVAILABLE_NODESTREE_MODELS:
-            for i in range(len(MEM_TEST_CASES)):
-                MEM_POPULATED_TEST_CASES.append(
-                    MEM_TEST_CASES[i] + [f"{vector_vendor}/{graph_vendor}/{tree_vendor}"])
+for densevector_vendor in AVAILABLE_EMBEDDINGMODEL_DENSE_DBS:
+    for sparsevector_vendor in AVAILABLE_EMBEDDINGMODEL_SPARSEBM25_DBS:
+        for graph_vendor in AVAILABLE_GRAPH_MODELS:
+            for tree_vendor in AVAILABLE_NODESTREE_MODELS:
+                for i in range(len(MEM_TEST_CASES)):
+                    kw_config = f"{densevector_vendor}/{sparsevector_vendor}/{graph_vendor}/{tree_vendor}"
+                    MEM_POPULATED_TEST_CASES.append(MEM_TEST_CASES[i] + [kw_config])

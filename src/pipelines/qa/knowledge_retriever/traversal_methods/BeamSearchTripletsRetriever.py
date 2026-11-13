@@ -78,7 +78,7 @@ class GraphBeamSearchConfig(BaseGraphSearchConfig):
     final_sorting_mode: str = 'mixed'  # 'ended_first' | 'mixed' | 'continuous_first'
 
     cache_table_name: str = 'qa_beamsearch_t_retriever_cache'
-    log_path: str = BEAMSEARCH_RETRIEVER_LOG_PATH
+    log_relative_path: str = BEAMSEARCH_RETRIEVER_LOG_PATH
 
     def to_str(self):
         str_reranker = f"{self.vdbname_for_scores};{self.reranker_driver_config.to_str()}"
@@ -126,7 +126,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             search_config.formate_fields()
         self.config: GraphBeamSearchConfig = search_config
 
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
 
         self.scorer = RerankerDriver.specify(
             self.config.reranker_driver_config,
@@ -138,13 +138,9 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, self.config.cache_table_name)
 
-        self.log = Logger(search_config.log_path)
+        self.log = Logger(search_config.log_relative_path, search_config.log_base_path)
         self.verbose = search_config.verbose
         self.log_level = search_config.log_level
-
-    def close_connections(self):
-        if self.cachekv is not None:
-            self.cachekv.close_connection()
 
     def clear_traversal_cache(self) -> None:
         return None
@@ -218,7 +214,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         rids_to_tids_map: Dict[str, List[str]] = defaultdict(list)
 
         incident_triples: List[TripletInfo] = \
-            self.kg_model.graph_struct.db_conn.get_incident_triples(
+            self.kgmodel_ref.graph_struct.db_conn.get_incident_triples(
                 base_node, accepted_n_types=self.config.accepted_node_types)
         self.log.debug(f"Количество инцидентных триплетов к вершине {base_node}: {len(incident_triples)}",
                        verbose=self.verbose, log_level=self.log_level)
@@ -441,7 +437,7 @@ class BeamSearchTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             for triplet_info in p_info.path[1:]:
                 uniques_tids.add(triplet_info[1])
 
-        extracted_triplets = self.kg_model.graph_struct.db_conn.read(list(uniques_tids))
+        extracted_triplets = self.kgmodel_ref.graph_struct.db_conn.read(list(uniques_tids))
         # PAY ATTENTION: tuple is needed to satisfy decorator interface
         return extracted_triplets,
 

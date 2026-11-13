@@ -28,21 +28,19 @@ class GigaChatConnector(AbstractAgentConnector):
         self.trials = config.ext_params.get('trials', 5)
         self.CONNECTOR_KW = 'gigachat'
 
-        self.open_connection()
-
-    def open_connection(self):
-        self.giga_model = GigaChat(
+    def open_connection(self) -> None:
+        self.client = GigaChat(
             credentials=self.config.credentials['token'], scope=self.config.credentials['scope'],
             verify_ssl_certs=self.config.ext_params['verify_ssl_certs'], model=self.config.credentials['model'],
             timeout=self.config.ext_params['timeout'])
 
-    def check_connection(self):
-        # TODO
-        pass
+    def check_connection(self) -> bool:
+        return hasattr(self, 'client')
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         try:
-            self.giga_model.close()
+            self.client.close()
+            del self.client
         except (AttributeError, TypeError):
             pass
 
@@ -62,7 +60,7 @@ class GigaChatConnector(AbstractAgentConnector):
         flag, counter = True, 0
         while flag:
             try:
-                response = self.giga_model.chat(chat)
+                response = self.client.chat(chat)
                 # print(response)
                 flag = False
             except (ConnectError, RemoteProtocolError, ResponseError, ConnectTimeout, ReadTimeout, ReadError, RuntimeError) as e:

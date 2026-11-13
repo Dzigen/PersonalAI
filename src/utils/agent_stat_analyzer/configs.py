@@ -19,9 +19,6 @@ DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG = TableDriverConfig(
             'table_info': LLMInferenceStat,
             'create_table_query': CREATE_TABLE_SQLQUERY
         },
-        params={
-            'database_path': './personalai_tmp/stat/agent/sqlite3'
-        },
         need_to_clear=False
     )
 )

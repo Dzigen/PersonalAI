@@ -28,21 +28,18 @@ class OLlamaConnector(AbstractAgentConnector):
         self.CONNECTOR_KW = 'ollama'
         self.trials = config.ext_params.get('trials', 5)
 
-        self.open_connection()
-
-    def open_connection(self):
+    def open_connection(self) -> None:
         self.client = Client(
             host=f"http://{self.config.credentials['host']}:{self.config.credentials['port']}",
             timeout=self.config.ext_params['timeout'])
 
     def check_connection(self) -> bool:
-        pass
+        return hasattr(self, 'client')
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         try:
             self.client._client.close()
             del self.client
-            gc.collect()
         except (ResourceWarning, AttributeError, TypeError):
             pass
 

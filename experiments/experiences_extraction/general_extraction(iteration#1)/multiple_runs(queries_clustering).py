@@ -63,7 +63,8 @@ agentd_config = AgentDriverConfig(
         credentials={ 'model': 'gemma3:12b' ,'host': 'localhost','port': 11437 }
     )
 )
-agent = AgentDriver.connect(agentd_config)
+agent = AgentDriver.select(agentd_config)
+agent.open_connection()
 
 # !!! PAY ATTENTION !!!
 embedder_config = EmbedderModelConfig(

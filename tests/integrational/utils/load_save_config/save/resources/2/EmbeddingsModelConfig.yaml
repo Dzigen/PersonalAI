@@ -1,4 +1,4 @@
-log_path: log/kg_model/embeddings
+log_relative_path: log/kg_model/embeddings
 verbose: false
 log_level: 10
 nodesdb_driver_configs_mapping:

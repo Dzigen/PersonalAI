@@ -20,7 +20,8 @@ from .config import NODESTREE_MODEL_LOG_PATH, \
     TREE_DB_DEFAULT_DRIVER_CONFIG, LNT_RERANKDRIVER_DEFAULT_CONFIG, SNT_RERANKDRIVER_DEFAULT_CONFIG
 from ...db_drivers.tree_driver.utils import TreeNodeType, TreeNode, TreeIdType
 from ...utils import Logger, AgentTaskSolver, ReturnStatus
-from ...utils.data_structs import Triplet, NodeType, create_id, Node, NodeInfo, BaseComponentConfig, LanguageConfig
+from ...utils.data_structs import Triplet, NodeType, create_id, Node, NodeInfo, \
+    BaseComponentConfig, LanguageConfig, EnvironmentConfig
 from ...utils.errors import ReturnStatus
 from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ...agents.utils import AbstractAgentConnector
@@ -31,10 +32,11 @@ from ...db_drivers.vector_driver.embedders import EmbedderModel
 from ...rerankers import RerankerDriver, RerankerDriverConfig
 from ...utils.cache_kv.CacheOperations import CacheOperations
 from ...utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
+from ...environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 
 @dataclass
-class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig):
+class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig, EnvironmentConfig):
     """Конфигурация древовидной структуры данных для хранения object-вершин.
 
     :param leafnodes_vdb_driver_configs_mapping: Именованные конфигурации баз данных для хранения различных векторных представлений leaf-объектов (object-вершин) дерева. Значение по умолчанию LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING.
@@ -86,7 +88,7 @@ class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig):
     depth_rate: float = 0.4
     nodes_aggregation_mechanism: str = 'sequencial'  # "sequencial" | "parallel"
 
-    log_path: str = NODESTREE_MODEL_LOG_PATH
+    log_relative_path: str = NODESTREE_MODEL_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -133,8 +135,11 @@ class NodesTreeModelConfig(BaseComponentConfig, LanguageConfig):
         else:
             self.agent_tasks_config.formate_fields()
 
+    def synchronize_database(self):
+        # TODO
+        raise NotImplementedError
 
-class NodesTreeModel(CacheOperations, AgentStatOperations):
+class NodesTreeModel(CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Класс предназначен для представления object-вершин из графовой структуры данных в виде дерева с целью
     повышения эффективности сопоставления имеющихся знаний с сущностями/запросами из поступающих user-вопросов.
 
@@ -162,9 +167,10 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
+        self.config.agent_tasks_config.versions_to_configs(
+            self.config.verbose, self.config.log_level, self.config.log_base_path)
 
-        self.treedb_conn = TreeDriver.connect(self.config.treedb_config)
+        self.treedb_conn = TreeDriver.select(self.config.treedb_config)
 
         #
         self.leafnodes_vcomposer = VectorComposer(
@@ -198,7 +204,7 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         self.stages = None
         self.cachekv = None
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 
@@ -772,6 +778,13 @@ class NodesTreeModel(CacheOperations, AgentStatOperations):
         self.leafnodes_vcomposer.clear()
         self.summnodes_vcomposer.clear()
         self.treedb_conn.clear()
+
+    def open_connections(self):
+        self.treedb_conn.open_connection()
+        self.leafnodes_vcomposer.open_connection()
+        self.summnodes_vcomposer.open_connection()
+        self.tasks_solvers.open_connections()
+
 
     def close_connections(self):
         self.treedb_conn.close_connection()

@@ -39,9 +39,9 @@ def modify_log_setting(func):
 
 
 class Logger:
-    def __init__(self, path, name: Union[str, None] = None):
-        self.path = path
-        os.makedirs(path, exist_ok=True)
+    def __init__(self, relative_path: str, base_path: str = '.', name: Union[str, None] = None):
+        self.path = f"{base_path}/{relative_path}"
+        os.makedirs(self.path, exist_ok=True)
 
         self.logger = logging.getLogger(self.create_id() if name is None else name)
         self.logger.setLevel(LogLevel.DEBUG)
@@ -54,7 +54,7 @@ class Logger:
         custom_date_format = '%m/%d/%Y %H:%M:%S'
         formatter = logging.Formatter('[%(asctime)s] - %(levelname)s - %(message)s', datefmt=custom_date_format)
 
-        self.file_handler = logging.FileHandler(f"{path}/.log", mode='a')
+        self.file_handler = logging.FileHandler(f"{self.path}/.log", mode='a')
         self.file_handler.setLevel(LogLevel.DEBUG)
         self.file_handler.setFormatter(formatter)
 

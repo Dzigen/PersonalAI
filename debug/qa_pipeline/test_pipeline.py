@@ -16,7 +16,7 @@
 
 # class QAPipeline:
 #     def __init__(self, kg_model: KnowledgeGraphModel, llm_agent: LLaMAagent, config: QAPipelineConfig) -> None:
-#         self.kg_model = kg_model
+#         self.kgmodel_ref = kg_model
 #         self.llama_agent = llm_agent
 #         self.config = config
 

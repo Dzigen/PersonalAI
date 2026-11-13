@@ -1,4 +1,4 @@
-log_path: log/kg_model/graph
+log_relative_path: log/kg_model/graph
 verbose: false
 log_level: 10
 driver_config:

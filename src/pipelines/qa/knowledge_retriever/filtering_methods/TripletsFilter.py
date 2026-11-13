@@ -33,7 +33,7 @@ class TripletsFilterConfig(BaseTripletsFilterConfig):
     max_k: int = 25
 
     cache_table_name: str = 'qa_naive_t_filter_cache'
-    log_path: str = TFILTER_LOG_PATH
+    log_relative_path: str = TFILTER_LOG_PATH
 
     def to_str(self):
         return f"{self.max_k}|{self.accepted_triplets_types}|{self.reranker_driver_config.to_str()}"
@@ -75,7 +75,7 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
             config.formate_fields()
         self.config: TripletsFilterConfig = config
 
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -85,13 +85,9 @@ class TripletsFilter(AbstractTriplesFilter, CacheUtils):
             kg_model.graph_embeddings.triplets_vcomposer
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
-
-    def close_connections(self):
-        if self.cachekv is not None:
-            self.cachekv.close_connection()
 
     def get_cache_key(self, query_info: QueryInfo, triplets: List[Triplet]) -> List[str]:
         """Формирует ключ кэша для результатов фильтрации триплетов.

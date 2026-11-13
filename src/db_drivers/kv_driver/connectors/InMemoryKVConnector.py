@@ -12,6 +12,8 @@ from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValue
 
 class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
+    DATABASE_KW = 'inmemory_kv'
+
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_INMEMORYKV_CONFIG) -> None:
         if isinstance(config, dict):
             config = KVDBConnectionConfig.from_dict(config)
@@ -23,25 +25,20 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def open_connection(self) -> None:
         # print("opening kv connection...")
-        if self.config.params['load_from_disk']:
-            if self.config.params['load_dump_name'] is None:
-                load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}.pkl"
-            else:
-                load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['load_dump_name']}"
-            if os.path.exists(load_path):
-                try:
-                    with open(load_path, 'rb') as fd:
-                        self.kv_store = pickle.load(fd)
-                except EOFError:
-                    # print(f"The pickle file '{load_path}' is empty or corrupted.")
-                    self.kv_store = dict()
-            else:
-                # print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
-                os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
+        load_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}/{self.config.db_info['table']}.pkl"
+
+        if os.path.exists(load_path):
+            try:
+                with open(load_path, 'rb') as fd:
+                    self.kv_store = pickle.load(fd)
+            except EOFError:
+                # print(f"The pickle file '{load_path}' is empty or corrupted.")
                 self.kv_store = dict()
         else:
-            os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
+            # print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
+            os.makedirs(f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}", exist_ok=True)
             self.kv_store = dict()
+
 
         if self.config.need_to_clear:
             self.clear()
@@ -50,7 +47,10 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         # print("kv-store is not None:", self.kv_store is not None)
 
     def is_open(self) -> bool:
-        return hasattr(self, 'kv_store')
+        try:
+            return type(self.kv_store) is dict
+        except AttributeError as e:
+            return False 
 
     def close_connection(self) -> None:
         if self.kv_store is None:
@@ -59,14 +59,15 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
         # print("kv-store type check: ", type(self.kv_store))
         # print("kv-store is not None:", self.kv_store is not None)
         if self.config.params['save_on_disk']:
-            os.makedirs(self.config.params['save_dump_dir'], exist_ok=True)
-            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}"
-            if os.path.exists(save_path) and not self.config.params['rewrite']:
+            base_save_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}"            
+            os.makedirs(base_save_path, exist_ok=True)
+            if os.path.exists(f"{base_save_path}/{self.config.db_info['table']}.pkl") and not self.config.params['rewrite']:
                 # print("warning: file on that path is already exists")
                 postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
-                save_path += f"({postfix})"
-            save_path += '.pkl'
-
+                save_path = f"{base_save_path}/{self.config.db_info['table']}({postfix}).pkl"
+            else:
+                save_path = f"{base_save_path}/{self.config.db_info['table']}.pkl"
+            
             with open(save_path, 'wb') as fd:
                 pickle.dump(self.kv_store, fd)
 

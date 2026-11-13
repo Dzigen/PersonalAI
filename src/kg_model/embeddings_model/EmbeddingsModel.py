@@ -5,6 +5,7 @@ from tqdm import tqdm
 from copy import deepcopy
 import gc
 from collections import defaultdict
+import pandas as pd
 import torch
 
 from .config import NODES_DB_DEFAULT_DRIVER_CONFIGS_MAPPING, TRIPLETS_DB_DEFAULT_DRIVER_CONFIGS_MAPPING, \
@@ -12,12 +13,15 @@ from .config import NODES_DB_DEFAULT_DRIVER_CONFIGS_MAPPING, TRIPLETS_DB_DEFAULT
 from ...db_drivers.vector_driver import VectorDriverConfig, VectorDBInstance
 from ...db_drivers.vector_driver.embedders import EmbedderModel
 from ...db_drivers.vector_driver.VectorComposer import VectorComposer
-from ...utils.data_structs import Triplet, TripletCreator, NodeCreator, NODES_TYPES_MAP, BaseComponentConfig
+from ...utils.data_structs import Triplet, TripletCreator, NodeCreator, \
+    NODES_TYPES_MAP, BaseComponentConfig, EnvironmentConfig
 from ...utils import Logger, NodeType
+from ...environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
+from ...environment.config import PAI_FILESTRUCTURE
 
 
 @dataclass
-class EmbeddingsModelConfig(BaseComponentConfig):
+class EmbeddingsModelConfig(BaseComponentConfig, EnvironmentConfig):
     """Конфигурация векторной структуры данных.
 
     :param nodesdb_driver_configs_mapping: Словарь с именованными конфигурациями коннекторов к векторным базам данных, которые отвечают за хранение различных векторных представлений вершин из графовой структуры. Значение по умолчанию NODES_DB_DEFAULT_DRIVER_CONFIGS_MAPPING.
@@ -30,7 +34,7 @@ class EmbeddingsModelConfig(BaseComponentConfig):
     tripletsdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]] = field(
         default_factory=lambda: TRIPLETS_DB_DEFAULT_DRIVER_CONFIGS_MAPPING)
 
-    log_path: str = EMBEDDINGS_MODEL_LOG_PATH
+    log_relative_path: str = EMBEDDINGS_MODEL_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -56,8 +60,20 @@ class EmbeddingsModelConfig(BaseComponentConfig):
             else:
                 self.tripletsdb_driver_configs_mapping[vdb_name].formate_fields()
 
+    def synchronize_database(self):
+        vec_nodes_store_path = f"{self.pai_base_path}/{self.pai_name}/{PAI_FILESTRUCTURE['directories']['vectorized_nodes']}"
+        vec_triples_store_path = f"{self.pai_base_path}/{self.pai_name}/{PAI_FILESTRUCTURE['directories']['vectorized_triples']}"
 
-class EmbeddingsModel:
+        for config_name in self.nodesdb_driver_configs_mapping.keys():
+            self.nodesdb_driver_configs_mapping[config_name].db_config.db_info['db'] = self.kg_related_database_name
+            self.nodesdb_driver_configs_mapping[config_name].db_config.db_info['expected_db_base_path'] = vec_nodes_store_path
+
+        for config_name in self.tripletsdb_driver_configs_mapping.keys():
+            self.tripletsdb_driver_configs_mapping[config_name].db_config.db_info['db'] = self.kg_related_database_name
+            self.tripletsdb_driver_configs_mapping[config_name].db_config.db_info['expected_db_base_path'] = vec_triples_store_path
+
+
+class EmbeddingsModel(EnvironmentConnectionUtils):
     """Структура данных для хранения информации в векторном формате.
 
     :param embedders_mapping: Словарь с именованными коннекторами к embedder-моделям для получения векторных представлений текста. Название embedder-модели должно соответствовать названию конфигурации коннектора к векторной бд из 'nodesdb_driver_configs_mapping'- и 'tripletsdb_driver_configs_mapping'-полей, к которой она относится.
@@ -85,7 +101,7 @@ class EmbeddingsModel:
                 m_config.db_config.db_info['table'] += f"_{node_type.value}"
             self.nodes_vcomposers[node_type] = VectorComposer(modified_configs, embedders_mapping)
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 
@@ -296,6 +312,26 @@ class EmbeddingsModel:
         for n_type in self.nodes_vcomposers.keys():
             self.nodes_vcomposers[n_type].clear()
         self.triplets_vcomposer.clear()
+
+    def is_connections_open(self, detailed: bool = True) -> Union[Dict, bool]:
+        connections_info = dict()
+        connections_info['triplets_vcomposer'] = self.triplets_vcomposer.is_open()
+        connections_info['nodes_vcomposers'] = dict()
+        for composer_name, composer_inst in self.nodes_vcomposers.items():
+            connections_info['nodes_vcomposers'][composer_name.value] = composer_inst.is_open()
+
+        if not detailed:
+            df = pd.json_normalize(connections_info, sep='_')
+            connections_info_flat: Dict = df.to_dict(orient='records')[0]
+            connections_summary: bool = (sum(connections_info_flat.values()) == len(connections_info_flat))
+            connections_info = connections_summary
+
+        return connections_info
+
+    def open_connections(self):
+        self.triplets_vcomposer.open_connection()
+        for n_vcomoposer in self.nodes_vcomposers.values():
+            n_vcomoposer.open_connection()
 
     def close_connections(self):
         self.triplets_vcomposer.close_connection()

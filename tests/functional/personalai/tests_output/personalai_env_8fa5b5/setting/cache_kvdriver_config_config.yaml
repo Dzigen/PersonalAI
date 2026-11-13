@@ -1,0 +1,16 @@
+db_vendor: inmemory_kv
+db_config:
+  db_info:
+    db: defaultknowledgegraphrelateddatabase
+    table: testing
+    expected_db_base_path: functional/personalai/tests_output/personalai_env_8fa5b5/memory_parts/cache
+  params:
+    save_on_disk: true
+    max_storage: 500000000.0
+    rewrite: true
+  need_to_clear: false
+  create_index: false
+  timeout: 10
+  trials: 5
+  host: localhost
+  port: null

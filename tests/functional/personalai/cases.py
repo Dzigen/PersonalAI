@@ -1,8 +1,23 @@
 import sys
+from itertools import product
+from typing import List, Tuple
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 TEST_VOLUME_DIR = './volumes'
 sys.path.insert(0, PROJECT_BASE_DIR)
+
+
+# TO CHANGE
+AVAILABLE_DENSE_DBS = ['chroma']  # 'chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant' | 'milvus'
+AVAILABLE_SPARSEBM25_DBS = ['inmemory']  # 'opensearch', 'elasticsearch', 'inmemory', 'weaviate'
+AVAILABLE_GRAPH_DBS = ['kuzu']  # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph', 'falkordb'
+AVAILABLE_NODESTREE_MODELS = ['None'] # 'qdrant/kuzu', 'qdrant/neo4j', 'chroma/kuzu', 'chroma/neo4j'
+AVAILABLE_TEXTID_DBS = ['inmemory_kv'] # 'inmemory_kv', 'redis', 'mongo', 'mixed_kv'
+
+AVAILABLE_CACHE_DBS = ['inmemory_kv'] # 'None' 'inmemory_kv', 'redis', 'mongo', 'mixed_kv'
+AVAILABLE_AGENTSTAT_DBS = ['inmemory_table'] # 'None' 'inmemory_table', 'mongo', 'sqlite3', 'postgresql', 'mysql'
+
+AVAILABLE_LANGUAGES = ['auto'] # 'ru','en', 'auto
 
 RAW_TEXTS_RU = [
     "Проживающие в общежитии студенты имеют право rруглосуточного доступа к месту проживания.",
@@ -31,6 +46,11 @@ RAW_TEXTS_EN = [
     "Students living in the dormitory have the right to visit the Interuniversity Educational and Sports Center free of charge at a time approved by the administration of the FSBI 'MSG' and agreed upon with the MSG Student Council."
 ]
 
+RAW_TEXTS = {
+    'ru': RAW_TEXTS_RU,
+    'en': RAW_TEXTS_EN
+}
+
 QUESTIONS = {
     'ru': [
         "Какими помещениями разрешено пользоваться студентам, проживающем в общещитии МСГ?",
@@ -44,7 +64,16 @@ QUESTIONS = {
     ]
 }
 
+AVAILABLE_PAICONFIG_COMBINATIONS: List[Tuple[str]] = list(product(
+    AVAILABLE_DENSE_DBS, AVAILABLE_SPARSEBM25_DBS, AVAILABLE_GRAPH_DBS, 
+    AVAILABLE_NODESTREE_MODELS, AVAILABLE_TEXTID_DBS))
+
 POPULATED_QUERIES_TEST_CASES = []
 for language, questions in QUESTIONS.items():
-    for question in questions:
-        POPULATED_QUERIES_TEST_CASES.append([question, language])
+    for pai_vendors in AVAILABLE_PAICONFIG_COMBINATIONS:
+        pai_kw = "/".join(pai_vendors)
+        for cache_vendor in AVAILABLE_CACHE_DBS:
+            for agentstat_vendor in AVAILABLE_AGENTSTAT_DBS:
+                for question in questions:
+                    kw_case = "|".join([pai_kw, cache_vendor, agentstat_vendor, language])
+                    POPULATED_QUERIES_TEST_CASES.append([question, kw_case])

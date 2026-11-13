@@ -39,7 +39,7 @@ class MixturedGraphSearchConfig(BaseGraphSearchConfig):
     retriever2_config: Union[BaseGraphSearchConfig, Dict] = field(default_factory=lambda: NaiveGraphSearchConfig())
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     cache_table_name: str = 'qa_mixture_t_retriever_cache'
-    log_path: str = MIXTURED_RETRIEVER_LOG_PATH
+    log_relative_path: str = MIXTURED_RETRIEVER_LOG_PATH
 
     AVAILABLE_RCONFIGS: Dict[str, BaseGraphSearchConfig] = field(default_factory=lambda: {
         'astar': AStarGraphSearchConfig,
@@ -118,15 +118,9 @@ class MixturedTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         self.retriever2: AbstractTripletsRetriever = self.AVAILABLE_RETRIEVERS[search_config.retriever2_name](
             kg_model, self.config.retriever2_config, cache_kvdriver_config)
 
-        self.log = Logger(search_config.log_path)
+        self.log = Logger(search_config.log_relative_path, search_config.log_base_path)
         self.verbose = search_config.verbose
         self.log_level = search_config.log_level
-
-    def close_connections(self):
-        if self.cachekv is not None:
-            self.cachekv.close_connection()
-        self.retriever1.close_connections()
-        self.retriever2.close_connections()
 
     def clear_traversal_cache(self) -> None:
         self.retriever1.clear_kv_caches(

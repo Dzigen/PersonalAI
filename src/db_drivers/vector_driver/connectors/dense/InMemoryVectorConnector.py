@@ -21,6 +21,8 @@ from .....utils.errors import ReturnInfo
 class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
     # https://python.langchain.com/api_reference/community/vectorstores/langchain_community.vectorstores.faiss.FAISS.html#langchain_community.vectorstores.faiss.FAISS.delete
 
+    DATABASE_KW = 'inmemory_vector'
+
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_INMEMORY_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
         if isinstance(config, dict):
@@ -35,31 +37,17 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
         self.structure: FAISS = None
 
     def open_connection(self) -> ReturnInfo:
-        if self.config.params['load_from_disk']:
-            if self.config.params['load_dump_name'] is None:
-                load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['db']}"
-                load_fname = self.config.db_info['table']
-            else:
-                load_path = self.config.params['load_dump_dir']
-                load_fname = self.config.params['load_dump_name']
+        load_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}"
+        load_fname = self.config.db_info['table']
 
-            if os.path.exists(f"{load_path}/{load_fname}"):
-                self.structure = FAISS.load_local(
-                    folder_path=load_path,
-                    index_name=load_fname,
-                    embeddings=self.embedder,)
-            else:
-                # print(f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
-                os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
-                self.structure = FAISS(
-                    embedding_function=self.embedder,
-                    index=faiss.IndexFlatIP(self.config.params['vector_dim']),
-                    docstore=InMemoryDocstore(),
-                    index_to_docstore_id={},
-                    distance_strategy=DistanceStrategy.DOT_PRODUCT
-                )
+        if os.path.exists(f"{load_path}/{load_fname}"):
+            self.structure = FAISS.load_local(
+                folder_path=load_path,
+                index_name=load_fname,
+                embeddings=self.embedder,)
         else:
-            os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
+            # print(f"warning: graph-dump '{load_path}' doesnt exists. creating empty graph-store")
+            os.makedirs(f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}", exist_ok=True)
             self.structure = FAISS(
                 embedding_function=self.embedder,
                 index=faiss.IndexFlatIP(self.config.params['vector_dim']),
@@ -72,27 +60,32 @@ class InMemoryVectorConnector(AbstractVectorDatabaseConnection):
             self.clear()
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            return self.structure is not None
+        except AttributeError as e:
+            return False
 
     def close_connection(self) -> ReturnInfo:
         # print("closing inmemory graph connection...")
-        if self.structure is None:
-            return
-        if self.config.params['save_on_disk']:
-            save_path = f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}"
-            save_fname = self.config.db_info['table']
-            if os.path.exists(f"{save_path}/{save_fname}") and not self.config.params['rewrite']:
-                # print("warning: file on that path is already exists")
-                postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
-                save_fname += postfix
+        try:
+            if self.structure is None:
+                return
+            if self.config.params['save_on_disk']:
+                save_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}"
+                save_fname = self.config.db_info['table']
+                if os.path.exists(f"{save_path}/{save_fname}") and not self.config.params['rewrite']:
+                    # print("warning: file on that path is already exists")
+                    postfix = hashlib.md5(str(time.time()).encode()).hexdigest()
+                    save_fname += postfix
 
-            self.structure.save_local(save_path, save_fname)
+                self.structure.save_local(save_path, save_fname)
 
-            # print(f"inmemory graph-store saved in: {save_path}")
+                # print(f"inmemory graph-store saved in: {save_path}")
 
-        self.structure = None
-        gc.collect()
+            self.structure = None
+            gc.collect()
+        except AttributeError as e:
+            pass
 
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
         # validating

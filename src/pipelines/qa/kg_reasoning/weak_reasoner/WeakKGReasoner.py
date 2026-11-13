@@ -43,7 +43,7 @@ class WeakKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, LanguageCo
         default_factory=lambda: QALLMGeneratorConfig())
 
     cache_table_name: str = 'qa_weakreasoner_cache'
-    log_path: str = WKGR_MAIN_LOG_PATH
+    log_relative_path: str = WKGR_MAIN_LOG_PATH
 
     def to_str(self) -> str:
         str_qparser_config = self.query_parser_config.to_str() if self.query_parser_config is not None else "None"
@@ -126,7 +126,7 @@ class WeakKGReasoner(AbstractKGReasoner, CacheUtils):
                 kg_model, self.config.knowledge_comparator_config,
                 cache_kvdriver_config)
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
 

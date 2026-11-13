@@ -16,7 +16,7 @@ class "AStarGraphSearchConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner.kn
   accepted_node_types : List[Union[str, NodeType]]
   adjacent_nodes_filter_node : Union[None, str]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   max_adjanced_nodes : int
   max_depth : int
   max_passed_nodes : int
@@ -228,7 +228,7 @@ class "AgentConnectorConfig" as src.agents.utils.AgentConnectorConfig {
   to_str()
 }
 class "AgentDriver" as src.agents.AgentDriver.AgentDriver {
-  connect(config: Union[Dict, AgentDriverConfig]) -> AbstractAgentConnector
+  select(config: Union[Dict, AgentDriverConfig]) -> AbstractAgentConnector
 }
 class "AgentDriverConfig" as src.agents.AgentDriver.AgentDriverConfig {
   agent_config : Union[Dict, AgentConnectorConfig]
@@ -371,7 +371,7 @@ class "AnswerGeneratorConfig" as src.pipelines.qa.kg_reasoning.medium_reasoner.a
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[Dict, AnswerGeneratorAgentTasksConfig]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   formate_fields()
   from_dict(dict_config: Dict)
   to_str()
@@ -398,7 +398,7 @@ class "AnswersAggregatorConfig" as src.pipelines.qa.answers_aggregation.AnswersA
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[Dict, AnswersAggregatorAgentTasksConfig]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   formate_fields()
   from_dict(dict_config: Dict)
   to_str() -> str
@@ -603,7 +603,7 @@ class "ClueAnswerGeneratorConfig" as src.pipelines.qa.kg_reasoning.medium_reason
   agent_tasks_config : Union[ClueAnswerGeneratorAgentTasksConfig, Dict]
   cache_table_name : str
   lang : str
-  log_path : str
+  log_relative_path : str
   formate_fields()
   from_dict(dict_config: Dict)
   to_str()
@@ -630,7 +630,7 @@ class "ClueAnswersSummarizerConfig" as src.pipelines.qa.kg_reasoning.medium_reas
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[ClueAnswersSummarizerAgentTasksConfig, Dict]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   formate_fields()
   from_dict(dict_config: Dict)
   to_str()
@@ -657,7 +657,7 @@ class "ClueQueriesGeneratorConfig" as src.pipelines.qa.kg_reasoning.medium_reaso
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[ClueQueriesGeneratorAgentTasksConfig, Dict]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   max_cqueries_amount : int
   return_only_unique_cqueires : bool
   formate_fields()
@@ -759,10 +759,10 @@ class "EmbeddingsModel" as src.kg_model.embeddings_model.EmbeddingsModel.Embeddi
   read_embbeddings(db_type: str, ids: List[str], cat_type: Union[None, NodeType]) -> List[List[float]]
 }
 class "EmbeddingsModelConfig" as src.kg_model.embeddings_model.EmbeddingsModel.EmbeddingsModelConfig {
-  log_path : str
+  log_relative_path : str
   nodesdb_driver_configs_mapping : Dict[str, Union[Dict, VectorDriverConfig]]
   tripletsdb_driver_configs_mapping : Dict[str, Union[Dict, VectorDriverConfig]]
-  __init__(self, log_path, nodesdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]], tripletsdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]]) -> None
+  __init__(self, log_relative_path, nodesdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]], tripletsdb_driver_configs_mapping: Dict[str, Union[Dict, VectorDriverConfig]]) -> None
   formate_fields()
   from_dict(dict_config: Dict)
   {abstract}to_str()
@@ -802,11 +802,11 @@ class "Entities2NodesMatcher" as src.pipelines.qa.kg_reasoning.medium_reasoner.e
 class "Entities2NodesMatcherConfig" as src.pipelines.qa.kg_reasoning.medium_reasoner.entities2nodes_matching.Entities2NodesMatcher.Entities2NodesMatcherConfig {
   cache_table_name : str
   discard_other_mnodes_if_exactmatch_found : bool
-  log_path : str
+  log_relative_path : str
   max_n : int
   reranker_driver_config : Union[Dict, RerankerDriverConfig]
   use_tree : bool
-  __init__(self, log_path, use_tree: bool, reranker_driver_config: Union[Dict, RerankerDriverConfig], max_n: int, discard_other_mnodes_if_exactmatch_found: bool, cache_table_name: str) -> None
+  __init__(self, log_relative_path, use_tree: bool, reranker_driver_config: Union[Dict, RerankerDriverConfig], max_n: int, discard_other_mnodes_if_exactmatch_found: bool, cache_table_name: str) -> None
   formate_fields()
   from_dict(dict_config: Dict)
   to_str()
@@ -833,7 +833,7 @@ class "EntitiesExtractorConfig" as src.pipelines.qa.kg_reasoning.medium_reasoner
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[EntitiesExtractorAgentTasksConfig, Dict]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   max_entities : int
   formate_fields()
   from_dict(dict_config: Dict)
@@ -885,7 +885,7 @@ class "GraphBeamSearchConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner.kno
   diff_paths_intersection_by_node : bool
   diff_paths_intersection_by_rel : bool
   final_sorting_mode : str
-  log_path : str
+  log_relative_path : str
   max_depth : int
   max_paths : int
   mean_alpha : float
@@ -905,7 +905,7 @@ class "GraphDBConnectionConfig" as src.db_drivers.graph_driver.utils.GraphDBConn
   to_str()
 }
 class "GraphDriver" as src.db_drivers.graph_driver.GraphDriver.GraphDriver {
-  connect(config: Union[Dict, GraphDriverConfig]) -> AbstractGraphDatabaseConnection
+  select(config: Union[Dict, GraphDriverConfig]) -> AbstractGraphDatabaseConnection
 }
 class "GraphDriverConfig" as src.db_drivers.graph_driver.GraphDriver.GraphDriverConfig {
   db_config : Union[Dict, GraphDBConnectionConfig]
@@ -930,8 +930,8 @@ class "GraphModel" as src.kg_model.graph_model.GraphModel.GraphModel {
 }
 class "GraphModelConfig" as src.kg_model.graph_model.GraphModel.GraphModelConfig {
   driver_config : Union[Dict, GraphDriverConfig]
-  log_path : str
-  __init__(self, log_path, driver_config: Union[Dict, GraphDriverConfig]) -> None
+  log_relative_path : str
+  __init__(self, log_relative_path, driver_config: Union[Dict, GraphDriverConfig]) -> None
   formate_fields()
   from_dict(dict_config: Dict)
   {abstract}to_str()
@@ -1074,7 +1074,7 @@ class "KeyValueDBInstance" as src.db_drivers.kv_driver.utils.KeyValueDBInstance 
   __init__(self, id: str, value: Union[int, float, str, bytes, Dict]) -> None
 }
 class "KeyValueDriver" as src.db_drivers.kv_driver.KeyValueDriver.KeyValueDriver {
-  connect(config: Union[Dict, KeyValueDriverConfig]) -> AbstractKVDatabaseConnection
+  select(config: Union[Dict, KeyValueDriverConfig]) -> AbstractKVDatabaseConnection
 }
 class "KeyValueDriverConfig" as src.db_drivers.kv_driver.KeyValueDriver.KeyValueDriverConfig {
   db_config : Union[Dict, KVDBConnectionConfig]
@@ -1101,10 +1101,10 @@ class "KnowledgeComparatorConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner
   cache_table_name : str
   discard_other_mnodes_if_exactmatch_found : bool
   k_compare : int
-  log_path : str
+  log_relative_path : str
   max_k : int
   reranker_driver_config : Union[Dict, RerankerDriverConfig]
-  __init__(self, log_path, reranker_driver_config: Union[Dict, RerankerDriverConfig], max_k: int, discard_other_mnodes_if_exactmatch_found: bool, k_compare: int, cache_table_name: str) -> None
+  __init__(self, log_relative_path, reranker_driver_config: Union[Dict, RerankerDriverConfig], max_k: int, discard_other_mnodes_if_exactmatch_found: bool, k_compare: int, cache_table_name: str) -> None
   formate_fields()
   from_dict(dict_config: Dict)
   to_str()
@@ -1139,9 +1139,9 @@ class "KnowledgeGraphModelConfig" as src.kg_model.KnowledgeGraphModel.KnowledgeG
   embedders_map : Union[Dict, KGEmbeddersMapping]
   graph_embeddings_config : Union[Dict, EmbeddingsModelConfig]
   graph_struct_config : Union[Dict, GraphModelConfig]
-  log_path : str
+  log_relative_path : str
   nodestree_config : Optional[Union[NodesTreeModelConfig, Dict, None]]
-  __init__(self, log_path, graph_struct_config: Union[Dict, GraphModelConfig], graph_embeddings_config: Union[Dict, EmbeddingsModelConfig], nodestree_config: Union[NodesTreeModelConfig, Dict, None], embedders_configs: Dict[str, Union[Dict, EmbedderModelConfig]], embedders_map: Union[Dict, KGEmbeddersMapping], agents_configs: Dict[str, Union[Dict, AgentDriverConfig]], agents_map: Union[Dict, AgentsMapping]) -> None
+  __init__(self, log_relative_path, graph_struct_config: Union[Dict, GraphModelConfig], graph_embeddings_config: Union[Dict, EmbeddingsModelConfig], nodestree_config: Union[NodesTreeModelConfig, Dict, None], embedders_configs: Dict[str, Union[Dict, EmbedderModelConfig]], embedders_map: Union[Dict, KGEmbeddersMapping], agents_configs: Dict[str, Union[Dict, AgentDriverConfig]], agents_map: Union[Dict, AgentsMapping]) -> None
   formate_fields()
   from_dict(dict_config)
   {abstract}to_str()
@@ -1158,7 +1158,7 @@ class "KnowledgeGraphReasoner" as src.pipelines.qa.kg_reasoning.KGReasoner.Knowl
   perform(query: str) -> Tuple[str, ReturnInfo, CompositeModuleResult]
 }
 class "KnowledgeGraphReasonerConfig" as src.pipelines.qa.kg_reasoning.KGReasoner.KnowledgeGraphReasonerConfig {
-  log_path : str
+  log_relative_path : str
   reasoner_config : Union[Dict, BaseKGReasonerConfig]
   reasoner_name : str
   formate_fields()
@@ -1184,10 +1184,10 @@ class "KnowledgeRetrieverConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner.
   cache_table_name : Union[str, None]
   filter_config : Union[BaseTripletsFilterConfig, Dict, None]
   filter_method : Union[None, str]
-  log_path : str
+  log_relative_path : str
   retriever_config : Union[Dict, BaseGraphSearchConfig]
   retriever_method : str
-  __init__(self, log_path, retriever_method: str, retriever_config: Union[Dict, BaseGraphSearchConfig], filter_method: Union[None, str], filter_config: Union[BaseTripletsFilterConfig, Dict, None], cache_table_name: Union[str, None]) -> None
+  __init__(self, log_relative_path, retriever_method: str, retriever_config: Union[Dict, BaseGraphSearchConfig], filter_method: Union[None, str], filter_config: Union[BaseTripletsFilterConfig, Dict, None], cache_table_name: Union[str, None]) -> None
   formate_fields()
   from_dict(dict_config: Dict)
   to_str() -> str
@@ -1266,7 +1266,7 @@ class "LLMExtractor" as src.pipelines.memorize.extractor.LLMExtractor.LLMExtract
 class "LLMExtractorConfig" as src.pipelines.memorize.extractor.LLMExtractor.LLMExtractorConfig {
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[Dict, MemExtractorAgentTasksConfig]
-  log_path : str
+  log_relative_path : str
   need_episodic : bool
   need_simple : bool
   need_thesises : bool
@@ -1301,7 +1301,7 @@ class "LLMUpdatorConfig" as src.pipelines.memorize.updator.LLMUpdator.LLMUpdator
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[Dict, MemUpdatorAgentTasksConfig]
   delete_obsolete_info : bool
-  log_path : str
+  log_relative_path : str
   formate_fields()
   from_dict(dict_config: Dict)
   {abstract}to_str()
@@ -1349,10 +1349,10 @@ class "Logger" as src.utils.logger.Logger {
 }
 class "LoggingConfig" as src.utils.data_structs.LoggingConfig {
   log_level
-  log_path : str
+  log_relative_path : str
   verbose : bool
   __init__(self) -> None
-  synchronize_logging(log_level: Union[None, LogLevel], verbose: Union[None, bool])
+  synchronize_logging(log_base_path: Union[None, str], log_level: Union[None, LogLevel], verbose: Union[None, bool])
 }
 class "MediumAGeneratorTaskSolvers" as src.pipelines.qa.kg_reasoning.medium_reasoner.answer_generator.utils.MediumAGeneratorTaskSolvers {
   answer_classify_solver
@@ -1407,7 +1407,7 @@ class "MediumKGReasonerConfig" as src.pipelines.qa.kg_reasoning.medium_reasoner.
   e2n_matcher_config : Union[Entities2NodesMatcherConfig, Dict]
   entities_extractor_config : Union[EntitiesExtractorConfig, Dict]
   knowledge_retriever_config : Union[KnowledgeRetrieverConfig, Dict]
-  log_path : str
+  log_relative_path : str
   max_searchplan_steps : int
   searchplan_enhancer_config : Union[SearchPlanEnhancerConfig, Dict]
   formate_fields()
@@ -1454,7 +1454,7 @@ class "MemPipeline" as src.pipelines.memorize.MemPipeline.MemPipeline {
 }
 class "MemPipelineConfig" as src.pipelines.memorize.MemPipeline.MemPipelineConfig {
   extractor_config : Union[Dict, LLMExtractorConfig]
-  log_path : str
+  log_relative_path : str
   updator_config : Union[Dict, LLMUpdatorConfig]
   formate_fields()
   from_dict(dict_config: Dict)
@@ -1522,7 +1522,7 @@ class "MixturedGraphSearchConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner
   AVAILABLE_RCONFIGS : Dict[str, BaseGraphSearchConfig]
   accepted_node_types : List[Union[str, NodeType]]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   retriever1_config : Union[BaseGraphSearchConfig, Dict]
   retriever1_name : str
   retriever2_config : Union[BaseGraphSearchConfig, Dict]
@@ -1655,7 +1655,7 @@ class "MySQLTableConnector" as src.db_drivers.table_driver.connectors.MySQLTable
 class "NaiveBFSGraphSearchConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveBFSTripletsRetriever.NaiveBFSGraphSearchConfig {
   accepted_node_types : List[Union[str, NodeType]]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   max_depth : int
   max_passed_nodes : int
   max_width : int
@@ -1680,7 +1680,7 @@ class "NaiveBFSTripletsRetriever" as src.pipelines.qa.kg_reasoning.weak_reasoner
 }
 class "NaiveGraphSearchConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.traversal_methods.NaiveTripletsRetriever.NaiveGraphSearchConfig {
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   max_k : int
   reranker_driver_config : Union[Dict, RerankerDriverConfig]
   formate_fields() -> None
@@ -1828,7 +1828,7 @@ class "NodesTreeModelConfig" as src.kg_model.nodestree_model.NodesTreeModel.Node
   leafnodes_reranker_driver_config : Union[Dict, RerankerDriverConfig]
   leafnodes_scores_vdbname : Union[str, None]
   leafnodes_vdb_driver_configs_mapping : Dict[str, Union[Dict, VectorDriverConfig]]
-  log_path : str
+  log_relative_path : str
   nodes_aggregation_mechanism : str
   summnodes_reranker_driver_config : Union[Dict, RerankerDriverConfig]
   summnodes_scores_vdbname : Union[str, None]
@@ -1920,7 +1920,7 @@ class "PersonalAI" as src.main.PersonalAI {
 }
 class "PersonalAIConfig" as src.main.PersonalAIConfig {
   kg_model_config : Union[KnowledgeGraphModelConfig, Dict]
-  log_path : str
+  log_relative_path : str
   mem_pipeline_config : Union[MemPipelineConfig, Dict]
   qa_pipeline_config : Union[QAPipelineConfig, Dict]
   textidstore_config : Union[TextIdStoreConfig, Dict]
@@ -1980,7 +1980,7 @@ class "QALLMGeneratorConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner.answ
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[QALLMGeneratorAgentTasksConfig, Dict]
   cache_table_name : Union[str, None]
-  log_path : str
+  log_relative_path : str
   relation_type : List[Union[str, RelationType]]
   formate_fields() -> None
   from_dict(dict_config: Dict)
@@ -2004,7 +2004,7 @@ class "QAPipeline" as src.pipelines.qa.QAPipeline.QAPipeline {
 class "QAPipelineConfig" as src.pipelines.qa.QAPipeline.QAPipelineConfig {
   aggregator_config : Union[AnswersAggregatorConfig, Dict]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   preprocessor_config : Union[QueryPreprocessorConfig, Dict]
   reasoner_config : Union[KnowledgeGraphReasonerConfig, Dict]
   formate_fields()
@@ -2061,7 +2061,7 @@ class "QueryDecomposerConfig" as src.pipelines.qa.query_preprocessing.decomposit
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[Dict, QueryDecomposerAgentTasksConfig]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   formate_fields()
   from_dict(dict_config: Dict)
   to_str()
@@ -2094,7 +2094,7 @@ class "QueryDenoiserConfig" as src.pipelines.qa.query_preprocessing.denoising.Qu
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[Dict, QueryDenoiserAgentTasksConfig]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   formate_fields()
   from_dict(dict_config: Dict)
   to_str()
@@ -2128,7 +2128,7 @@ class "QueryEnhancerConfig" as src.pipelines.qa.query_preprocessing.enhancing.Qu
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[Dict, QueryEnhancerAgentTasksConfig]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   formate_fields()
   from_dict(dict_config: Dict)
   to_str()
@@ -2169,7 +2169,7 @@ class "QueryLLMParserConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner.quer
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[QueryLLMParserAgentTasksConfig, Dict]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   max_entities : int
   formate_fields()
   from_dict(dict_config: Dict)
@@ -2207,7 +2207,7 @@ class "QueryPreprocessorConfig" as src.pipelines.qa.query_preprocessing.QueryPre
   decomposition_config : Union[None, Dict, QueryDecomposerConfig]
   denoising_config : Optional[Union[None, Dict, QueryDenoiserConfig]]
   enhancing_config : Optional[Union[None, Dict, QueryEnhancerConfig]]
-  log_path : str
+  log_relative_path : str
   formate_fields()
   from_dict(dict_config: Dict)
   to_str()
@@ -2350,7 +2350,7 @@ class "SearchPlanEnhancerConfig" as src.pipelines.qa.kg_reasoning.medium_reasone
   agent_gen_stategy : Optional[Union[None, Dict[str, Union[str, int, float]]]]
   agent_tasks_config : Union[SearchPlanEnhancerAgentTasksConfig, Dict]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   plan_enhancment : bool
   formate_fields()
   from_dict(dict_config: Dict)
@@ -2406,7 +2406,7 @@ class "TableDBInstance" as src.db_drivers.table_driver.utils.TableDBInstance {
   __init__(self, values: BaseTableStucture, id: Union[None, str]) -> None
 }
 class "TableDriver" as src.db_drivers.table_driver.TableDriver.TableDriver {
-  connect(config: Union[Dict, TableDriverConfig]) -> AbstractTableDatabaseConnection
+  select(config: Union[Dict, TableDriverConfig]) -> AbstractTableDatabaseConnection
 }
 class "TableDriverConfig" as src.db_drivers.table_driver.TableDriver.TableDriverConfig {
   db_config : Union[Dict, TableDBConnectionConfig]
@@ -2434,10 +2434,10 @@ class "TextIdStore" as src.TextIdStore.TextIdStore {
   select_triplets_to_delete(text_id: str) -> List[Triplet]
 }
 class "TextIdStoreConfig" as src.TextIdStore.TextIdStoreConfig {
-  log_path : str
+  log_relative_path : str
   texttotriplets_store_config : Union[KeyValueDriverConfig, Dict]
   triplettotexts_store_config : Union[KeyValueDriverConfig, Dict]
-  __init__(self, log_path, texttotriplets_store_config: Union[KeyValueDriverConfig, Dict], triplettotexts_store_config: Union[KeyValueDriverConfig, Dict]) -> None
+  __init__(self, log_relative_path, texttotriplets_store_config: Union[KeyValueDriverConfig, Dict], triplettotexts_store_config: Union[KeyValueDriverConfig, Dict]) -> None
   formate_fields()
   from_dict(dict_config: Dict)
   to_str()
@@ -2467,7 +2467,7 @@ class "TreeDBConnectionConfig" as src.db_drivers.tree_driver.utils.TreeDBConnect
   to_str()
 }
 class "TreeDriver" as src.db_drivers.tree_driver.TreeDriver.TreeDriver {
-  connect(config: Union[Dict, TreeDriverConfig]) -> AbstractTreeDatabaseConnection
+  select(config: Union[Dict, TreeDriverConfig]) -> AbstractTreeDatabaseConnection
 }
 class "TreeDriverConfig" as src.db_drivers.tree_driver.TreeDriver.TreeDriverConfig {
   db_config : Union[Dict, TreeDBConnectionConfig]
@@ -2528,10 +2528,10 @@ class "TripletsFilter" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_
 class "TripletsFilterConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner.knowledge_retriever.filtering_methods.TripletsFilter.TripletsFilterConfig {
   accepted_triplets_types : List[Union[str, RelationType]]
   cache_table_name : str
-  log_path : str
+  log_relative_path : str
   max_k : int
   reranker_driver_config : Union[Dict, RerankerDriverConfig]
-  __init__(self, log_path, reranker_driver_config: Union[Dict, RerankerDriverConfig], accepted_triplets_types: List[Union[str, RelationType]], max_k: int, cache_table_name: str) -> None
+  __init__(self, log_relative_path, reranker_driver_config: Union[Dict, RerankerDriverConfig], accepted_triplets_types: List[Union[str, RelationType]], max_k: int, cache_table_name: str) -> None
   formate_fields() -> None
   from_dict(dict_config: Dict) -> BaseTripletsFilterConfig
   to_str()
@@ -2569,7 +2569,7 @@ class "VectorDBInstance" as src.db_drivers.vector_driver.utils.VectorDBInstance 
   to_dict()
 }
 class "VectorDriver" as src.db_drivers.vector_driver.VectorDriver.VectorDriver {
-  connect(config: Union[Dict, VectorDriverConfig], embedder: Union[None, EmbedderModel]) -> AbstractVectorDatabaseConnection
+  select(config: Union[Dict, VectorDriverConfig], embedder: Union[None, EmbedderModel]) -> AbstractVectorDatabaseConnection
 }
 class "VectorDriverConfig" as src.db_drivers.vector_driver.VectorDriver.VectorDriverConfig {
   db_config
@@ -2614,7 +2614,7 @@ class "WaterCirclesSearchConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner.
   do_text_pruning : bool
   episodic_num : int
   hyper_num : int
-  log_path : str
+  log_relative_path : str
   other_triplets_num : int
   strict_filter : bool
   formate_fields() -> None
@@ -2646,7 +2646,7 @@ class "WeakKGReasonerConfig" as src.pipelines.qa.kg_reasoning.weak_reasoner.Weak
   cache_table_name : str
   knowledge_comparator_config : Union[None, Dict, KnowledgeComparatorConfig]
   knowledge_retriever_config : Union[Dict, KnowledgeRetrieverConfig]
-  log_path : str
+  log_relative_path : str
   query_parser_config : Union[None, Dict, QueryLLMParserConfig]
   formate_fields()
   from_dict(dict_config: Dict)

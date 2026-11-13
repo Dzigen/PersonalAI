@@ -387,3 +387,21 @@ for db_vendor in AVAILABLE_TREE_DBS:
     for i in range(len(TREEDB_GETLEAFDESCENDANTS_TEST_CASES)):
         TREEDB_POPULATED_GETLEAFDESCENDANTS_TEST_CASES.append(
             TREEDB_GETLEAFDESCENDANTS_TEST_CASES[i] + (db_vendor,))
+
+###############################################################################################
+
+# conn_sequence, expected_is_open
+TREEDB_IS_OPEN_TEST_CASES = [
+    ([],),
+    (['close'],),
+    (['close', 'open'],),
+    (['open'],),
+    (['close', 'close'],),
+        
+]
+
+TREEDB_POPULATED_IS_OPEN_TEST_CASES = []
+for db_vendor in AVAILABLE_TREE_DBS:
+    for i in range(len(TREEDB_IS_OPEN_TEST_CASES)):
+        TREEDB_POPULATED_IS_OPEN_TEST_CASES.append(
+            TREEDB_IS_OPEN_TEST_CASES[i] + (db_vendor,))

@@ -1,4 +1,5 @@
 import sqlite3
+from sqlite3 import ProgrammingError, OperationalError
 from typing import List, Dict, Union
 from dataclasses import fields, asdict
 import os
@@ -9,6 +10,7 @@ from ...utils import restore_connection, retry
 
 
 class SQLite3TableConnector(AbstractTableDatabaseConnection):
+    DATABASE_KW = 'sqlite3'
 
     def __init__(self, config: Union[Dict, TableDBConnectionConfig] = DEFAULT_SQLITE3TABLE_CONFIG) -> None:
         if isinstance(config, dict):
@@ -20,14 +22,16 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
         # !!! PAY ATTENTION : single quite and double quote have different meaning during query-handling !!!
 
     def is_open(self) -> bool:
-        # TODO
-        raise NotImplementedError
+        try:
+            self.conn.execute("SELECT 1")
+            return True
+        except (AttributeError, ProgrammingError, OperationalError) as e:
+            return False
 
     @retry
     def open_connection(self) -> None:
-        if self.config.params.get('database_path', None) is not None:
-            os.makedirs(self.config.params['database_path'], exist_ok=True)
-        db_path = f"{self.config.params.get('database_path', '.')}/{self.config.db_info['db']}.db"
+        os.makedirs(f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}", exist_ok=True)
+        db_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}/{self.config.db_info['db']}.db"
         self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
 
@@ -38,7 +42,7 @@ class SQLite3TableConnector(AbstractTableDatabaseConnection):
         try:
             self.cursor.close()
             self.conn.close()
-        except (TypeError, sqlite3.ProgrammingError) as e:
+        except (AttributeError, TypeError, sqlite3.ProgrammingError) as e:
             pass
 
     def create_table(self, query: str) -> None:

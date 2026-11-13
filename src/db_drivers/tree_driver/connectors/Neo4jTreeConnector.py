@@ -1,5 +1,6 @@
 from typing import List, Dict, Union
 from neo4j import GraphDatabase
+from neo4j.exceptions import ServiceUnavailable, Neo4jError, DriverError
 import json
 
 from .configs import DEFAULT_NEO4JTREE_CONFIG
@@ -9,6 +10,7 @@ from ...utils import retry, restore_connection
 
 
 class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
+    DATABASE_KW = 'neo4j'
 
     def __init__(self, config: Union[Dict, TreeDBConnectionConfig] = DEFAULT_NEO4JTREE_CONFIG):
         if isinstance(config, dict):
@@ -25,7 +27,8 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
                 f"bolt://{self.config.host}:{self.config.port}",
                 auth=(self.config.params['user'], self.config.params['pwd']))
         except Exception as e:
-            print("Failed to create the driver:", e)
+            pass
+            #print("Failed to create the driver:", e)
 
         #
         self.execute(
@@ -50,12 +53,19 @@ class Neo4jTreeConnector(AbstractTreeDatabaseConnection):
             self.clear()
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            self.driver.verify_connectivity()
+        except (ServiceUnavailable, Neo4jError, DriverError) as e:
+            return False
+        else:
+            return True
 
     def close_connection(self) -> None:
-        if self.driver is not None:
+        try:
             self.driver.close()
+        except (AttributeError, TypeError, DriverError) as e:
+            pass
+            #print(f"Cannot reach Neo4j: {e}")
 
     @restore_connection
     def execute(self, query: str, db_flag: bool = True) -> List[object]:

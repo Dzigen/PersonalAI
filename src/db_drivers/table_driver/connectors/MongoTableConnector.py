@@ -11,6 +11,7 @@ from ....utils.data_structs import create_id
 
 
 class MongoTableConnector(AbstractTableDatabaseConnection):
+    DATABASE_KW = 'mongo'
 
     def __init__(self, config: Union[Dict, TableDBConnectionConfig] = DEFAULT_MONGOTABLE_CONFIG) -> None:
         if isinstance(config, dict):
@@ -22,10 +23,11 @@ class MongoTableConnector(AbstractTableDatabaseConnection):
     def is_open(self) -> bool:
         try:
             self._client.server_info()
-            return True
-        except pymongo.errors.ServerSelectionTimeoutError as err:
-            print(str(err))
+        except (AttributeError, pymongo.errors.ServerSelectionTimeoutError) as err:
+            #print(str(err))
             return False
+        else:
+            return True
 
     @retry
     def open_connection(self) -> None:

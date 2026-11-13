@@ -16,6 +16,7 @@ from ....agents.utils import AbstractAgentConnector
 from ....utils.cache_kv.CacheOperations import CacheOperations
 from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
+from ....environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 
 @dataclass
@@ -68,7 +69,7 @@ class QueryPreprocessorConfig(BaseComponentConfig, LanguageConfig):
             self.decomposition_config.formate_fields()
 
 
-class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
+class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс QueryPreprocessor-стадии (точка входа), отвечающей за предобработку исходного user-вопроса, с целью упрощения процесса поиска информации и повышения качества финального ответа системы.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -109,7 +110,7 @@ class QueryPreprocessor(CacheUtils, CacheOperations, AgentStatOperations):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
 

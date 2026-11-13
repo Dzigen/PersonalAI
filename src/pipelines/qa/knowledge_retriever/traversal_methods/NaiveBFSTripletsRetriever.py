@@ -34,7 +34,7 @@ class NaiveBFSGraphSearchConfig(BaseGraphSearchConfig):
     max_passed_nodes: int = 50
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     cache_table_name: str = 'qa_bfs_t_retriver_cache'
-    log_path: str = NAIVEBFS_RETRIEVER_LOG_PATH
+    log_relative_path: str = NAIVEBFS_RETRIEVER_LOG_PATH
 
     def to_str(self):
         str_accepted_nodes = ";".join(
@@ -73,17 +73,13 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             search_config.formate_fields()
         self.config: NaiveBFSGraphSearchConfig = search_config
 
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
 
         self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
 
-        self.log = Logger(search_config.log_path)
+        self.log = Logger(search_config.log_relative_path, search_config.log_base_path)
         self.verbose = search_config.verbose
         self.log_level = search_config.log_level
-
-    def close_connections(self):
-        if self.cachekv is not None:
-            self.cachekv.close_connection()
 
     def clear_traversal_cache(self) -> None:
         return None
@@ -111,7 +107,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                 # ограничиваем глубину обхода
                 continue
 
-            neighbours = self.kg_model.graph_struct.db_conn.get_adjacent_nodes(
+            neighbours = self.kgmodel_ref.graph_struct.db_conn.get_adjacent_nodes(
                 vertex, self.config.accepted_node_types)
             graph_queries_counter += 1
 
@@ -138,7 +134,7 @@ class NaiveBFSTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
                     D[neighbour_typedid] = D[vertex_typedid] + 1
                     visited.add(neighbour_typedid)
 
-                    traversed_triplets += self.kg_model.graph_struct.db_conn.get_triplets(
+                    traversed_triplets += self.kgmodel_ref.graph_struct.db_conn.get_triplets(
                         vertex, neighbour)
                     graph_queries_counter += 1
                     queue.append(neighbour)

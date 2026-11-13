@@ -28,8 +28,6 @@ class GigaChatConnector(AbstractAgentConnector):
         self.trials = config.ext_params.get('trials', 5)
         self.CONNECTOR_KW = 'gigachat'
 
-        self.open_connection()
-
     def open_connection(self):
         self.giga_model = GigaChat(
             credentials=self.config.credentials['token'], scope=self.config.credentials['scope'],

@@ -39,8 +39,8 @@ pipeline = transformers.pipeline(
 )
 agent = LLaMAagent("You are a helpful assistant", pipeline)
 
-log_path = "augment_DiaASQ/1"
-log = Logger(log_path)
+log_relative_path = "augment_DiaASQ/1"
+log = Logger(log_relative_path)
 
 with open("Clean_DiaASQ.json") as f:
     data = json.load(f)

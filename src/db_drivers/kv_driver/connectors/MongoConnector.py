@@ -13,6 +13,8 @@ from ...utils import restore_connection, retry
 
 class MongoKVConnector(AbstractKVDatabaseConnection):
 
+    DATABASE_KW = 'mongo'
+
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_MONGOKV_CONFIG) -> None:
         if isinstance(config, dict):
             config = KVDBConnectionConfig.from_dict(config)
@@ -24,10 +26,11 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def is_open(self) -> bool:
         try:
             self._client.server_info()
-            return True
         except (pymongo.errors.ServerSelectionTimeoutError, AttributeError) as err:
             # print(str(err))
             return False
+        else:
+            return True
 
     @retry
     def open_connection(self) -> None:
@@ -53,9 +56,9 @@ class MongoKVConnector(AbstractKVDatabaseConnection):
     def close_connection(self) -> None:
         try:
             self._client.close()
-            gc.collect()
             del self._collection
             del self._client
+            gc.collect()
         except (AttributeError, TypeError):
             pass
 

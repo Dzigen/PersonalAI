@@ -1,6 +1,7 @@
 db_info:
-  db: DefaultPersonalAIGraphDB
-  table: DefaultPersonalAIGraphTable
+  db: 'DefaultPersonalAIGraphDB'
+  table: 'DefaultPersonalAIGraphTable'
+  expected_db_base_path: '.'
 params: {}
 need_to_clear: false
 create_index: false

@@ -10,10 +10,10 @@ from .errors import ReturnStatus, STATUS_MESSAGE
 from .cache_kv import CacheKV
 from .tracing import accumulate_tasksolver_info
 from .agent_stat_analyzer import AgentStatAnalyzerConfig, AgentStatAnalyzer
+from .data_structs import BaseConfigOperations, LoggingConfig, LogLevel, Logger
+from ..environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 from ..agents.utils import AbstractAgentConnector, LLMInferenceStat
 from ..db_drivers.kv_driver import KeyValueDriverConfig
-from .data_structs import BaseConfigOperations
-from .data_structs import LoggingConfig, LogLevel, Logger
 
 
 @dataclass
@@ -61,7 +61,7 @@ class AgentTaskSolverConfig(LoggingConfig):
     inferencestat_table_name: str
 
 
-class AgentTaskSolver:
+class AgentTaskSolver(EnvironmentConnectionUtils):
     """Класс-обёртка, предназначенный для решения атомарной задачи на базе inference-операции LLM-агента.
 
     :param agent: Интерфейс взаимодействия с LLM-агентом.
@@ -97,7 +97,7 @@ class AgentTaskSolver:
         else:
             self.inference_stat_cache = None
 
-        self.log = Logger(self.config.log_path)
+        self.log = Logger(self.config.log_relative_path, self.config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 
@@ -279,7 +279,7 @@ class BaseAgentTaskConfigSelector(ABC):
     @staticmethod
     @abstractmethod
     def select(base_config_version: str, cache_table_name: str, inferencestat_table_name: str,
-               verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:
+               verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED, log_base_path: str = '.') -> AgentTaskSolverConfig:
         pass
 
 
@@ -309,7 +309,8 @@ class BaseAgentTasksConfig(BaseConfigOperations):
 
         return ";".join(stringified_config)
 
-    def versions_to_configs(self, verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED):
+    def versions_to_configs(self, verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED, 
+                            log_base_path: str = '.'):
         fields_iterator = fields(self)
         for field_object in fields_iterator:
             if field_object.name == 'task_to_selector_mapping':
@@ -320,5 +321,6 @@ class BaseAgentTasksConfig(BaseConfigOperations):
             if isinstance(field_value, str):
                 task_config_version = field_value
                 agent_task_config = self.task_to_selector_mapping[field_object.name].select(
-                    base_config_version=task_config_version, verbose=verbose, log_level=log_level)
+                    base_config_version=task_config_version, verbose=verbose, 
+                    log_level=log_level, log_base_path=log_base_path)
                 setattr(self, field_object.name, agent_task_config)

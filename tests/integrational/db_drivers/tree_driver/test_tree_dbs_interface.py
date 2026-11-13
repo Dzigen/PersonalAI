@@ -10,7 +10,7 @@ from .cases import TREEDB_POPULATED_CREATE_TEST_CASES, TREEDB_POPULATED_READ_TES
     TREEDB_POPULATED_UPDATE_TEST_CASES, TREEDB_POPULATED_DELETE_TEST_CASES, \
     TREEDB_POPULATED_COUNT_TEST_CASES, TREEDB_POPULATED_EXIST_TEST_CASES, \
     TREEDB_POPULATED_CLEAR_TEST_CASES, TREEDB_POPULATED_GETCHILDS_TEST_CASES, TREEDB_POPULATED_GETMAXDEPTH_TEST_CASES, \
-    TREEDB_POPULATED_GETLEAFDESCENDANTS_TEST_CASES
+    TREEDB_POPULATED_GETLEAFDESCENDANTS_TEST_CASES, TREEDB_POPULATED_IS_OPEN_TEST_CASES
 
 
 @pytest.mark.parametrize("parents_id, childs_data, exceptions, treedb_conn",
@@ -234,3 +234,20 @@ def test_getleafdescendants(create_pairs: List[Tuple[str,
             assert real_node.props == expected_descendants[real_node.id].props
             for k, v in expected_descendants[real_node.id].props.items():
                 assert v == real_node.props[k]
+
+@pytest.mark.parametrize("conn_sequence, treedb_conn", TREEDB_POPULATED_IS_OPEN_TEST_CASES, indirect=['treedb_conn'])
+def test_is_open(conn_sequence: List[str], treedb_conn: AbstractTreeDatabaseConnection):
+    assert treedb_conn.is_open()
+
+    for conn_kw in conn_sequence:
+        if conn_kw == 'open':
+            treedb_conn.open_connection()
+            assert treedb_conn.is_open()
+        elif conn_kw == 'close':
+            treedb_conn.close_connection()
+            assert not treedb_conn.is_open()
+        else:
+            raise ValueError
+
+    treedb_conn.open_connection()
+    assert treedb_conn.is_open()

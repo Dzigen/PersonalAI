@@ -21,7 +21,8 @@ class AgentTripletExtrTaskConfigSelector(BaseAgentTaskConfigSelector):
     def select(base_config_version: str = 'v1',
                cache_table_name: str = "mem_agent_tripletextr_task_cache",
                inferencestat_table_name: str = "mem_agent_tripletextr_task_stat",
-               verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> AgentTaskSolverConfig:
+               verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED, 
+               log_base_path: str = ".") -> AgentTaskSolverConfig:
         return AgentTaskSolverConfig(
             version=base_config_version,
             suites=AVAILABLE_TRIPLET_EXTRACT_TCONFIGS[base_config_version],
@@ -29,5 +30,6 @@ class AgentTripletExtrTaskConfigSelector(BaseAgentTaskConfigSelector):
             postprocess_answer_func=etriplets_custom_postprocess,
             cache_table_name=cache_table_name,
             inferencestat_table_name=inferencestat_table_name,
-            log_path=TRIPLET_EXTR_LOG_PATH,
+            log_base_path=log_base_path,
+            log_relative_path=TRIPLET_EXTR_LOG_PATH,
             verbose=verbose, log_level=log_level)

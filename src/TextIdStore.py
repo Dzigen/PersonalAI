@@ -3,14 +3,16 @@ from typing import List, Dict, Tuple, Union, Set
 from copy import deepcopy
 
 from .utils import Logger, Triplet
-from .utils.data_structs import BaseComponentConfig, Node, Relation, NODES_TYPES_MAP, RELATIONS_TYPES_MAP
+from .utils.data_structs import BaseComponentConfig, Node, Relation, NODES_TYPES_MAP, RELATIONS_TYPES_MAP, EnvironmentConfig
 from .db_drivers.kv_driver import KeyValueDriverConfig, KeyValueDriver, KeyValueDBInstance
 from .db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from .config import DEFAULT_TEXTTOTRIPLETS_STORE_CONFIG, DEFAULT_TRIPLETTOTEXTS_STORE_CONFIG, TEXTIDSTORE_LOG_PATH
+from .environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
+from .environment.config import PAI_FILESTRUCTURE
 
 
 @dataclass
-class TextIdStoreConfig(BaseComponentConfig):
+class TextIdStoreConfig(BaseComponentConfig, EnvironmentConfig):
     """Конфигурация хранилища отображений между исходными текстами и извлечёнными (из данных текстов) триплетами.
 
     :param texttotriplets_store_config: Конфигурация хранилища пар: идентификатор исходного фрагмента текста, сохранённого в модель памяти; идентификторы триплетов, которые были извлечены из данного текста и добавлены в граф знаний. Значение по умолчанию DEFAULT_TEXTTOTRIPLETS_STORE_CONFIG.
@@ -21,7 +23,7 @@ class TextIdStoreConfig(BaseComponentConfig):
     texttotriplets_store_config: Union[KeyValueDriverConfig, Dict] = field(default_factory=lambda: DEFAULT_TEXTTOTRIPLETS_STORE_CONFIG)
     triplettotexts_store_config: Union[KeyValueDriverConfig, Dict] = field(default_factory=lambda: DEFAULT_TRIPLETTOTEXTS_STORE_CONFIG)
 
-    log_path: str = TEXTIDSTORE_LOG_PATH
+    log_relative_path: str = TEXTIDSTORE_LOG_PATH
 
     def to_str(self):
         return f"{self.texttotriplets_store_config.to_str()}|{self.triplettotexts_store_config.to_str()}"
@@ -44,8 +46,17 @@ class TextIdStoreConfig(BaseComponentConfig):
         else:
             self.triplettotexts_store_config.formate_fields()
 
+    def synchronize_database(self):
+        textid_store_path = f"{self.pai_base_path}/{self.pai_name}/{PAI_FILESTRUCTURE['directories']['text2id']}"
 
-class TextIdStore:
+        self.texttotriplets_store_config.db_config.db_info['db'] = self.kg_related_database_name
+        self.texttotriplets_store_config.db_config.db_info['expected_db_base_path'] = textid_store_path
+
+        self.triplettotexts_store_config.db_config.db_info['db'] = self.kg_related_database_name
+        self.triplettotexts_store_config.db_config.db_info['expected_db_base_path'] = textid_store_path
+
+
+class TextIdStore(EnvironmentConnectionUtils):
     """Хранилище отображений между множеством исходных текстов (их идентификаторов), сохранённых в модель памяти, и множеством триплетов (их идентификаторов), которые представляют данные тексты в графе знаний.
 
     :param config: Конфигурация хранилища. Значение по умолчанию TextIdStoreConfig().
@@ -58,8 +69,8 @@ class TextIdStore:
         else:
             config.formate_fields()
 
-        self.textid_to_tripletsid_store: AbstractKVDatabaseConnection = KeyValueDriver.connect(config.texttotriplets_store_config)
-        self.tripletid_to_textsid_store: AbstractKVDatabaseConnection = KeyValueDriver.connect(config.triplettotexts_store_config)
+        self.textid_to_tripletsid_store: AbstractKVDatabaseConnection = KeyValueDriver.select(config.texttotriplets_store_config)
+        self.tripletid_to_textsid_store: AbstractKVDatabaseConnection = KeyValueDriver.select(config.triplettotexts_store_config)
 
     def save_info(self, text_id: str, triplets: List[Triplet]) -> None:
         self.save_tripletsinfo_by_textid(text_id, triplets)
@@ -180,6 +191,10 @@ class TextIdStore:
     def check_consistency(self) -> bool:
         # TODO
         raise NotImplementedError
+
+    def open_connections(self):
+        self.textid_to_tripletsid_store.open_connection()
+        self.tripletid_to_textsid_store.open_connection()
 
     def close_connections(self):
         self.textid_to_tripletsid_store.close_connection()

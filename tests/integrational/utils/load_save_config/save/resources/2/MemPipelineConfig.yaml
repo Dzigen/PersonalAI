@@ -1,10 +1,10 @@
 lang: auto
-log_path: log/memorize/main
+log_relative_path: log/memorize/main
 verbose: false
 log_level: 10
 extractor_config:
   lang: auto
-  log_path: log/memorize/extractor/main
+  log_relative_path: log/memorize/extractor/main
   verbose: false
   log_level: 10
   agent_gen_stategy: null
@@ -16,7 +16,7 @@ extractor_config:
   need_episodic: true
 updator_config:
   lang: auto
-  log_path: log/memorize/updator/main
+  log_relative_path: log/memorize/updator/main
   verbose: false
   log_level: 10
   agent_gen_stategy: null

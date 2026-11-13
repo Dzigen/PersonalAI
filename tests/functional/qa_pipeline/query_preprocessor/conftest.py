@@ -19,14 +19,14 @@ KV_CACHE_CONFIG = KeyValueDriverConfig(
         need_to_clear=False,
         params={
             'mongo_config': KVDBConnectionConfig(
-                host='localhost', port=27010,
+                host='localhost', port=27017,
                 db_info={'db': 'memorize_db', 'table': None},
                 params={'username': 'user',
                         'password': 'pass', 'max_storage': -1},
                 need_to_clear=False
             ),
             'redis_config': KVDBConnectionConfig(
-                host='localhost', port=6370,
+                host='localhost', port=6380,
                 db_info={'db': 0, 'table': None},
                 params={'ss_name': 'sorted_node_pairs',
                         'hs_name': 'node_pairs', 'max_storage': 50000000},
@@ -43,10 +43,8 @@ INFSTAT_CONFIG = AgentStatAnalyzerConfig(
             db_info={
                 'db': 'test_llmstatdb', 'table': 'test_llmstattable',
                 'table_info': LLMInferenceStat,
-                'create_table_query': CREATE_TABLE_SQLQUERY
-            },
-            params={
-                'database_path': f'{TEST_VOLUME_DIR}/sqlite3'
+                'create_table_query': CREATE_TABLE_SQLQUERY,
+                'expected_db_base_path': TEST_VOLUME_DIR
             },
             need_to_clear=False
         )
@@ -63,4 +61,6 @@ def agent_conn():
             credentials={"model": 'qwen2.5:7b', "host": 'localhost', "port": 11437},
             ext_params={"timeout": 560, "keep_alive": -1}))
 
-    return AgentDriver.connect(config)
+    conn = AgentDriver.select(config)
+    conn.open_connection()
+    return conn

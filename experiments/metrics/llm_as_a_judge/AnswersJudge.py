@@ -31,7 +31,7 @@ class AnswersJudge(CacheUtils):
         self.config = config
 
         self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.agent = AgentDriver.select(config.adriver_config)
 
         llmjudge_task_cache_config = None
         if cache_llm_inference:

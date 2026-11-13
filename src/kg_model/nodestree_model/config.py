@@ -17,8 +17,8 @@ NODESTREEM_AGENTASKS_SELECTORS_MAPPING: Dict[str, BaseAgentTaskConfigSelector] =
 TREE_DB_DEFAULT_DRIVER_CONFIG = TreeDriverConfig(
     db_vendor='kuzu',
     db_config=TreeDBConnectionConfig(
-        db_info={'db': 'DefaultDB', 'table': 'KuzuTree'},
-        params={'path': './personalai_tmp/memory_parts/tree_model/tree_struct/kuzu', 'buffer_pool_size': 1024**3,
+        db_info={'db': 'DefaultDB', 'table': 'KuzuTree', 'expected_db_base_path': './personalai_tmp'},
+        params={'buffer_pool_size': 1024**3,
                 'table_type_map': {
                     'nodes': {
                         'forward': {TreeNodeType.root.value: 'root', TreeNodeType.leaf.value: 'leaf', TreeNodeType.summarized.value: 'summarized'}
@@ -33,18 +33,15 @@ TREE_DB_DEFAULT_DRIVER_CONFIG = TreeDriverConfig(
 LEAFNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING = {
     'leaf_dense_nodes': VectorDriverConfig(
         db_vendor='chroma', db_config=VectorDBConnectionConfig(
-            conn={'path': "./personalai_tmp/graph_structures/tree_model/vectorized_leaf_nodes/chroma/default_densedb"},
             params={"hnsw:space": "ip", "hnsw:M": 4096},
-            db_info={'db': 'default_db', 'table': "vectorized_leafnodes"},
+            db_info={'db': 'default_db', 'table': "vectorized_leafnodes", 'expected_db_base_path': './personalai_tmp'},
             need_to_clear=False
         )
     ),
     'leaf_bm25_nodes': VectorDriverConfig(
         db_vendor='inmemory', vector_category='sparse_bm25', db_config=VectorDBConnectionConfig(
-            db_info={'db': 'default_db', 'table': "sparsebm25_lnodes"},
-            params={'store_dump_name': 'inmemory_bm25', 'load_from_disk': True, 'load_dump_name': None,
-                    'load_dump_dir': "./personalai_tmp/graph_structures/tree_model/vectorized_leaf_nodes/inmemory_bm25", 'save_on_disk': True,
-                    'save_dump_dir': "./personalai_tmp/graph_structures/tree_model/vectorized_leaf_nodes/inmemory_bm25"},
+            db_info={'db': 'default_db', 'table': "sparsebm25_lnodes", 'expected_db_base_path': './personalai_tmp'},
+            params={'save_on_disk': True, 'rewrite': True},
             need_to_clear=False
         )
     )
@@ -63,18 +60,15 @@ LNT_RERANKDRIVER_DEFAULT_CONFIG = RerankerDriverConfig(
 SUMMNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING = {
     'summ_dense_nodes': VectorDriverConfig(
         db_vendor='chroma', db_config=VectorDBConnectionConfig(
-            conn={'path': "./personalai_tmp/graph_structures/tree_model/vectorized_summ_nodes/chroma/default_densedb"},
             params={"hnsw:space": "ip", "hnsw:M": 4096},
-            db_info={'db': 'default_db', 'table': "vectorized_summarizednodes"},
+            db_info={'db': 'default_db', 'table': "vectorized_summarizednodes", 'expected_db_base_path': './personalai_tmp'},
             need_to_clear=False
         )
     ),
     'summ_bm25_nodes': VectorDriverConfig(
         db_vendor='inmemory', vector_category='sparse_bm25', db_config=VectorDBConnectionConfig(
-            db_info={'db': 'default_db', 'table': "sparsebm25_snodes"},
-            params={'store_dump_name': 'inmemory_bm25', 'load_from_disk': True, 'load_dump_name': None,
-                    'load_dump_dir': "./personalai_tmp/graph_structures/tree_model/vectorized_summ_nodes/inmemory_bm25", 'save_on_disk': True,
-                    'save_dump_dir': "./personalai_tmp/graph_structures/tree_model/vectorized_summ_nodes/inmemory_bm25"},
+            db_info={'db': 'default_db', 'table': "sparsebm25_snodes", 'expected_db_base_path': './personalai_tmp'},
+            params={'load_from_disk': True, 'save_on_disk': True, 'rewrite': True},
             need_to_clear=False
         )
     )

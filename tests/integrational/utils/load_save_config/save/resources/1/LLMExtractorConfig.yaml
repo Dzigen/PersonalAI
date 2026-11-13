@@ -1,5 +1,5 @@
 lang: auto
-log_path: log/memorize/extractor/main
+log_relative_path: log/memorize/extractor/main
 verbose: false
 log_level: 10
 agent_gen_stategy: null

@@ -47,8 +47,8 @@ class AgentDriverConfig(BaseConfigOperations):
 class AgentDriver:
     """Компоненты для инициализации коннектора к LLM-агенту по заданной конфигурации."""
     @staticmethod
-    def connect(config: Union[Dict, AgentDriverConfig] = AgentDriverConfig()) -> AbstractAgentConnector:
-        """Создаёт и инициализирует коннектор к LLM-агенту по заданной конфигурации.
+    def select(config: Union[Dict, AgentDriverConfig] = AgentDriverConfig()) -> AbstractAgentConnector:
+        """Метод предназначен для выбора способа подключения к LLM API.
 
         :param config: Конфигурация драйвера либо словарь с параметрами.
         :type config: Union[Dict, AgentDriverConfig]

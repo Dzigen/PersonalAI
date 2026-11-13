@@ -1,4 +1,4 @@
-log_path: log/qa/kg_reasoner/weak/knowledge_retriever/naivebfs_retriever
+log_relative_path: log/qa/kg_reasoner/weak/knowledge_retriever/naivebfs_retriever
 verbose: false
 log_level: 10
 accepted_node_types:

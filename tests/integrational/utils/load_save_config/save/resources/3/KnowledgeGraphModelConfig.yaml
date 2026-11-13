@@ -1,8 +1,8 @@
-log_path: log/kg_model/main
+log_relative_path: log/kg_model/main
 verbose: false
 log_level: 10
 graph_struct_config:
-  log_path: log/kg_model/graph
+  log_relative_path: log/kg_model/graph
   verbose: false
   log_level: 10
   driver_config:
@@ -32,7 +32,7 @@ graph_struct_config:
       host: null
       port: null
 graph_embeddings_config:
-  log_path: log/kg_model/embeddings
+  log_relative_path: log/kg_model/embeddings
   verbose: false
   log_level: 10
   nodesdb_driver_configs_mapping:

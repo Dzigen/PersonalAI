@@ -6,7 +6,7 @@ from haystack_integrations.components.retrievers.opensearch import OpenSearchBM2
 from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
 from haystack.document_stores.types import DuplicatePolicy
 from haystack import Document
-from opensearchpy.exceptions import TransportError, ConnectionError, ConnectionTimeout
+from opensearchpy.exceptions import TransportError, ConnectionError, ConnectionTimeout, SSLError, AuthenticationException
 
 from .configs import DEFAULT_OPENSEARCH_BM25_CONFIG
 from ...utils import VectorDBConnectionConfig, AbstractVectorDatabaseConnection, VectorDBInstance
@@ -15,6 +15,7 @@ from .....utils.errors import ReturnInfo
 
 
 class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
+    DATABASE_KW = 'opensearch'
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_OPENSEARCH_BM25_CONFIG, **kwargs) -> None:
         if isinstance(config, dict):
@@ -39,16 +40,22 @@ class OpenSeachBM25Connector(AbstractVectorDatabaseConnection):
             ssl_assert_hostname=False,
             ssl_show_warn=False
         )
+        self.db_conn._ensure_initialized()
         self.retriever = OpenSearchBM25Retriever(document_store=self.db_conn)
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            return self.db_conn._client.ping()
+        except (ConnectionError, TransportError, SSLError, AuthenticationException, AttributeError) as e:
+            return False
 
     def close_connection(self) -> None:
         try:
-            self.db_conn._client.transport.close()
-        except TypeError:
+            self.db_conn._client.close()
+            #self.db_conn._client = None
+            del self.db_conn
+            del self.retriever
+        except (TypeError, AttributeError):
             pass
 
     @restore_connection

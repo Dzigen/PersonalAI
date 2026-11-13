@@ -35,5 +35,5 @@ class AgentSummNTaskConfigSelector:
             formate_context_func=summn_custom_formate, postprocess_answer_func=summn_custom_postprocess,
             cache_table_name=cache_table_name,
             inferencestat_table_name=inferencestat_table_name,
-            log_path=SUMM_NODES_LOG_PATH,
+            log_relative_path=SUMM_NODES_LOG_PATH,
             verbose=verbose, log_level=log_level)

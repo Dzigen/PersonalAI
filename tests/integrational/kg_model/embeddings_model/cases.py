@@ -9,7 +9,9 @@ from ..instances import SIMPLE_TRIPLET1, THESIS_TRIPLET2, EPISODIC_TRIPLET1, \
             SIMPLE_TRIPLET1_2, OBJECT_NODE1, OBJECT_NODE2, OBJECT_NODE3
 
 # TO CHANGE
-AVAILABLE_EMBEDDING_MODELS = ['chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant']  # 'chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant' | 'milvus'
+AVAILABLE_DENSE_DBS = ['chroma']  # 'chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant' | 'milvus'
+
+AVAILABLE_SPARSEBM25_DBS = ['inmemory']  # 'opensearch', 'elasticsearch', 'inmemory', 'weaviate'
 
 # embeddings-model tests
 # init_triplets, add_nodes_flag, expected_init_count, expected_creation_info
@@ -114,10 +116,11 @@ EM_CREATE_TEST_CASES = [
 ]
 
 EM_POPULATED_CREATE_TEST_CASES = []
-for db_vendor in AVAILABLE_EMBEDDING_MODELS:
-    for i in range(len(EM_CREATE_TEST_CASES)):
-        EM_POPULATED_CREATE_TEST_CASES.append(
-            EM_CREATE_TEST_CASES[i] + [db_vendor])
+for densedb_vendor in AVAILABLE_DENSE_DBS:
+    for sparsedb_vendor in AVAILABLE_SPARSEBM25_DBS:
+      for i in range(len(EM_CREATE_TEST_CASES)):
+          EM_POPULATED_CREATE_TEST_CASES.append(
+              EM_CREATE_TEST_CASES[i] + [f"{densedb_vendor}/{sparsedb_vendor}"])
 
 print("Количество порождённых тестов для EM_CREATE:",len(EM_POPULATED_CREATE_TEST_CASES))
 
@@ -174,10 +177,11 @@ EM_DELETE_TEST_CASES = [
 ]
 
 EM_POPULATED_DELETE_TEST_CASES = []
-for db_vendor in AVAILABLE_EMBEDDING_MODELS:
-    for i in range(len(EM_DELETE_TEST_CASES)):
-        EM_POPULATED_DELETE_TEST_CASES.append(
-            EM_DELETE_TEST_CASES[i] + [db_vendor])
+for densedb_vendor in AVAILABLE_DENSE_DBS:
+    for sparsedb_vendor in AVAILABLE_SPARSEBM25_DBS:
+      for i in range(len(EM_DELETE_TEST_CASES)):
+          EM_POPULATED_DELETE_TEST_CASES.append(
+              EM_DELETE_TEST_CASES[i] + [f"{densedb_vendor}/{sparsedb_vendor}"])
 
 print("Количество порождённых тестов для EM_DELETE:",
       len(EM_POPULATED_DELETE_TEST_CASES))

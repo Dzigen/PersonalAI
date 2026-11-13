@@ -22,6 +22,7 @@ from .....utils.logger import LogLevel
 from .....utils.cache_kv import CacheUtils
 from .....db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 from .....db_drivers.vector_driver import VectorDBInstance, VectorRetriveComposer
+from .....environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 # TODO: дописать комментариии к AStarGraphSearchConfig-датаклассу
 
@@ -52,7 +53,7 @@ class AStarMetricsConfig(BaseConfigOperations):
         pass
 
 
-class AStarMetrics:
+class AStarMetrics(EnvironmentConnectionUtils):
     """Класс предназначен для расчёта d- и h-метрик, используемых в рамках A*-алгоритма поиска.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -81,10 +82,10 @@ class AStarMetrics:
         self.config = config
 
         self.accepted_node_types = accepted_node_types
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
 
         # проверка: в указанной бд должны содержатся плотные (dense) векторные предаставления вершин, иначе вызываем исключение
-        for _, v_composer in self.kg_model.graph_embeddings.nodes_vcomposers.items():
+        for _, v_composer in self.kgmodel_ref.graph_embeddings.nodes_vcomposers.items():
             if not hasattr(v_composer.vdb_conn_mapping[self.config.nodes_vdb_name], 'embedder'):
                 raise ValueError
 
@@ -101,10 +102,17 @@ class AStarMetrics:
         self.verbose = verbose
         self.log_level = log_level
 
+    def open_connections(self):
+        if self.cache is not None:
+            for conn in self.cache.values():
+                if not conn.is_open():
+                    conn.open_connection()
+
     def close_connections(self):
         if self.cache is not None:
             for conn in self.cache.values():
-                conn.close_connection()
+                if conn.is_open():
+                    conn.close_connection()
 
     def init_caches_stats(self) -> None:
         self.cache_info = {
@@ -120,22 +128,19 @@ class AStarMetrics:
             if self.config.h_metric_name in ['ip', 'weight_with_short_path', 'avg_weighted_with_short_path']:
                 ip_config = deepcopy(kvdriver_config)
                 ip_config.db_config.db_info['table'] = 'astar_retriever_ip'
-                self.cache['ip'] = KeyValueDriver.connect(ip_config)
+                self.cache['ip'] = KeyValueDriver.select(ip_config)
             if self.config.h_metric_name in ['weight_with_short_path', 'avg_weighted_with_short_path']:
                 sp_config = deepcopy(kvdriver_config)
                 sp_config.db_config.db_info['table'] = 'astar_retriever_bfsshortpath'
-                self.cache['bfs_short_path'] = KeyValueDriver.connect(
-                    sp_config)
+                self.cache['bfs_short_path'] = KeyValueDriver.select(sp_config)
 
                 sp_config = deepcopy(kvdriver_config)
                 sp_config.db_config.db_info['table'] = 'astar_retriever_weightwithshortpath'
-                self.cache['weight_with_short_path'] = KeyValueDriver.connect(
-                    sp_config)
+                self.cache['weight_with_short_path'] = KeyValueDriver.select(sp_config)
 
                 sp_config = deepcopy(kvdriver_config)
                 sp_config.db_config.db_info['table'] = 'astar_retriever_avgweightedwithshortpath'
-                self.cache['avg_weighted_with_short_path'] = KeyValueDriver.connect(
-                    sp_config)
+                self.cache['avg_weighted_with_short_path'] = KeyValueDriver.select(sp_config)
 
         self.init_caches_stats()
 
@@ -152,7 +157,7 @@ class AStarMetrics:
         if node1.id != node2.id:
             instances: List[VectorDBInstance] = []
             for node in [node1, node2]:
-                instances.append(self.kg_model.graph_embeddings.nodes_vcomposers[node.type].read(
+                instances.append(self.kgmodel_ref.graph_embeddings.nodes_vcomposers[node.type].read(
                     [node.id], vdb_name=self.config.nodes_vdb_name, includes=['embeddings'])[0])
             # calculation ip distance
             try:
@@ -251,7 +256,7 @@ class AStarMetrics:
             vertex = queue.popleft()
             vertex_typedid = vertex.to_str()
 
-            neighbours = self.kg_model.graph_struct.db_conn.get_adjacent_nodes(
+            neighbours = self.kgmodel_ref.graph_struct.db_conn.get_adjacent_nodes(
                 vertex, self.accepted_node_types)
             graph_queries_counter += 1
             for neighbour in neighbours:
@@ -346,7 +351,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
     accepted_node_types: List[Union[str, NodeType]] = field(default_factory=lambda: [
         NodeType.object, NodeType.hyper, NodeType.episodic])  # NodeType.time
     cache_table_name: str = 'qa_astar_t_retriever_cache'
-    log_path: str = ASTAR_RETRIEVER_LOG_PATH
+    log_relative_path: str = ASTAR_RETRIEVER_LOG_PATH
 
     def to_str(self):
         str_accepted_nodes = ";".join(sorted(list(map(lambda v: v.value, self.accepted_node_types))))
@@ -370,7 +375,7 @@ class AStarGraphSearchConfig(BaseGraphSearchConfig):
             self.metrics_config.formate_fields()
 
 
-class AStarGraphSearch:
+class AStarGraphSearch(EnvironmentConnectionUtils):
     """Класс предназначен для запуска A*-алгоритма с целью извлечения триплетов из графового хранилища триплетов.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -388,7 +393,7 @@ class AStarGraphSearch:
     def __init__(self, kg_model: KnowledgeGraphModel, log: Logger, search_config: AStarGraphSearchConfig = AStarGraphSearchConfig(),
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = None, verbose: bool = False, log_level: LogLevel = LogLevel.DISABLED) -> None:
         self.config = search_config
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
         self.metrics = AStarMetrics(
             kg_model, self.config.accepted_node_types, log,
             self.config.metrics_config, cache_kvdriver_config, verbose, log_level)
@@ -396,9 +401,6 @@ class AStarGraphSearch:
         self.log = log
         self.verbose = verbose
         self.log_level = log_level
-
-    def close_connections(self):
-        self.metrics.close_connections()
 
     def filter_adjacent_nodes(self, adjacent_nodes: List[NodeInfo], start_node: NodeInfo, end_node: NodeInfo) -> List[NodeInfo]:
         ntypes_freq = dict(Counter([node_info.type for node_info in adjacent_nodes]))
@@ -422,7 +424,7 @@ class AStarGraphSearch:
             accpeted_nodes_types = list(set(self.config.accepted_node_types).intersection(set(composers_subset_ids.keys())))
 
             filtered_nodes_vinstances = VectorRetriveComposer.perform(
-                vector_composers=self.kg_model.graph_embeddings.nodes_vcomposers,
+                vector_composers=self.kgmodel_ref.graph_embeddings.nodes_vcomposers,
                 accepted_composer_names=accpeted_nodes_types,
                 composers_vdb_name=self.config.metrics_config.nodes_vdb_name,
                 query_instance=query_vinst, n_results=self.config.max_adjanced_nodes,
@@ -472,7 +474,7 @@ class AStarGraphSearch:
                 self.log.debug("FOUND END-NODE", verbose=self.verbose, log_level=self.log_level)
                 break
 
-            adj_nodes = self.kg_model.graph_struct.db_conn.get_adjacent_nodes(
+            adj_nodes = self.kgmodel_ref.graph_struct.db_conn.get_adjacent_nodes(
                 current_node, self.config.accepted_node_types)
             self.log.debug(f"adjenced nodes amount: {len(adj_nodes)}",verbose=self.verbose, log_level=self.log_level)
             self.log.debug("adjenced nodes: %s", adj_nodes, verbose=self.verbose, log_level=self.log_level)
@@ -528,8 +530,8 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
             search_config.formate_fields()
         self.config: AStarGraphSearchConfig = search_config
 
-        self.kg_model = kg_model
-        self.log = Logger(search_config.log_path)
+        self.kgmodel_ref = kg_model
+        self.log = Logger(search_config.log_relative_path, search_config.log_base_path)
 
         self.graph_searcher = AStarGraphSearch(
             kg_model, self.log, search_config, cache_kvdriver_config,
@@ -540,11 +542,6 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
 
         self.verbose = search_config.verbose
         self.log_level = search_config.log_level
-
-    def close_connections(self):
-        if self.cachekv is not None:
-            self.cachekv.close_connection()
-        self.graph_searcher.close_connections()
 
     def clear_traversal_cache(self) -> None:
         self.graph_searcher.metrics.clear_kv_caches()
@@ -621,7 +618,7 @@ class AStarTripletsRetriever(AbstractTripletsRetriever, CacheUtils):
         unique_triplets_map: Dict[str, Triplet] = dict()
         for raw_nodes_pair in unique_nodes_pairs:
             node1, node2 = from_str_to_nodeinfo(raw_nodes_pair[0]), from_str_to_nodeinfo(raw_nodes_pair[1])
-            triplets = self.kg_model.graph_struct.db_conn.get_triplets(node1, node2)
+            triplets = self.kgmodel_ref.graph_struct.db_conn.get_triplets(node1, node2)
             for triplet in triplets:
                 unique_triplets_map[triplet.relation.get_typedid()] = triplet
         unique_triplets: List[Triplet] = list(unique_triplets_map.values())

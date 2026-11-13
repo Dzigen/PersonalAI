@@ -12,7 +12,7 @@ from ..utils.data_structs import BaseConfigOperations
 class BaseDatabaseConfig(BaseConfigOperations):
     """Базовая конфигурация для подключения к базе данных.
 
-    :param db_info: Словарь, который должен хранить название базы данных и таблицы, к которой нужно подключиться. Значение по умолчанию {'db': 'DefaultPersonalAIDB', 'table': 'DefaultPersonalAITable'}.
+    :param db_info: Словарь, который должен хранить название базы данных и таблицы, к которой нужно подключиться. Значение по умолчанию {'db': 'DefaultPersonalAIDB', 'table': 'DefaultPersonalAITable', 'expected_db_base_path': '.'}.
     :type db_info: Dict
     :param params: Набор дополнительных гиперпараметров, который необходим для подключения и настройки бд. Значения по умолчанию dict().
     :type params: Dict
@@ -25,7 +25,7 @@ class BaseDatabaseConfig(BaseConfigOperations):
     :param trials: ... . Значение по умолчанию 5.
     :type trials: int
     """
-    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIDB', 'table': 'DefaultPersonalAITable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIDB', 'table': 'DefaultPersonalAITable', 'expected_db_base_path': '.'})
     params: Dict = field(default_factory=lambda: dict())
     need_to_clear: bool = False
     create_index: bool = False
@@ -36,7 +36,10 @@ class BaseDatabaseConfig(BaseConfigOperations):
     def from_dict(dict_config: Dict):
         pass
 
-
+    def update_db_location(self, db_path: str, db_name: str) -> None:
+        self.db_info['expected_db_base_path'] = db_path
+        self.db_info['db'] = db_name
+        
 class AbstractDatabaseCRUD(ABC):
     """Абстрактный интерфейс CRUD-операций над БД.
 
@@ -154,7 +157,8 @@ class AbstractDatabaseInit(ABC):
 
 class AbstractDatabaseConnection(AbstractDatabaseCRUD, AbstractDatabaseExtendedOpt, AbstractDatabaseInit):
     """Интерфейс, который должен поддерживать класс взаимодействия с определённой базой данных."""
-    pass
+
+    DATABASE_KW: str
 
     def __enter__(self):
         return self

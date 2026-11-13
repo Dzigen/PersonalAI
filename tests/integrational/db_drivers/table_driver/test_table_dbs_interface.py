@@ -9,7 +9,7 @@ from src.db_drivers.utils import AbstractDatabaseConnection
 
 from .cases import TABLEDB_POPULATED_CREATE_TEST_CASES, TABLEDB_POPULATED_DELETE_TEST_CASES, \
     TABLEDB_POPULATED_READ_TEST_CASES, TABLEDB_POPULATED_COUNT_TEST_CASES, TABLEDB_POPULATED_EXIST_TEST_CASES, \
-    TABLEDB_POPULATED_CLEAR_TEST_CASES
+    TABLEDB_POPULATED_CLEAR_TEST_CASES, TABLEDB_POPULATED_IS_OPEN_TEST_CASES
 
 
 @pytest.mark.parametrize("input, expected, tabledb_conn",
@@ -112,3 +112,20 @@ def test_clear(instances: List[TableDBInstance], tabledb_conn: AbstractDatabaseC
 
     tabledb_conn.clear()
     assert tabledb_conn.count_items() == 0
+
+@pytest.mark.parametrize("conn_sequence, tabledb_conn", TABLEDB_POPULATED_IS_OPEN_TEST_CASES, indirect=['tabledb_conn'])
+def test_is_open(conn_sequence: List[str], tabledb_conn: AbstractDatabaseConnection):
+    assert tabledb_conn.is_open()
+
+    for conn_kw in conn_sequence:
+        if conn_kw == 'open':
+            tabledb_conn.open_connection()
+            assert tabledb_conn.is_open()
+        elif conn_kw == 'close':
+            tabledb_conn.close_connection()
+            assert not tabledb_conn.is_open()
+        else:
+            raise ValueError
+
+    tabledb_conn.open_connection()
+    assert tabledb_conn.is_open()

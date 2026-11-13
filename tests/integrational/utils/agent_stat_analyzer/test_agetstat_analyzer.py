@@ -10,7 +10,6 @@ from src.utils.agent_stat_analyzer import AgentStatAnalyzer
 
 from .cases import ASTATANALYZ_POPULATED_CALC_TEST_CASES
 
-
 @pytest.mark.parametrize("instances, expected, agentstat_conn",
                          ASTATANALYZ_POPULATED_CALC_TEST_CASES,
                          indirect=['agentstat_conn'])

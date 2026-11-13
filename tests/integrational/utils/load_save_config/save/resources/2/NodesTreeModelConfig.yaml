@@ -1,5 +1,5 @@
 lang: auto
-log_path: log/kg_model/nodes_tree
+log_relative_path: log/kg_model/nodes_tree
 verbose: false
 log_level: 10
 leafnodes_vdb_driver_configs_mapping:

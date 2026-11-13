@@ -1,12 +1,11 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Union, List, Dict
-import gc
+from typing import  Union,  Dict, Tuple, List
 from copy import deepcopy
 
 from .configs import QA_MAIN_LOG_PATH
 from .utils import QAPipelineStages
 from .kg_reasoning.utils import QueryReasoningInfo
-from .kg_reasoning import KnowledgeGraphReasonerConfig, KnowledgeGraphReasoner
+from .kg_reasoning import KnowledgeGraphReasoner, KnowledgeGraphReasonerConfig
 from .query_preprocessing import QueryPreprocessor, QueryPreprocessorConfig
 from .answers_aggregation import AnswersAggregator, AnswersAggregatorConfig
 from ...kg_model import KnowledgeGraphModel
@@ -18,7 +17,7 @@ from ...db_drivers.kv_driver import KeyValueDriverConfig
 from ...utils.cache_kv.CacheOperations import CacheOperations
 from ...utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ...utils.agent_stat_analyzer import AgentStatAnalyzerConfig
-
+from ...environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class QAPipelineConfig(BaseComponentConfig, LanguageConfig):
@@ -42,7 +41,7 @@ class QAPipelineConfig(BaseComponentConfig, LanguageConfig):
         default_factory=lambda: AnswersAggregatorConfig())
 
     cache_table_name: str = 'qa_pipeline_cache'
-    log_path: str = QA_MAIN_LOG_PATH
+    log_relative_path: str = QA_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.preprocessor_config.to_str()}|{self.reasoner_config.to_str()}|{self.aggregator_config.to_str()}"
@@ -71,7 +70,7 @@ class QAPipelineConfig(BaseComponentConfig, LanguageConfig):
             self.aggregator_config.formate_fields()
 
 
-class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
+class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс QA-конвейера, отвечающий за поиск информации в графе знаний и генерацию ответов на вопросы.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -107,7 +106,7 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
 
@@ -230,7 +229,3 @@ class QAPipeline(CacheUtils, CacheOperations, AgentStatOperations):
 
         return final_answer, rinfo, module_trace
 
-    def close_connections(self):
-        self.stages.close_connections()
-        if self.cachekv is not None:
-            self.cachekv.close_connection()

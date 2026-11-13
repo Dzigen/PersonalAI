@@ -9,6 +9,8 @@ from ...utils import restore_connection, retry
 
 
 class RedisKVConnector(AbstractKVDatabaseConnection):
+    DATABASE_KW = 'redis'
+    
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_REDISKV_CONFIG):
         if isinstance(config, dict):
             config = KVDBConnectionConfig.from_dict(config)
@@ -44,13 +46,15 @@ class RedisKVConnector(AbstractKVDatabaseConnection):
     def is_open(self):
         try:
             self.conn.ping()
-            return True
-        except (redis.exceptions.ConnectionError, ConnectionRefusedError):
+        except (redis.exceptions.ConnectionError, ConnectionRefusedError, AttributeError):
             return False
+        else:
+            return True
 
     def close_connection(self):
         try:
             self.conn.close()
+            del self.conn
         except (AttributeError, TypeError):
             pass
 

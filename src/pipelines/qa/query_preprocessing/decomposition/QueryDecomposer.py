@@ -14,7 +14,7 @@ from .....db_drivers.kv_driver import KeyValueDriverConfig
 from .....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from .....utils.cache_kv.CacheOperations import CacheOperations
 from .....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
-
+from .....environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class QueryDecomposerConfig(BaseComponentConfig, LanguageConfig):
@@ -30,7 +30,7 @@ class QueryDecomposerConfig(BaseComponentConfig, LanguageConfig):
     agent_gen_stategy: Union[None, Dict[str, Union[str, int, float]]] = None
     agent_tasks_config: Union[Dict, QueryDecomposerAgentTasksConfig] = field(default_factory=lambda: QueryDecomposerAgentTasksConfig())
     cache_table_name: str = 'qp_decomposition_stage_cache'
-    log_path: str = QD_MAIN_LOG_PATH
+    log_relative_path: str = QD_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
@@ -47,7 +47,7 @@ class QueryDecomposerConfig(BaseComponentConfig, LanguageConfig):
             self.agent_tasks_config = QueryDecomposerAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
-class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
+class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations, EnvironmentConnectionUtils):
     """Класс, реализующий одну из операций по форматированию/предобработке user-вопроса в рамках QueryPreprocessor-стадии. Данный класс выполняет декомпозицию сложного/составного user-вопроса на независимые/простые под-вопросы.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -71,7 +71,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level, self.config.log_base_path)
 
         self.cachekv = self.init_cachekv(cache_kvdriver_config, config.cache_table_name)
 
@@ -89,7 +89,7 @@ class QueryDecomposer(CacheUtils, CacheOperations, AgentStatOperations):
             )
         )
 
-        self.log = Logger(self.config.log_path)
+        self.log = Logger(self.config.log_relative_path, self.config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 

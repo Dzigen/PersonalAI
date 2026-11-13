@@ -6,7 +6,6 @@ from copy import deepcopy
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, PointIdsList, Filter, HasIdCondition
 from qdrant_client.http.exceptions import ResponseHandlingException, UnexpectedResponse
-
 from haystack_integrations.document_stores.weaviate.document_store import generate_uuid5
 
 from .configs import DEFAULT_QDRANT_CONFIG
@@ -21,6 +20,7 @@ QD_DISTANCE_KW_MAPPING = {
 
 
 class QdrantVectorConnector(AbstractVectorDatabaseConnection):
+    DATABASE_KW = 'qdrant'
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_QDRANT_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
@@ -51,23 +51,27 @@ class QdrantVectorConnector(AbstractVectorDatabaseConnection):
             )
 
     @retry
-    def open_connection(self) -> ReturnInfo:
+    def open_connection(self) -> None:
         url = f"http://{self.config.conn['host']}:{self.config.conn['port']}"
         self.db_conn = QdrantClient(url=url, timeout=30.0)
         self.create_collection()
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            return not self.db_conn._client.closed
+        except (UnexpectedResponse, AttributeError) as e:
+            # These are the exceptions that `qdrant-client` re‑exports from httpx.
+            return False
 
-    def close_connection(self) -> ReturnInfo:
+    def close_connection(self) -> None:
         try:
             self.db_conn.close()
-        except TypeError:
+            del self.db_conn
+        except (TypeError, AttributeError):
             pass
 
     @restore_connection
-    def create(self, items: List[VectorDBInstance]) -> ReturnInfo:
+    def create(self, items: List[VectorDBInstance]) -> None:
         # validation
         for item in items:
             if not isinstance(item.id, str):

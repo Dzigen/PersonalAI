@@ -23,12 +23,16 @@ for retrieval_config in KG_TRAVERSE_METHODS:
                 f_name, f_config = filter_method_config[0], deepcopy(filter_method_config[1])
 
                 reasoner_config = MediumKGReasonerConfig(
+                    lang=language,
                     knowledge_retriever_config=KnowledgeRetrieverConfig(
                         retriever_method=t_name,
                         retriever_config=t_config,
                         filter_method=f_name,
                         filter_config=f_config
-                    )
+                    ),
+                    log_base_path=TEST_VOLUME_DIR
                 )
+                reasoner_config.synchronize_logging()
+                reasoner_config.synchronize_language()
 
                 POPULATED_MEDIUM_REASONER_TEST_CASES.append([reasoner_config, query, language])

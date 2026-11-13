@@ -25,8 +25,6 @@ class OpenAIConnector(AbstractAgentConnector):
         self.trials = config.ext_params.get('max_retries', 5)
         self.CONNECTOR_KW = 'openai'
 
-        self.open_connection()
-
     def open_connection(self):
         self.client = OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY", self.config.credentials['token']),

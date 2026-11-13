@@ -10,7 +10,7 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from src.db_drivers.kv_driver.utils import KeyValueDBInstance
 from src.agents.connectors.OLlamaConnector import DEFAULT_OLLAMA_CONFIG
 
-
+# 'inmemory_kv', 'redis', 'mongo', 'mixed_kv'
 AVAILABLE_KV_DBS = ['inmemory_kv', 'redis', 'mongo', 'mixed_kv']
 
 KEY_EMPTY = list()
@@ -24,7 +24,7 @@ KEY_HASH1_ORDER_MODIF = hashlib.sha1(''.join(list(map(lambda k: hashlib.sha1(
     k.encode()).hexdigest(), KEY1_ORDER_MODIF))).encode()).hexdigest()
 
 MODIF_OBJECT1 = copy.deepcopy(DEFAULT_OLLAMA_CONFIG)
-MODIF_OBJECT1.credentials['host'] = 'http://localhost:11222'
+MODIF_OBJECT1.credentials['test_val'] = 'http://localhost:11222'
 KEY1_OBJECT_MODIF1 = [MODIF_OBJECT1.to_str(), "123", "asd", "asd"]
 KEY_HASH1_OBJECT_MODIF1 = hashlib.sha1(''.join(list(map(lambda k: hashlib.sha1(
     k.encode()).hexdigest(), KEY1_OBJECT_MODIF1))).encode()).hexdigest()

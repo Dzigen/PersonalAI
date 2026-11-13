@@ -3,6 +3,7 @@ db_config:
   db_info:
     db: DefaultPersonalAITreeDB
     table: DefaultPersonalAITreeTable
+    expected_db_base_path: '.'
   params:
     path: ./personalai_tmp/volumes/kuzu_tree
     buffer_pool_size: 1073741824

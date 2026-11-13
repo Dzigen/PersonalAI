@@ -1,0 +1,1690 @@
+[11/13/2026 14:34:27] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:34:27] - DEBUG - * Entities: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:34:27] - DEBUG - Текушая сушность #0: facilities
+[11/13/2026 14:34:27] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:27] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:27] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:34:27] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993.
+[11/13/2026 14:34:27] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:34:27] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:27] - DEBUG - Для entity "facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:34:27] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:27] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:27] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:34:27] - DEBUG - * cahce hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:34:27] - DEBUG - RESULT: 3
+[11/13/2026 14:34:27] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:34:27] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:34:27] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:34:27] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:34:27] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:27] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:27] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:34:27] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b.
+[11/13/2026 14:34:27] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:34:27] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:27] - DEBUG - Найдены object-вершины, name-поля которых совпадают с данной entity "students". Другие object-вершины отбрасываются.
+[11/13/2026 14:34:27] - DEBUG - * Исходный набор сопоставленных object-вершин (3): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students'), NodeInfo(id='7c4f29407893c334a6cb7a87bf045c0d', type=<NodeType.object: 'object'>, text='right'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')]
+[11/13/2026 14:34:27] - DEBUG - * Совпадающие object-вершины (1): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')]
+[11/13/2026 14:34:27] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:27] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:27] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:34:27] - DEBUG - * cahce hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:34:27] - DEBUG - RESULT: 1
+[11/13/2026 14:34:27] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:34:27] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:34:27] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:27] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:27] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:34:27] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215.
+[11/13/2026 14:34:27] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:34:27] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:27] - DEBUG - Для entity "MSG dormitory" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:34:27] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:27] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:27] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:34:27] - DEBUG - * cahce hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:34:27] - DEBUG - RESULT: 3
+[11/13/2026 14:34:27] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:34:27] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:34:27] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:34:27] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:34:39] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:34:39] - DEBUG - * Entities: ['amenities', 'MSG dormitory']
+[11/13/2026 14:34:39] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:34:39] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:39] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:39] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:34:39] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759.
+[11/13/2026 14:34:39] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:34:39] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:39] - DEBUG - Для entity "amenities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:34:39] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:39] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:39] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:34:39] - DEBUG - * cahce hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:34:39] - DEBUG - RESULT: 3
+[11/13/2026 14:34:39] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:34:39] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:34:39] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:34:39] - DEBUG - Текушая сушность #1: MSG dormitory
+[11/13/2026 14:34:39] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:39] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:34:39] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:34:39] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:34:39] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:34:39] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:34:39] - DEBUG - RESULT: 3
+[11/13/2026 14:34:39] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:34:39] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:34:39] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:34:39] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:34:50] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:34:50] - DEBUG - * Entities: ['amenities', 'recreational facilities', 'MSG dormitory', 'students']
+[11/13/2026 14:34:50] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:34:50] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:50] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:34:50] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:34:50] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:34:50] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:34:50] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:34:50] - DEBUG - RESULT: 3
+[11/13/2026 14:34:50] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:34:50] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:34:50] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:34:50] - DEBUG - Текушая сушность #1: recreational facilities
+[11/13/2026 14:34:50] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:50] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:50] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:34:50] - DEBUG - * cache hash_key: d74238a2dfa1e390ef46a223cb04acd8407529a5.
+[11/13/2026 14:34:50] - DEBUG - * hash seed: ['recreational facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:34:50] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:50] - DEBUG - Для entity "recreational facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:34:50] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:50] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:50] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:34:50] - DEBUG - * cahce hash_key: d74238a2dfa1e390ef46a223cb04acd8407529a5 .
+[11/13/2026 14:34:50] - DEBUG - RESULT: 3
+[11/13/2026 14:34:50] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:34:50] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:34:50] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:34:50] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:34:50] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:50] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:34:50] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:34:50] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:34:50] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:34:50] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:34:50] - DEBUG - RESULT: 3
+[11/13/2026 14:34:50] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:34:50] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:34:50] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:34:50] - DEBUG - Текушая сушность #3: students
+[11/13/2026 14:34:50] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:50] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:34:50] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:34:50] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:34:50] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:34:50] - DEBUG - * cached value: ([NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')],) .
+[11/13/2026 14:34:50] - DEBUG - RESULT: 1
+[11/13/2026 14:34:50] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:34:50] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:35:01] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:35:01] - DEBUG - * Entities: ['amenities', 'study', 'learning resources', 'MSG dormitory']
+[11/13/2026 14:35:01] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:35:01] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:01] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:01] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:01] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:35:01] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:01] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:35:01] - DEBUG - RESULT: 3
+[11/13/2026 14:35:01] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:01] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:01] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:35:01] - DEBUG - Текушая сушность #1: study
+[11/13/2026 14:35:01] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:01] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:01] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:01] - DEBUG - * cache hash_key: cec5f5bcf265e391f133f5735915b1a6eeee7121.
+[11/13/2026 14:35:01] - DEBUG - * hash seed: ['study', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:01] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:01] - DEBUG - Для entity "study" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:35:01] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:01] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:01] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:35:01] - DEBUG - * cahce hash_key: cec5f5bcf265e391f133f5735915b1a6eeee7121 .
+[11/13/2026 14:35:01] - DEBUG - RESULT: 3
+[11/13/2026 14:35:01] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:35:01] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:35:01] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:35:01] - DEBUG - Текушая сушность #2: learning resources
+[11/13/2026 14:35:01] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:01] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:01] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:01] - DEBUG - * cache hash_key: 76c8188c0b4356c907f15b0fb71f7c47b9379949.
+[11/13/2026 14:35:01] - DEBUG - * hash seed: ['learning resources', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:01] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:01] - DEBUG - Для entity "learning resources" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:35:01] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:01] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:01] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:35:01] - DEBUG - * cahce hash_key: 76c8188c0b4356c907f15b0fb71f7c47b9379949 .
+[11/13/2026 14:35:01] - DEBUG - RESULT: 3
+[11/13/2026 14:35:01] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:35:01] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:35:01] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:01] - DEBUG - Текушая сушность #3: MSG dormitory
+[11/13/2026 14:35:01] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:01] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:01] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:01] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:35:01] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:01] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:35:01] - DEBUG - RESULT: 3
+[11/13/2026 14:35:01] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:01] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:35:01] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:01] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:35:13] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:35:13] - DEBUG - * Entities: ['amenities', 'dining options', 'MSG dormitory']
+[11/13/2026 14:35:13] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:35:13] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:13] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:13] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:13] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:35:13] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:13] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:35:13] - DEBUG - RESULT: 3
+[11/13/2026 14:35:13] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:13] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:13] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:35:13] - DEBUG - Текушая сушность #1: dining options
+[11/13/2026 14:35:13] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:13] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:13] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:13] - DEBUG - * cache hash_key: a711da8ba2651e4859b7386fc41e9b75f8070aa9.
+[11/13/2026 14:35:13] - DEBUG - * hash seed: ['dining options', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:13] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:13] - DEBUG - Для entity "dining options" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:35:13] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:13] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:13] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:35:13] - DEBUG - * cahce hash_key: a711da8ba2651e4859b7386fc41e9b75f8070aa9 .
+[11/13/2026 14:35:13] - DEBUG - RESULT: 3
+[11/13/2026 14:35:13] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:13] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:13] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:35:13] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:35:13] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:13] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:13] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:13] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:35:13] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:13] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:35:13] - DEBUG - RESULT: 3
+[11/13/2026 14:35:13] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:13] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:35:13] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:13] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:35:24] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:35:24] - DEBUG - * Entities: ['amenities', 'laundry facilities', 'MSG dormitory', 'students']
+[11/13/2026 14:35:24] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:35:24] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:24] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:24] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:24] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:35:24] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:24] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:35:24] - DEBUG - RESULT: 3
+[11/13/2026 14:35:24] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:24] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:24] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:35:24] - DEBUG - Текушая сушность #1: laundry facilities
+[11/13/2026 14:35:24] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:24] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:24] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:24] - DEBUG - * cache hash_key: 6ffc60877ab9f06a3c2df6f5c1150354741acd8e.
+[11/13/2026 14:35:24] - DEBUG - * hash seed: ['laundry facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:24] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:24] - DEBUG - Для entity "laundry facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:35:24] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:24] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:24] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:35:24] - DEBUG - * cahce hash_key: 6ffc60877ab9f06a3c2df6f5c1150354741acd8e .
+[11/13/2026 14:35:24] - DEBUG - RESULT: 3
+[11/13/2026 14:35:24] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:24] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:35:24] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:35:24] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:35:24] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:24] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:24] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:24] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:35:24] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:24] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:35:24] - DEBUG - RESULT: 3
+[11/13/2026 14:35:24] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:24] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:35:24] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:24] - DEBUG - Текушая сушность #3: students
+[11/13/2026 14:35:24] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:24] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:24] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:24] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:35:24] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:24] - DEBUG - * cached value: ([NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')],) .
+[11/13/2026 14:35:24] - DEBUG - RESULT: 1
+[11/13/2026 14:35:24] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:35:24] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:35:37] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:35:37] - DEBUG - * Entities: ['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:35:37] - DEBUG - Текушая сушность #0: recreational facilities
+[11/13/2026 14:35:37] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:37] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:37] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:37] - DEBUG - * cache hash_key: d74238a2dfa1e390ef46a223cb04acd8407529a5 .
+[11/13/2026 14:35:37] - DEBUG - * hash seed: ['recreational facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:37] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:35:37] - DEBUG - RESULT: 3
+[11/13/2026 14:35:37] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:37] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:35:37] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:35:37] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:35:37] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:37] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:37] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:37] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:35:37] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:37] - DEBUG - * cached value: ([NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')],) .
+[11/13/2026 14:35:37] - DEBUG - RESULT: 1
+[11/13/2026 14:35:37] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:35:37] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:35:37] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:37] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:37] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:37] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:35:37] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:37] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:35:37] - DEBUG - RESULT: 3
+[11/13/2026 14:35:37] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:37] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:35:37] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:37] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:35:50] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:35:50] - DEBUG - * Entities: ['study and learning resources', 'MSG dormitory']
+[11/13/2026 14:35:50] - DEBUG - Текушая сушность #0: study and learning resources
+[11/13/2026 14:35:50] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:50] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:50] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:50] - DEBUG - * cache hash_key: 76f8d5ca81017da949feaa1a314548361b0850bf.
+[11/13/2026 14:35:50] - DEBUG - * hash seed: ['study and learning resources', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:50] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:50] - DEBUG - Для entity "study and learning resources" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:35:50] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:50] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:50] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:35:50] - DEBUG - * cahce hash_key: 76f8d5ca81017da949feaa1a314548361b0850bf .
+[11/13/2026 14:35:50] - DEBUG - RESULT: 3
+[11/13/2026 14:35:50] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:35:50] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:50] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:35:50] - DEBUG - Текушая сушность #1: MSG dormitory
+[11/13/2026 14:35:50] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:50] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:35:50] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:35:50] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:35:50] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:35:50] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:35:50] - DEBUG - RESULT: 3
+[11/13/2026 14:35:50] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:35:50] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:35:50] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:35:50] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:36:02] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:36:02] - DEBUG - * Entities: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:36:02] - DEBUG - Текушая сушность #0: rules
+[11/13/2026 14:36:02] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:36:02] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:36:02] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:36:02] - DEBUG - * cache hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb.
+[11/13/2026 14:36:02] - DEBUG - * hash seed: ['rules', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:36:02] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:36:02] - DEBUG - Для entity "rules" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:36:02] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:36:02] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:36:02] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:36:02] - DEBUG - * cahce hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb .
+[11/13/2026 14:36:02] - DEBUG - RESULT: 3
+[11/13/2026 14:36:02] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:36:02] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:36:02] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:36:02] - DEBUG - Текушая сушность #1: restrictions
+[11/13/2026 14:36:02] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:36:02] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:36:02] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:36:02] - DEBUG - * cache hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef.
+[11/13/2026 14:36:02] - DEBUG - * hash seed: ['restrictions', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:36:02] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:36:02] - DEBUG - Для entity "restrictions" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:36:02] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:36:02] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:36:02] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:36:02] - DEBUG - * cahce hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef .
+[11/13/2026 14:36:02] - DEBUG - RESULT: 3
+[11/13/2026 14:36:02] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:36:02] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:36:02] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:36:02] - DEBUG - Текушая сушность #2: facility type
+[11/13/2026 14:36:02] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:36:02] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:36:02] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:36:02] - DEBUG - * cache hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb.
+[11/13/2026 14:36:02] - DEBUG - * hash seed: ['facility type', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:36:02] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:36:02] - DEBUG - Для entity "facility type" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:36:02] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:36:02] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:36:02] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:36:02] - DEBUG - * cahce hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb .
+[11/13/2026 14:36:02] - DEBUG - RESULT: 3
+[11/13/2026 14:36:02] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:36:02] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:36:02] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:36:02] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:39:06] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:39:06] - DEBUG - * Entities: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:39:06] - DEBUG - Текушая сушность #0: facilities
+[11/13/2026 14:39:06] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:06] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:06] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:39:06] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993.
+[11/13/2026 14:39:06] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:39:06] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:06] - DEBUG - Для entity "facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:39:06] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:06] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:06] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:39:06] - DEBUG - * cahce hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:39:06] - DEBUG - RESULT: 3
+[11/13/2026 14:39:06] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:39:06] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:39:06] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:39:06] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:39:06] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:06] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:06] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:39:06] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b.
+[11/13/2026 14:39:06] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:39:06] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:06] - DEBUG - Найдены object-вершины, name-поля которых совпадают с данной entity "students". Другие object-вершины отбрасываются.
+[11/13/2026 14:39:06] - DEBUG - * Исходный набор сопоставленных object-вершин (3): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students'), NodeInfo(id='7c4f29407893c334a6cb7a87bf045c0d', type=<NodeType.object: 'object'>, text='right'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')]
+[11/13/2026 14:39:06] - DEBUG - * Совпадающие object-вершины (1): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')]
+[11/13/2026 14:39:06] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:06] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:06] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:39:06] - DEBUG - * cahce hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:39:06] - DEBUG - RESULT: 1
+[11/13/2026 14:39:06] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:39:06] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:39:06] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:06] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:06] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:39:06] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215.
+[11/13/2026 14:39:06] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:39:06] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:06] - DEBUG - Для entity "MSG dormitory" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:39:06] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:06] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:06] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:39:06] - DEBUG - * cahce hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:39:06] - DEBUG - RESULT: 3
+[11/13/2026 14:39:06] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:39:06] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:39:06] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:39:06] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:39:18] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:39:18] - DEBUG - * Entities: ['amenities', 'facilities', 'MSG dormitory']
+[11/13/2026 14:39:18] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:39:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:39:18] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759.
+[11/13/2026 14:39:18] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:39:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:18] - DEBUG - Для entity "amenities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:39:18] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:18] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:39:18] - DEBUG - * cahce hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:39:18] - DEBUG - RESULT: 3
+[11/13/2026 14:39:18] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:39:18] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:39:18] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:39:18] - DEBUG - Текушая сушность #1: facilities
+[11/13/2026 14:39:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:18] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:39:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:39:18] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:39:18] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:39:18] - DEBUG - * cached value: ([NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory')],) .
+[11/13/2026 14:39:18] - DEBUG - RESULT: 3
+[11/13/2026 14:39:18] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:39:18] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:39:18] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:39:18] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:39:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:18] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:39:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:39:18] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:39:18] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:39:18] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:39:18] - DEBUG - RESULT: 3
+[11/13/2026 14:39:18] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:39:18] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:39:18] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:39:18] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:39:30] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:39:30] - DEBUG - * Entities: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:39:30] - DEBUG - Текушая сушность #0: rules
+[11/13/2026 14:39:30] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:30] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:30] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:39:30] - DEBUG - * cache hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb.
+[11/13/2026 14:39:30] - DEBUG - * hash seed: ['rules', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:39:30] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:30] - DEBUG - Для entity "rules" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:39:30] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:30] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:30] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:39:30] - DEBUG - * cahce hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb .
+[11/13/2026 14:39:30] - DEBUG - RESULT: 3
+[11/13/2026 14:39:30] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:39:30] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:39:30] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:39:30] - DEBUG - Текушая сушность #1: restrictions
+[11/13/2026 14:39:30] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:30] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:30] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:39:30] - DEBUG - * cache hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef.
+[11/13/2026 14:39:30] - DEBUG - * hash seed: ['restrictions', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:39:30] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:30] - DEBUG - Для entity "restrictions" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:39:30] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:30] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:30] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:39:30] - DEBUG - * cahce hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef .
+[11/13/2026 14:39:30] - DEBUG - RESULT: 3
+[11/13/2026 14:39:30] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:39:30] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:39:30] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:39:30] - DEBUG - Текушая сушность #2: facility type
+[11/13/2026 14:39:30] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:30] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:30] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:39:30] - DEBUG - * cache hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb.
+[11/13/2026 14:39:30] - DEBUG - * hash seed: ['facility type', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:39:30] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:30] - DEBUG - Для entity "facility type" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:39:30] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:30] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:30] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:39:30] - DEBUG - * cahce hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb .
+[11/13/2026 14:39:30] - DEBUG - RESULT: 3
+[11/13/2026 14:39:30] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:39:30] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:39:30] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:39:30] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:41:39] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:41:39] - DEBUG - * Entities: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:41:39] - DEBUG - Текушая сушность #0: facilities
+[11/13/2026 14:41:39] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:39] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:39] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:41:39] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993.
+[11/13/2026 14:41:39] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:41:39] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:39] - DEBUG - Для entity "facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:41:39] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:39] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:39] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:41:39] - DEBUG - * cahce hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:41:39] - DEBUG - RESULT: 3
+[11/13/2026 14:41:39] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:41:39] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:41:39] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:41:39] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:41:39] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:39] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:39] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:41:39] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b.
+[11/13/2026 14:41:39] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:41:39] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:39] - DEBUG - Найдены object-вершины, name-поля которых совпадают с данной entity "students". Другие object-вершины отбрасываются.
+[11/13/2026 14:41:39] - DEBUG - * Исходный набор сопоставленных object-вершин (3): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students'), NodeInfo(id='7c4f29407893c334a6cb7a87bf045c0d', type=<NodeType.object: 'object'>, text='right'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')]
+[11/13/2026 14:41:39] - DEBUG - * Совпадающие object-вершины (1): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')]
+[11/13/2026 14:41:39] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:39] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:39] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:41:39] - DEBUG - * cahce hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:41:39] - DEBUG - RESULT: 1
+[11/13/2026 14:41:39] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:41:39] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:41:39] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:39] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:39] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:41:39] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215.
+[11/13/2026 14:41:39] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:41:39] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:39] - DEBUG - Для entity "MSG dormitory" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:41:39] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:39] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:39] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:41:39] - DEBUG - * cahce hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:41:39] - DEBUG - RESULT: 3
+[11/13/2026 14:41:39] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:41:39] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:41:39] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:41:39] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:41:51] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:41:51] - DEBUG - * Entities: ['facilities', 'amenities', 'MSG dormitory', '24-hour access', 'guest room placement']
+[11/13/2026 14:41:51] - DEBUG - Текушая сушность #0: facilities
+[11/13/2026 14:41:51] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:51] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:41:51] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:41:51] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:41:51] - DEBUG - * cached value: ([NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory')],) .
+[11/13/2026 14:41:51] - DEBUG - RESULT: 3
+[11/13/2026 14:41:51] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:41:51] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:41:51] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:41:51] - DEBUG - Текушая сушность #1: amenities
+[11/13/2026 14:41:51] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:51] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:41:51] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759.
+[11/13/2026 14:41:51] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:41:51] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:51] - DEBUG - Для entity "amenities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:41:51] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:51] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:41:51] - DEBUG - * cahce hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:41:51] - DEBUG - RESULT: 3
+[11/13/2026 14:41:51] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:41:51] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:41:51] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:41:51] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:41:51] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:51] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:41:51] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:41:51] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:41:51] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:41:51] - DEBUG - RESULT: 3
+[11/13/2026 14:41:51] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:41:51] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:41:51] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:41:51] - DEBUG - Текушая сушность #3: 24-hour access
+[11/13/2026 14:41:51] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:51] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:41:51] - DEBUG - * cache hash_key: 9a47205a17e636c84ee21ef73ea3958483fb09f9.
+[11/13/2026 14:41:51] - DEBUG - * hash seed: ['24-hour access', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:41:51] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:51] - DEBUG - Найдены object-вершины, name-поля которых совпадают с данной entity "24-hour access". Другие object-вершины отбрасываются.
+[11/13/2026 14:41:51] - DEBUG - * Исходный набор сопоставленных object-вершин (3): [NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')]
+[11/13/2026 14:41:51] - DEBUG - * Совпадающие object-вершины (1): [NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')]
+[11/13/2026 14:41:51] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:51] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:41:51] - DEBUG - * cahce hash_key: 9a47205a17e636c84ee21ef73ea3958483fb09f9 .
+[11/13/2026 14:41:51] - DEBUG - RESULT: 1
+[11/13/2026 14:41:51] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:41:51] - DEBUG - Текушая сушность #4: guest room placement
+[11/13/2026 14:41:51] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:51] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:41:51] - DEBUG - * cache hash_key: d6afe90b5fa57bf4f4cc56f378fc157b6d85b6aa.
+[11/13/2026 14:41:51] - DEBUG - * hash seed: ['guest room placement', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:41:51] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:51] - DEBUG - Для entity "guest room placement" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:41:51] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:51] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:41:51] - DEBUG - * cahce hash_key: d6afe90b5fa57bf4f4cc56f378fc157b6d85b6aa .
+[11/13/2026 14:41:51] - DEBUG - RESULT: 3
+[11/13/2026 14:41:51] - DEBUG - * [e444232ad8493d4ea9be504d81acec31 | NodeType.object] placement in guest rooms
+[11/13/2026 14:41:51] - DEBUG - * [ba7ddd87e1289aa2457c8e46497f5389 | NodeType.object] guest rooms
+[11/13/2026 14:41:51] - DEBUG - * [3db59810fbb545f2bd95d2584b3f4b14 | NodeType.object] guest rooms of dormitory
+[11/13/2026 14:41:51] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:42:07] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:42:07] - DEBUG - * Entities: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:42:07] - DEBUG - Текушая сушность #0: rules
+[11/13/2026 14:42:07] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:42:07] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:42:07] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:42:07] - DEBUG - * cache hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb.
+[11/13/2026 14:42:07] - DEBUG - * hash seed: ['rules', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:42:07] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:42:07] - DEBUG - Для entity "rules" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:42:07] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:42:07] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:42:07] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:42:07] - DEBUG - * cahce hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb .
+[11/13/2026 14:42:07] - DEBUG - RESULT: 3
+[11/13/2026 14:42:07] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:42:07] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:42:07] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:42:07] - DEBUG - Текушая сушность #1: restrictions
+[11/13/2026 14:42:07] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:42:07] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:42:07] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:42:07] - DEBUG - * cache hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef.
+[11/13/2026 14:42:07] - DEBUG - * hash seed: ['restrictions', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:42:07] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:42:07] - DEBUG - Для entity "restrictions" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:42:07] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:42:07] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:42:07] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:42:07] - DEBUG - * cahce hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef .
+[11/13/2026 14:42:07] - DEBUG - RESULT: 3
+[11/13/2026 14:42:07] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:42:07] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:42:07] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:42:07] - DEBUG - Текушая сушность #2: facility type
+[11/13/2026 14:42:07] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:42:07] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:42:07] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:42:07] - DEBUG - * cache hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb.
+[11/13/2026 14:42:07] - DEBUG - * hash seed: ['facility type', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:42:07] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:42:07] - DEBUG - Для entity "facility type" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:42:07] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:42:07] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:42:07] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:42:07] - DEBUG - * cahce hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb .
+[11/13/2026 14:42:07] - DEBUG - RESULT: 3
+[11/13/2026 14:42:07] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:42:07] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:42:07] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:42:07] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:43:28] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:43:28] - DEBUG - * Entities: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:43:28] - DEBUG - Текушая сушность #0: facilities
+[11/13/2026 14:43:28] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:28] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:28] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:43:28] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993.
+[11/13/2026 14:43:28] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:43:28] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:28] - DEBUG - Для entity "facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:43:28] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:28] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:28] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:43:28] - DEBUG - * cahce hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:43:28] - DEBUG - RESULT: 3
+[11/13/2026 14:43:28] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:43:28] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:43:28] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:43:28] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:43:28] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:28] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:28] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:43:28] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b.
+[11/13/2026 14:43:28] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:43:28] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:28] - DEBUG - Найдены object-вершины, name-поля которых совпадают с данной entity "students". Другие object-вершины отбрасываются.
+[11/13/2026 14:43:28] - DEBUG - * Исходный набор сопоставленных object-вершин (3): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students'), NodeInfo(id='7c4f29407893c334a6cb7a87bf045c0d', type=<NodeType.object: 'object'>, text='right'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')]
+[11/13/2026 14:43:28] - DEBUG - * Совпадающие object-вершины (1): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')]
+[11/13/2026 14:43:28] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:28] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:28] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:43:28] - DEBUG - * cahce hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:43:28] - DEBUG - RESULT: 1
+[11/13/2026 14:43:28] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:43:28] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:43:28] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:28] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:28] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:43:28] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215.
+[11/13/2026 14:43:28] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:43:28] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:28] - DEBUG - Для entity "MSG dormitory" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:43:28] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:28] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:28] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:43:28] - DEBUG - * cahce hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:43:28] - DEBUG - RESULT: 3
+[11/13/2026 14:43:28] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:43:28] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:43:28] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:43:28] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:43:41] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:43:41] - DEBUG - * Entities: ['amenities', 'MSG dormitory']
+[11/13/2026 14:43:41] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:43:41] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:41] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:41] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:43:41] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759.
+[11/13/2026 14:43:41] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:43:41] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:41] - DEBUG - Для entity "amenities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:43:41] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:41] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:41] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:43:41] - DEBUG - * cahce hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:43:41] - DEBUG - RESULT: 3
+[11/13/2026 14:43:41] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:43:41] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:43:41] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:43:41] - DEBUG - Текушая сушность #1: MSG dormitory
+[11/13/2026 14:43:41] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:41] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:43:41] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:43:41] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:43:41] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:43:41] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:43:41] - DEBUG - RESULT: 3
+[11/13/2026 14:43:41] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:43:41] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:43:41] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:43:41] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:43:53] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:43:53] - DEBUG - * Entities: ['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:43:53] - DEBUG - Текушая сушность #0: recreational facilities
+[11/13/2026 14:43:53] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:53] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:53] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:43:53] - DEBUG - * cache hash_key: d74238a2dfa1e390ef46a223cb04acd8407529a5.
+[11/13/2026 14:43:53] - DEBUG - * hash seed: ['recreational facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:43:53] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:53] - DEBUG - Для entity "recreational facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:43:53] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:53] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:53] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:43:53] - DEBUG - * cahce hash_key: d74238a2dfa1e390ef46a223cb04acd8407529a5 .
+[11/13/2026 14:43:53] - DEBUG - RESULT: 3
+[11/13/2026 14:43:53] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:43:53] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:43:53] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:43:53] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:43:53] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:53] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:43:53] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:43:53] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:43:53] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:43:53] - DEBUG - * cached value: ([NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')],) .
+[11/13/2026 14:43:53] - DEBUG - RESULT: 1
+[11/13/2026 14:43:53] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:43:53] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:43:53] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:53] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:43:53] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:43:53] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:43:53] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:43:53] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:43:53] - DEBUG - RESULT: 3
+[11/13/2026 14:43:53] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:43:53] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:43:53] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:43:53] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:44:05] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:44:05] - DEBUG - * Entities: ['amenities', 'MSG dormitory', 'student residents']
+[11/13/2026 14:44:05] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:44:05] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:44:05] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:44:05] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:44:05] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:44:05] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:44:05] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:44:05] - DEBUG - RESULT: 3
+[11/13/2026 14:44:05] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:44:05] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:44:05] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:44:05] - DEBUG - Текушая сушность #1: MSG dormitory
+[11/13/2026 14:44:05] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:44:05] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:44:05] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:44:05] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:44:05] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:44:05] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:44:05] - DEBUG - RESULT: 3
+[11/13/2026 14:44:05] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:44:05] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:44:05] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:44:05] - DEBUG - Текушая сушность #2: student residents
+[11/13/2026 14:44:05] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:44:05] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:44:05] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:44:05] - DEBUG - * cache hash_key: 4af3e6f99a188252bb7b0a149bdb50c8098ecd32.
+[11/13/2026 14:44:05] - DEBUG - * hash seed: ['student residents', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:44:05] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:44:05] - DEBUG - Для entity "student residents" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:44:05] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:44:05] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:44:05] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:44:05] - DEBUG - * cahce hash_key: 4af3e6f99a188252bb7b0a149bdb50c8098ecd32 .
+[11/13/2026 14:44:05] - DEBUG - RESULT: 3
+[11/13/2026 14:44:05] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:44:05] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:44:05] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:44:05] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:44:18] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:44:18] - DEBUG - * Entities: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:44:18] - DEBUG - Текушая сушность #0: rules
+[11/13/2026 14:44:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:44:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:44:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:44:18] - DEBUG - * cache hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb.
+[11/13/2026 14:44:18] - DEBUG - * hash seed: ['rules', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:44:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:44:18] - DEBUG - Для entity "rules" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:44:18] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:44:18] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:44:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:44:18] - DEBUG - * cahce hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb .
+[11/13/2026 14:44:18] - DEBUG - RESULT: 3
+[11/13/2026 14:44:18] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:44:18] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:44:18] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:44:18] - DEBUG - Текушая сушность #1: restrictions
+[11/13/2026 14:44:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:44:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:44:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:44:18] - DEBUG - * cache hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef.
+[11/13/2026 14:44:18] - DEBUG - * hash seed: ['restrictions', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:44:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:44:18] - DEBUG - Для entity "restrictions" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:44:18] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:44:18] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:44:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:44:18] - DEBUG - * cahce hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef .
+[11/13/2026 14:44:18] - DEBUG - RESULT: 3
+[11/13/2026 14:44:18] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:44:18] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:44:18] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:44:18] - DEBUG - Текушая сушность #2: facility type
+[11/13/2026 14:44:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:44:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:44:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:44:18] - DEBUG - * cache hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb.
+[11/13/2026 14:44:18] - DEBUG - * hash seed: ['facility type', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:44:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:44:18] - DEBUG - Для entity "facility type" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:44:18] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:44:18] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:44:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:44:18] - DEBUG - * cahce hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb .
+[11/13/2026 14:44:18] - DEBUG - RESULT: 3
+[11/13/2026 14:44:18] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:44:18] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:44:18] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:44:18] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:45:45] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:45:45] - DEBUG - * Entities: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:45:45] - DEBUG - Текушая сушность #0: facilities
+[11/13/2026 14:45:45] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:45:45] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993.
+[11/13/2026 14:45:45] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:45:45] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:45] - DEBUG - Для entity "facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:45:45] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:45] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:45:45] - DEBUG - * cahce hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:45:45] - DEBUG - RESULT: 3
+[11/13/2026 14:45:45] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:45:45] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:45:45] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:45:45] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:45:45] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:45:45] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b.
+[11/13/2026 14:45:45] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:45:45] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:45] - DEBUG - Найдены object-вершины, name-поля которых совпадают с данной entity "students". Другие object-вершины отбрасываются.
+[11/13/2026 14:45:45] - DEBUG - * Исходный набор сопоставленных object-вершин (3): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students'), NodeInfo(id='7c4f29407893c334a6cb7a87bf045c0d', type=<NodeType.object: 'object'>, text='right'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')]
+[11/13/2026 14:45:45] - DEBUG - * Совпадающие object-вершины (1): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')]
+[11/13/2026 14:45:45] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:45] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:45:45] - DEBUG - * cahce hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:45:45] - DEBUG - RESULT: 1
+[11/13/2026 14:45:45] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:45:45] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:45:45] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:45:45] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215.
+[11/13/2026 14:45:45] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:45:45] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:45] - DEBUG - Для entity "MSG dormitory" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:45:45] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:45] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:45:45] - DEBUG - * cahce hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:45:45] - DEBUG - RESULT: 3
+[11/13/2026 14:45:45] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:45:45] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:45:45] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:45:45] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:45:57] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:45:57] - DEBUG - * Entities: ['facilities', 'amenities', 'MSG dormitory', '24-hour access', 'guest room placement']
+[11/13/2026 14:45:57] - DEBUG - Текушая сушность #0: facilities
+[11/13/2026 14:45:57] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:57] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:45:57] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:45:57] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:45:57] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:45:57] - DEBUG - * cached value: ([NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory')],) .
+[11/13/2026 14:45:57] - DEBUG - RESULT: 3
+[11/13/2026 14:45:57] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:45:57] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:45:57] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:45:57] - DEBUG - Текушая сушность #1: amenities
+[11/13/2026 14:45:57] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:57] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:57] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:45:57] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759.
+[11/13/2026 14:45:57] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:45:57] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:57] - DEBUG - Для entity "amenities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:45:57] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:57] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:57] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:45:57] - DEBUG - * cahce hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:45:57] - DEBUG - RESULT: 3
+[11/13/2026 14:45:57] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:45:57] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:45:57] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:45:57] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:45:57] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:57] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:45:57] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:45:57] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:45:57] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:45:57] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:45:57] - DEBUG - RESULT: 3
+[11/13/2026 14:45:57] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:45:57] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:45:57] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:45:57] - DEBUG - Текушая сушность #3: 24-hour access
+[11/13/2026 14:45:57] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:57] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:57] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:45:57] - DEBUG - * cache hash_key: 9a47205a17e636c84ee21ef73ea3958483fb09f9.
+[11/13/2026 14:45:57] - DEBUG - * hash seed: ['24-hour access', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:45:57] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:57] - DEBUG - Найдены object-вершины, name-поля которых совпадают с данной entity "24-hour access". Другие object-вершины отбрасываются.
+[11/13/2026 14:45:57] - DEBUG - * Исходный набор сопоставленных object-вершин (3): [NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')]
+[11/13/2026 14:45:57] - DEBUG - * Совпадающие object-вершины (1): [NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')]
+[11/13/2026 14:45:57] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:57] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:57] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:45:57] - DEBUG - * cahce hash_key: 9a47205a17e636c84ee21ef73ea3958483fb09f9 .
+[11/13/2026 14:45:57] - DEBUG - RESULT: 1
+[11/13/2026 14:45:57] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:45:57] - DEBUG - Текушая сушность #4: guest room placement
+[11/13/2026 14:45:57] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:57] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:57] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:45:57] - DEBUG - * cache hash_key: d6afe90b5fa57bf4f4cc56f378fc157b6d85b6aa.
+[11/13/2026 14:45:57] - DEBUG - * hash seed: ['guest room placement', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:45:57] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:57] - DEBUG - Для entity "guest room placement" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:45:57] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:57] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:57] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:45:57] - DEBUG - * cahce hash_key: d6afe90b5fa57bf4f4cc56f378fc157b6d85b6aa .
+[11/13/2026 14:45:57] - DEBUG - RESULT: 3
+[11/13/2026 14:45:57] - DEBUG - * [e444232ad8493d4ea9be504d81acec31 | NodeType.object] placement in guest rooms
+[11/13/2026 14:45:57] - DEBUG - * [ba7ddd87e1289aa2457c8e46497f5389 | NodeType.object] guest rooms
+[11/13/2026 14:45:57] - DEBUG - * [3db59810fbb545f2bd95d2584b3f4b14 | NodeType.object] guest rooms of dormitory
+[11/13/2026 14:45:57] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:46:09] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:46:09] - DEBUG - * Entities: ['amenities', 'MSG dormitory']
+[11/13/2026 14:46:09] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:46:09] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:09] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:46:09] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:09] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:46:09] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:09] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:46:09] - DEBUG - RESULT: 3
+[11/13/2026 14:46:09] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:46:09] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:46:09] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:46:09] - DEBUG - Текушая сушность #1: MSG dormitory
+[11/13/2026 14:46:09] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:09] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:46:09] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:09] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:46:09] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:09] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:46:09] - DEBUG - RESULT: 3
+[11/13/2026 14:46:09] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:46:09] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:46:09] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:46:09] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:46:20] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:46:20] - DEBUG - * Entities: ['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:46:20] - DEBUG - Текушая сушность #0: recreational facilities
+[11/13/2026 14:46:20] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:20] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:20] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:20] - DEBUG - * cache hash_key: d74238a2dfa1e390ef46a223cb04acd8407529a5.
+[11/13/2026 14:46:20] - DEBUG - * hash seed: ['recreational facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:20] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:20] - DEBUG - Для entity "recreational facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:46:20] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:20] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:20] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:46:20] - DEBUG - * cahce hash_key: d74238a2dfa1e390ef46a223cb04acd8407529a5 .
+[11/13/2026 14:46:20] - DEBUG - RESULT: 3
+[11/13/2026 14:46:20] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:46:20] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:46:20] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:46:20] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:46:20] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:20] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:46:20] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:20] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:46:20] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:20] - DEBUG - * cached value: ([NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')],) .
+[11/13/2026 14:46:20] - DEBUG - RESULT: 1
+[11/13/2026 14:46:20] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:46:20] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:46:20] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:20] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:46:20] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:20] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:46:20] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:20] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:46:20] - DEBUG - RESULT: 3
+[11/13/2026 14:46:20] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:46:20] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:46:20] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:46:20] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:46:32] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:46:32] - DEBUG - * Entities: ['amenities', 'services', 'university dormitories']
+[11/13/2026 14:46:32] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:46:32] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:32] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:46:32] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:32] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:46:32] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:32] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:46:32] - DEBUG - RESULT: 3
+[11/13/2026 14:46:32] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:46:32] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:46:32] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:46:32] - DEBUG - Текушая сушность #1: services
+[11/13/2026 14:46:32] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:32] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:32] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:32] - DEBUG - * cache hash_key: 9b213cf58114fee3348cc9e83b3ad9604d870061.
+[11/13/2026 14:46:32] - DEBUG - * hash seed: ['services', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:32] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:33] - DEBUG - Для entity "services" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:46:33] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:33] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:33] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:46:33] - DEBUG - * cahce hash_key: 9b213cf58114fee3348cc9e83b3ad9604d870061 .
+[11/13/2026 14:46:33] - DEBUG - RESULT: 3
+[11/13/2026 14:46:33] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:46:33] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:46:33] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:46:33] - DEBUG - Текушая сушность #2: university dormitories
+[11/13/2026 14:46:33] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:33] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:33] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:33] - DEBUG - * cache hash_key: de83ec5795c026491aed365ba33afba5d11697a8.
+[11/13/2026 14:46:33] - DEBUG - * hash seed: ['university dormitories', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:33] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:33] - DEBUG - Для entity "university dormitories" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:46:33] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:33] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:33] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:46:33] - DEBUG - * cahce hash_key: de83ec5795c026491aed365ba33afba5d11697a8 .
+[11/13/2026 14:46:33] - DEBUG - RESULT: 3
+[11/13/2026 14:46:33] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:46:33] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:46:33] - DEBUG - * [e2ddf3d644d6aacf9208d027e9ea4613 | NodeType.object] head of dormitory
+[11/13/2026 14:46:33] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:46:45] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:46:45] - DEBUG - * Entities: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:46:45] - DEBUG - Текушая сушность #0: rules
+[11/13/2026 14:46:45] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:45] - DEBUG - * cache hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb.
+[11/13/2026 14:46:45] - DEBUG - * hash seed: ['rules', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:45] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:45] - DEBUG - Для entity "rules" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:46:45] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:45] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:46:45] - DEBUG - * cahce hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb .
+[11/13/2026 14:46:45] - DEBUG - RESULT: 3
+[11/13/2026 14:46:45] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:46:45] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:46:45] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:46:45] - DEBUG - Текушая сушность #1: restrictions
+[11/13/2026 14:46:45] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:45] - DEBUG - * cache hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef.
+[11/13/2026 14:46:45] - DEBUG - * hash seed: ['restrictions', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:45] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:45] - DEBUG - Для entity "restrictions" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:46:45] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:45] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:46:45] - DEBUG - * cahce hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef .
+[11/13/2026 14:46:45] - DEBUG - RESULT: 3
+[11/13/2026 14:46:45] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:46:45] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:46:45] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:46:45] - DEBUG - Текушая сушность #2: facility type
+[11/13/2026 14:46:45] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:46:45] - DEBUG - * cache hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb.
+[11/13/2026 14:46:45] - DEBUG - * hash seed: ['facility type', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:46:45] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:45] - DEBUG - Для entity "facility type" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:46:45] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:45] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:45] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:46:45] - DEBUG - * cahce hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb .
+[11/13/2026 14:46:45] - DEBUG - RESULT: 3
+[11/13/2026 14:46:45] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:46:45] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:46:45] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:46:45] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:48:18] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:48:18] - DEBUG - * Entities: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:48:18] - DEBUG - Текушая сушность #0: facilities
+[11/13/2026 14:48:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:48:18] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993.
+[11/13/2026 14:48:18] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:48:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:18] - DEBUG - Для entity "facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:48:18] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:18] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:48:18] - DEBUG - * cahce hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:48:18] - DEBUG - RESULT: 3
+[11/13/2026 14:48:18] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:48:18] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:48:18] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:48:18] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:48:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:48:18] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b.
+[11/13/2026 14:48:18] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:48:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:18] - DEBUG - Найдены object-вершины, name-поля которых совпадают с данной entity "students". Другие object-вершины отбрасываются.
+[11/13/2026 14:48:18] - DEBUG - * Исходный набор сопоставленных object-вершин (3): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students'), NodeInfo(id='7c4f29407893c334a6cb7a87bf045c0d', type=<NodeType.object: 'object'>, text='right'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')]
+[11/13/2026 14:48:18] - DEBUG - * Совпадающие object-вершины (1): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')]
+[11/13/2026 14:48:18] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:18] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:48:18] - DEBUG - * cahce hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:48:18] - DEBUG - RESULT: 1
+[11/13/2026 14:48:18] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:48:18] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:48:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:48:18] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215.
+[11/13/2026 14:48:18] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:48:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:18] - DEBUG - Для entity "MSG dormitory" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:48:18] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:18] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:18] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:48:18] - DEBUG - * cahce hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:48:18] - DEBUG - RESULT: 3
+[11/13/2026 14:48:18] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:48:18] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:48:18] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:48:18] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:48:31] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:48:31] - DEBUG - * Entities: ['amenities', 'MSG dormitory']
+[11/13/2026 14:48:31] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:48:31] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:31] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:31] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:48:31] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759.
+[11/13/2026 14:48:31] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:48:31] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:31] - DEBUG - Для entity "amenities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:48:31] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:31] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:31] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:48:31] - DEBUG - * cahce hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:48:31] - DEBUG - RESULT: 3
+[11/13/2026 14:48:31] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:48:31] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:48:31] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:48:31] - DEBUG - Текушая сушность #1: MSG dormitory
+[11/13/2026 14:48:31] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:31] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:48:31] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:48:31] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:48:31] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:48:31] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:48:31] - DEBUG - RESULT: 3
+[11/13/2026 14:48:31] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:48:31] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:48:31] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:48:31] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:48:42] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:48:42] - DEBUG - * Entities: ['recreational facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:48:42] - DEBUG - Текушая сушность #0: recreational facilities
+[11/13/2026 14:48:42] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:42] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:42] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:48:42] - DEBUG - * cache hash_key: d74238a2dfa1e390ef46a223cb04acd8407529a5.
+[11/13/2026 14:48:42] - DEBUG - * hash seed: ['recreational facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:48:42] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:42] - DEBUG - Для entity "recreational facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:48:42] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:42] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:42] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:48:42] - DEBUG - * cahce hash_key: d74238a2dfa1e390ef46a223cb04acd8407529a5 .
+[11/13/2026 14:48:42] - DEBUG - RESULT: 3
+[11/13/2026 14:48:42] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:48:42] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:48:42] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:48:42] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:48:42] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:42] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:48:42] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:48:42] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:48:42] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:48:42] - DEBUG - * cached value: ([NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')],) .
+[11/13/2026 14:48:42] - DEBUG - RESULT: 1
+[11/13/2026 14:48:42] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:48:42] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:48:42] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:42] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:48:42] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:48:42] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:48:42] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:48:42] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:48:42] - DEBUG - RESULT: 3
+[11/13/2026 14:48:42] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:48:42] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:48:42] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:48:42] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:48:55] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:48:55] - DEBUG - * Entities: ['amenities', 'MSG dormitory']
+[11/13/2026 14:48:55] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:48:55] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:55] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:48:55] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:48:55] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:48:55] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:48:55] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:48:55] - DEBUG - RESULT: 3
+[11/13/2026 14:48:55] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:48:55] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:48:55] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:48:55] - DEBUG - Текушая сушность #1: MSG dormitory
+[11/13/2026 14:48:55] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:55] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:48:55] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:48:55] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:48:55] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:48:55] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:48:55] - DEBUG - RESULT: 3
+[11/13/2026 14:48:55] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:48:55] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:48:55] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:48:55] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:49:08] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:49:08] - DEBUG - * Entities: ['amenities', 'facilities', 'MSG dormitory', 'student']
+[11/13/2026 14:49:08] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:49:08] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:08] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:08] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:08] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:49:08] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:08] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:49:08] - DEBUG - RESULT: 3
+[11/13/2026 14:49:08] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:49:08] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:08] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:49:08] - DEBUG - Текушая сушность #1: facilities
+[11/13/2026 14:49:08] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:08] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:08] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:08] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:49:08] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:08] - DEBUG - * cached value: ([NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory')],) .
+[11/13/2026 14:49:08] - DEBUG - RESULT: 3
+[11/13/2026 14:49:08] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:49:08] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:08] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:49:08] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:49:08] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:08] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:08] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:08] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:49:08] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:08] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:49:08] - DEBUG - RESULT: 3
+[11/13/2026 14:49:08] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:49:08] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:49:08] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:08] - DEBUG - Текушая сушность #3: student
+[11/13/2026 14:49:08] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:08] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:08] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:08] - DEBUG - * cache hash_key: a843d631a29f227242ef8c6c42a2981ad0c3d0cb.
+[11/13/2026 14:49:08] - DEBUG - * hash seed: ['student', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:08] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:08] - DEBUG - Для entity "student" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:49:08] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:08] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:08] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:49:08] - DEBUG - * cahce hash_key: a843d631a29f227242ef8c6c42a2981ad0c3d0cb .
+[11/13/2026 14:49:08] - DEBUG - RESULT: 3
+[11/13/2026 14:49:08] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:49:08] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:49:08] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:49:08] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:49:21] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:49:21] - DEBUG - * Entities: ['amenities', 'facilities', 'student', 'MSG dormitory']
+[11/13/2026 14:49:21] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:49:21] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:21] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:21] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:21] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:49:21] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:21] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:49:21] - DEBUG - RESULT: 3
+[11/13/2026 14:49:21] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:49:21] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:21] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:49:21] - DEBUG - Текушая сушность #1: facilities
+[11/13/2026 14:49:21] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:21] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:21] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:21] - DEBUG - * cache hash_key: 74444db48a2d380b3f17128f5869422b40268993 .
+[11/13/2026 14:49:21] - DEBUG - * hash seed: ['facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:21] - DEBUG - * cached value: ([NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory')],) .
+[11/13/2026 14:49:21] - DEBUG - RESULT: 3
+[11/13/2026 14:49:21] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:49:21] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:21] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:49:21] - DEBUG - Текушая сушность #2: student
+[11/13/2026 14:49:21] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:21] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:21] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:21] - DEBUG - * cache hash_key: a843d631a29f227242ef8c6c42a2981ad0c3d0cb .
+[11/13/2026 14:49:21] - DEBUG - * hash seed: ['student', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:21] - DEBUG - * cached value: ([NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students'), NodeInfo(id='7c4f29407893c334a6cb7a87bf045c0d', type=<NodeType.object: 'object'>, text='right'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')],) .
+[11/13/2026 14:49:21] - DEBUG - RESULT: 3
+[11/13/2026 14:49:21] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:49:21] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:49:21] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:49:21] - DEBUG - Текушая сушность #3: MSG dormitory
+[11/13/2026 14:49:21] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:21] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:21] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:21] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:49:21] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:21] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:49:21] - DEBUG - RESULT: 3
+[11/13/2026 14:49:21] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:49:21] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:49:21] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:21] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:49:34] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:49:34] - DEBUG - * Entities: ['recreational facilities', 'common areas', 'students', 'MSG dormitory']
+[11/13/2026 14:49:34] - DEBUG - Текушая сушность #0: recreational facilities
+[11/13/2026 14:49:34] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:34] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:34] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:34] - DEBUG - * cache hash_key: d74238a2dfa1e390ef46a223cb04acd8407529a5 .
+[11/13/2026 14:49:34] - DEBUG - * hash seed: ['recreational facilities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:34] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:49:34] - DEBUG - RESULT: 3
+[11/13/2026 14:49:34] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:49:34] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:49:34] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:49:34] - DEBUG - Текушая сушность #1: common areas
+[11/13/2026 14:49:34] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:34] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:34] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:34] - DEBUG - * cache hash_key: c9d630b8f371ce4091bf263e3be0262099d70d01.
+[11/13/2026 14:49:34] - DEBUG - * hash seed: ['common areas', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:34] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:34] - DEBUG - Для entity "common areas" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:49:34] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:34] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:34] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:49:34] - DEBUG - * cahce hash_key: c9d630b8f371ce4091bf263e3be0262099d70d01 .
+[11/13/2026 14:49:34] - DEBUG - RESULT: 3
+[11/13/2026 14:49:34] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:49:34] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:34] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:49:34] - DEBUG - Текушая сушность #2: students
+[11/13/2026 14:49:34] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:34] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:34] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:34] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:49:34] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:34] - DEBUG - * cached value: ([NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')],) .
+[11/13/2026 14:49:34] - DEBUG - RESULT: 1
+[11/13/2026 14:49:34] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:49:34] - DEBUG - Текушая сушность #3: MSG dormitory
+[11/13/2026 14:49:34] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:34] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:34] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:34] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:49:34] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:34] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:49:34] - DEBUG - RESULT: 3
+[11/13/2026 14:49:34] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:49:34] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:49:34] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:34] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:49:46] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:49:46] - DEBUG - * Entities: ['amenities', 'services', 'students', 'MSG dormitory']
+[11/13/2026 14:49:46] - DEBUG - Текушая сушность #0: amenities
+[11/13/2026 14:49:46] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:46] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:46] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:46] - DEBUG - * cache hash_key: eba9b72da905dc72d131fa283b0315a9dfa22759 .
+[11/13/2026 14:49:46] - DEBUG - * hash seed: ['amenities', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:46] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg'), NodeInfo(id='c0633b2a9dbf24f0258fb5c0524b7333', type=<NodeType.object: 'object'>, text='24-hour access')],) .
+[11/13/2026 14:49:46] - DEBUG - RESULT: 3
+[11/13/2026 14:49:46] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:49:46] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:46] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:49:46] - DEBUG - Текушая сушность #1: services
+[11/13/2026 14:49:46] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:46] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:46] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:46] - DEBUG - * cache hash_key: 9b213cf58114fee3348cc9e83b3ad9604d870061.
+[11/13/2026 14:49:46] - DEBUG - * hash seed: ['services', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:46] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:46] - DEBUG - Для entity "services" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:49:46] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:46] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:46] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:49:46] - DEBUG - * cahce hash_key: 9b213cf58114fee3348cc9e83b3ad9604d870061 .
+[11/13/2026 14:49:46] - DEBUG - RESULT: 3
+[11/13/2026 14:49:46] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:46] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:49:46] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:49:46] - DEBUG - Текушая сушность #2: students
+[11/13/2026 14:49:46] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:46] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:46] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:46] - DEBUG - * cache hash_key: 61ed69f3d5c186c93fea776e0ed7a2958b6de17b .
+[11/13/2026 14:49:46] - DEBUG - * hash seed: ['students', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:46] - DEBUG - * cached value: ([NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')],) .
+[11/13/2026 14:49:46] - DEBUG - RESULT: 1
+[11/13/2026 14:49:46] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:49:46] - DEBUG - Текушая сушность #3: MSG dormitory
+[11/13/2026 14:49:46] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:46] - DEBUG - Результат по заданной конфигурации гиперпараметров уже был получен.
+[11/13/2026 14:49:46] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:46] - DEBUG - * cache hash_key: a4113ecc7c95497c7f6705dfd8de6176d451b215 .
+[11/13/2026 14:49:46] - DEBUG - * hash seed: ['MSG dormitory', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:46] - DEBUG - * cached value: ([NodeInfo(id='2e3c815e4a35d81952d88138e144e22c', type=<NodeType.object: 'object'>, text='dormitory'), NodeInfo(id='6e2baaf3b97dbeef01c0043275f9a0e7', type=<NodeType.object: 'object'>, text='msg'), NodeInfo(id='75299b395965c91be350c2a82ad6343e', type=<NodeType.object: 'object'>, text='administration of msg')],) .
+[11/13/2026 14:49:46] - DEBUG - RESULT: 3
+[11/13/2026 14:49:46] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:49:46] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:49:46] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:46] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:49:59] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:49:59] - DEBUG - * Entities: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:49:59] - DEBUG - Текушая сушность #0: rules
+[11/13/2026 14:49:59] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:59] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:59] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:59] - DEBUG - * cache hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb.
+[11/13/2026 14:49:59] - DEBUG - * hash seed: ['rules', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:59] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:59] - DEBUG - Для entity "rules" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:49:59] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:59] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:59] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:49:59] - DEBUG - * cahce hash_key: 2562a7738fd1e4cb6b12b82e5f610f5af99ff4bb .
+[11/13/2026 14:49:59] - DEBUG - RESULT: 3
+[11/13/2026 14:49:59] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:49:59] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:59] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:49:59] - DEBUG - Текушая сушность #1: restrictions
+[11/13/2026 14:49:59] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:59] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:59] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:59] - DEBUG - * cache hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef.
+[11/13/2026 14:49:59] - DEBUG - * hash seed: ['restrictions', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:59] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:59] - DEBUG - Для entity "restrictions" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:49:59] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:59] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:59] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:49:59] - DEBUG - * cahce hash_key: d8196a40322f0822d01dd356bdf549c08c2adbef .
+[11/13/2026 14:49:59] - DEBUG - RESULT: 3
+[11/13/2026 14:49:59] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:49:59] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:59] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:49:59] - DEBUG - Текушая сушность #2: facility type
+[11/13/2026 14:49:59] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:59] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:59] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache .
+[11/13/2026 14:49:59] - DEBUG - * cache hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb.
+[11/13/2026 14:49:59] - DEBUG - * hash seed: ['facility type', "False|3|ensemble_fusion:['dense_nodes', 'bm25_nodes']:['15:0.5', '15:0.5']:[0.3, 0.7]:60|True"] .
+[11/13/2026 14:49:59] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:59] - DEBUG - Для entity "facility type" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:49:59] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:59] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:59] - DEBUG - * cache table_name: medreasn_e2nmatcher_main_stage_cache
+[11/13/2026 14:49:59] - DEBUG - * cahce hash_key: e6dd7c587ad84d76f5a54eab40701945c524f0bb .
+[11/13/2026 14:49:59] - DEBUG - RESULT: 3
+[11/13/2026 14:49:59] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:49:59] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:49:59] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:49:59] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:51:37] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:51:37] - DEBUG - * Entities: ['facilities', 'students', 'MSG dormitory']
+[11/13/2026 14:51:37] - DEBUG - Текушая сушность #0: facilities
+[11/13/2026 14:51:37] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:37] - DEBUG - Для entity "facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:51:37] - DEBUG - RESULT: 3
+[11/13/2026 14:51:37] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:51:37] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:51:37] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:51:37] - DEBUG - Текушая сушность #1: students
+[11/13/2026 14:51:37] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:37] - DEBUG - Найдены object-вершины, name-поля которых совпадают с данной entity "students". Другие object-вершины отбрасываются.
+[11/13/2026 14:51:37] - DEBUG - * Исходный набор сопоставленных object-вершин (3): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students'), NodeInfo(id='7c4f29407893c334a6cb7a87bf045c0d', type=<NodeType.object: 'object'>, text='right'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')]
+[11/13/2026 14:51:37] - DEBUG - * Совпадающие object-вершины (1): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')]
+[11/13/2026 14:51:37] - DEBUG - RESULT: 1
+[11/13/2026 14:51:37] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:51:37] - DEBUG - Текушая сушность #2: MSG dormitory
+[11/13/2026 14:51:37] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:37] - DEBUG - Для entity "MSG dormitory" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:51:37] - DEBUG - RESULT: 3
+[11/13/2026 14:51:37] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:51:37] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:51:37] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:51:37] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:51:53] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:51:53] - DEBUG - * Entities: ['facilities', 'amenities', 'guest room access', 'MSG dormitory', 'students']
+[11/13/2026 14:51:53] - DEBUG - Текушая сушность #0: facilities
+[11/13/2026 14:51:53] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:53] - DEBUG - Для entity "facilities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:51:53] - DEBUG - RESULT: 3
+[11/13/2026 14:51:53] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:51:53] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:51:53] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:51:53] - DEBUG - Текушая сушность #1: amenities
+[11/13/2026 14:51:53] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:53] - DEBUG - Для entity "amenities" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:51:53] - DEBUG - RESULT: 3
+[11/13/2026 14:51:53] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:51:53] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:51:53] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:51:53] - DEBUG - Текушая сушность #2: guest room access
+[11/13/2026 14:51:53] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:53] - DEBUG - Для entity "guest room access" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:51:53] - DEBUG - RESULT: 3
+[11/13/2026 14:51:53] - DEBUG - * [ba7ddd87e1289aa2457c8e46497f5389 | NodeType.object] guest rooms
+[11/13/2026 14:51:53] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:51:53] - DEBUG - * [3db59810fbb545f2bd95d2584b3f4b14 | NodeType.object] guest rooms of dormitory
+[11/13/2026 14:51:53] - DEBUG - Текушая сушность #3: MSG dormitory
+[11/13/2026 14:51:53] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:53] - DEBUG - Для entity "MSG dormitory" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:51:53] - DEBUG - RESULT: 3
+[11/13/2026 14:51:53] - DEBUG - * [2e3c815e4a35d81952d88138e144e22c | NodeType.object] dormitory
+[11/13/2026 14:51:53] - DEBUG - * [6e2baaf3b97dbeef01c0043275f9a0e7 | NodeType.object] msg
+[11/13/2026 14:51:53] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:51:53] - DEBUG - Текушая сушность #4: students
+[11/13/2026 14:51:53] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:53] - DEBUG - Найдены object-вершины, name-поля которых совпадают с данной entity "students". Другие object-вершины отбрасываются.
+[11/13/2026 14:51:53] - DEBUG - * Исходный набор сопоставленных object-вершин (3): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students'), NodeInfo(id='7c4f29407893c334a6cb7a87bf045c0d', type=<NodeType.object: 'object'>, text='right'), NodeInfo(id='3676d55f84497cbeadfc614c1b1b62fc', type=<NodeType.object: 'object'>, text='application')]
+[11/13/2026 14:51:53] - DEBUG - * Совпадающие object-вершины (1): [NodeInfo(id='75d37c6cbf460947005c97e3f12906a9', type=<NodeType.object: 'object'>, text='students')]
+[11/13/2026 14:51:53] - DEBUG - RESULT: 1
+[11/13/2026 14:51:53] - DEBUG - * [75d37c6cbf460947005c97e3f12906a9 | NodeType.object] students
+[11/13/2026 14:51:53] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:52:10] - DEBUG - START ENTITIES2NODES MATCHING...
+[11/13/2026 14:52:10] - DEBUG - * Entities: ['rules', 'restrictions', 'facility type']
+[11/13/2026 14:52:10] - DEBUG - Текушая сушность #0: rules
+[11/13/2026 14:52:10] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:52:10] - DEBUG - Для entity "rules" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:52:10] - DEBUG - RESULT: 3
+[11/13/2026 14:52:10] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:52:10] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:52:10] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:52:10] - DEBUG - Текушая сушность #1: restrictions
+[11/13/2026 14:52:10] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:52:10] - DEBUG - Для entity "restrictions" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:52:10] - DEBUG - RESULT: 3
+[11/13/2026 14:52:10] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:52:10] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:52:10] - DEBUG - * [3676d55f84497cbeadfc614c1b1b62fc | NodeType.object] application
+[11/13/2026 14:52:10] - DEBUG - Текушая сушность #2: facility type
+[11/13/2026 14:52:10] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:52:10] - DEBUG - Для entity "facility type" не было найдено совпадающих object-вершин. Далее используется полный набор сопоставленых object-вершин.
+[11/13/2026 14:52:10] - DEBUG - RESULT: 3
+[11/13/2026 14:52:10] - DEBUG - * [75299b395965c91be350c2a82ad6343e | NodeType.object] administration of msg
+[11/13/2026 14:52:10] - DEBUG - * [7c4f29407893c334a6cb7a87bf045c0d | NodeType.object] right
+[11/13/2026 14:52:10] - DEBUG - * [c0633b2a9dbf24f0258fb5c0524b7333 | NodeType.object] 24-hour access
+[11/13/2026 14:52:10] - DEBUG - STATUS: ReturnStatus.success

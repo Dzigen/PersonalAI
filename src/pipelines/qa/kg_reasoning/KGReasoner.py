@@ -15,7 +15,6 @@ from ....utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperation
 from ....utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ....utils.data_structs import BaseComponentConfig, LanguageConfig
 
-
 @dataclass
 class KnowledgeGraphReasonerConfig(BaseComponentConfig, LanguageConfig):
     """
@@ -29,7 +28,7 @@ class KnowledgeGraphReasonerConfig(BaseComponentConfig, LanguageConfig):
     reasoner_name: str = 'medium'  # 'weak' | 'medium'
     reasoner_config: Union[Dict, BaseKGReasonerConfig] = field(default_factory=lambda: MediumKGReasonerConfig())  # WeakKGReasonerConfig() | MediumKGReasonerConfig()
 
-    log_path: str = KGR_MAIN_LOG_PATH
+    log_relative_path: str = KGR_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.reasoner_name}|{self.reasoner_config.to_str()}"
@@ -76,7 +75,7 @@ class KnowledgeGraphReasoner(CacheUtils, AbstractKGReasoner, CacheOperations, Ag
             )
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
 

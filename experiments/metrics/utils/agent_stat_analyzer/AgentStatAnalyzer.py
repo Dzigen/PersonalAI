@@ -63,7 +63,7 @@ class AgentStatAnalyzer:
             config.formate_fields()
         self.config = config
 
-        self.db_conn: AbstractTableDatabaseConnection = TableDriver.connect(self.config.table_driver_config)
+        self.db_conn: AbstractTableDatabaseConnection = TableDriver.select(self.config.table_driver_config)
         self.operations: AbstractTableStatOperations = SUPPORTED_VENDORS[self.config.table_driver_config.db_vendor](self.db_conn)
 
         self.table_operations: Dict[str, object] = {

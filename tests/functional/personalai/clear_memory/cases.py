@@ -1,15 +1,18 @@
 import sys
 from copy import deepcopy
+from itertools import product
+from typing import List, Tuple
 # TO CHANGE
 PROJECT_BASE_DIR = '../'
 sys.path.insert(0, PROJECT_BASE_DIR)
 
 from src.utils.data_structs import Triplet, Node, Relation, NodeType, RelationType
 
-# TO CHANGE
-AVAILABLE_GRAPH_MODELS = ['neo4j']  # 'neo4j', 'kuzu', 'inmemory_graph', 'blazegraph', 'falkordb'
-AVAILABLE_EMBEDDING_MODELS = ['qdrant']  # 'chroma', 'inmemory', 'elasticsearch', 'opensearch', 'weaviate', 'qdrant'
-AVAILABLE_KVID_STORES = ['inmemory_kv', 'redis', 'mongo', 'mixed_kv'] # 'inmemory_kv', 'redis', 'mongo', 'mixed_kv'
+from ..cases import AVAILABLE_PAICONFIG_COMBINATIONS
+
+LANG = 'auto'
+KW_CACHE = 'None'
+KW_AGENTSTAT = 'None'
 
 ###############################################################################################
 
@@ -41,13 +44,13 @@ EXPECTED_PRE_MEMSIZE1 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 4},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 4, 'bm25_nodes': 4},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 3
+            'dense_triplets': 3, 'bm25_triplets': 3
         }
     },
     'nodestree_info': None
@@ -64,13 +67,13 @@ EXPECTED_POST_MEMSIZE1 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 2},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 2, 'bm25_nodes': 2},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 1
+            'dense_triplets': 1, 'bm25_triplets': 1
         }
     },
     'nodestree_info': None
@@ -90,13 +93,13 @@ EXPECTED_POST_MEMSIZE2 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 3},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 3, 'bm25_nodes': 3},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 2
+            'dense_triplets': 2, 'bm25_triplets': 2
         }
     },
     'nodestree_info': None
@@ -116,13 +119,13 @@ EXPECTED_POST_MEMSIZE3 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 4},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 4, 'bm25_nodes': 4},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 2
+            'dense_triplets': 2, 'bm25_triplets': 2
         }
     },
     'nodestree_info': None
@@ -140,13 +143,13 @@ EXPECTED_PRE_MEMSIZE4 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 4},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 4, 'bm25_nodes': 4},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 2
+            'dense_triplets': 2, 'bm25_triplets': 2
         }
     },
     'nodestree_info': None
@@ -163,13 +166,13 @@ EXPECTED_POST_MEMSIZE4 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 2},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 2, 'bm25_nodes': 2},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 1
+            'dense_triplets': 1, 'bm25_triplets': 1
         }
     },
     'nodestree_info': None
@@ -187,13 +190,13 @@ EXPECTED_PRE_MEMSIZE5 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 4},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 4, 'bm25_nodes': 4},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 3
+            'dense_triplets': 3, 'bm25_triplets': 3
         }
     },
     'nodestree_info': None
@@ -210,13 +213,13 @@ EXPECTED_POST_MEMSIZE5 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 3},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 3, 'bm25_nodes': 3},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 2
+            'dense_triplets': 2, 'bm25_triplets': 2
         }
     },
     'nodestree_info': None
@@ -234,13 +237,13 @@ EXPECTED_PRE_MEMSIZE21 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 4},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 4, 'bm25_nodes': 4},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 3
+            'dense_triplets': 3, 'bm25_triplets': 3
         }
     },
     'nodestree_info': None
@@ -257,13 +260,13 @@ EXPECTED_POST_MEMSIZE21 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 2},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 2, 'bm25_nodes': 2},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 1
+            'dense_triplets': 1, 'bm25_triplets': 1
         }
     },
     'nodestree_info': None
@@ -283,13 +286,13 @@ EXPECTED_POST_MEMSIZE22 = {
     },
     'embeddings_info': {
         'nodes': {
-            NodeType.object.value: {'dense_nodes': 0},
-            NodeType.hyper.value: {'dense_nodes': 0},
-            NodeType.episodic.value: {'dense_nodes': 0},
-            NodeType.time.value: {'dense_nodes': 0}
+            NodeType.object.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.hyper.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.episodic.value: {'dense_nodes': 0, 'bm25_nodes': 0},
+            NodeType.time.value: {'dense_nodes': 0, 'bm25_nodes': 0}
         },
         'triplets': {
-            'dense_triplets': 0
+            'dense_triplets': 0, 'bm25_triplets': 0
         }
     },
     'nodestree_info': None
@@ -350,12 +353,13 @@ CLEARMEMORY_TEST_CASES = [
     [TRIPLET_GROUP25, EXPECTED_PRE_MEMSIZE25, TEXTIDS_TO_DELETE25, EXPECTED_POST_MEMSIZE25],
 ]
 
+
 POPULATED_CLEARMEMORY_TEST_CASES = []
-for vector_vendor in AVAILABLE_EMBEDDING_MODELS:
-    for graph_vendor in AVAILABLE_GRAPH_MODELS:
-        for kvid_store in AVAILABLE_KVID_STORES:
-            for i in range(len(CLEARMEMORY_TEST_CASES)):
-                POPULATED_CLEARMEMORY_TEST_CASES.append(
-                    CLEARMEMORY_TEST_CASES[i] + [f"{vector_vendor}/{graph_vendor}|{kvid_store}"])
+for pai_vendors in AVAILABLE_PAICONFIG_COMBINATIONS:
+    pai_kw = "/".join(pai_vendors)
+    
+    for i in range(len(CLEARMEMORY_TEST_CASES)):
+        POPULATED_CLEARMEMORY_TEST_CASES.append(
+            CLEARMEMORY_TEST_CASES[i] + [f"{pai_kw}|{KW_CACHE}|{KW_AGENTSTAT}|{LANG}"])
 
 #print("Количество порождённых тестов для CLEAR_MEMORY: ", len(POPULATED_CLEARMEMORY_TEST_CASES))

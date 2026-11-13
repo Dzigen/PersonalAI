@@ -847,3 +847,22 @@ for db_vendor in AVAILABLE_GRAPH_DBS:
     for i in range(len(GRAPHDB_GET_NSHARED_IDS_TEST_CASES)):
         GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES.append(
             GRAPHDB_GET_NSHARED_IDS_TEST_CASES[i] + (db_vendor,))
+
+
+###############################################################################################
+
+# conn_sequence, expected_is_open
+GRAPHDB_IS_OPEN_TEST_CASES = [
+    ([],),
+    (['close'],),
+    (['close', 'open'],),
+    (['open'],),
+    (['close', 'close'],),
+        
+]
+
+GRAPHDB_POPULATED_IS_OPEN_TEST_CASES = []
+for db_vendor in AVAILABLE_GRAPH_DBS:
+    for i in range(len(GRAPHDB_IS_OPEN_TEST_CASES)):
+        GRAPHDB_POPULATED_IS_OPEN_TEST_CASES.append(
+            GRAPHDB_IS_OPEN_TEST_CASES[i] + (db_vendor,))

@@ -38,7 +38,7 @@ class TableDriverConfig(BaseConfigOperations):
 class TableDriver:
     """Компонента для инициализации подключения к табличной базе данных."""
     @staticmethod
-    def connect(config: Union[Dict, TableDriverConfig] = TableDriverConfig()) -> AbstractTableDatabaseConnection:
+    def select(config: Union[Dict, TableDriverConfig] = TableDriverConfig()) -> AbstractTableDatabaseConnection:
         """Метод предназначен для создания и открытия подключения к табличной БД.
 
         :param config: Конфигурация драйвера, либо словарь с её параметрами.
@@ -52,5 +52,4 @@ class TableDriver:
             config.formate_fields()
 
         table_conn: AbstractTableDatabaseConnection = AVAILABLE_TABLEDB_CONNECTORS[config.db_vendor](config.db_config)
-        table_conn.open_connection()
         return table_conn

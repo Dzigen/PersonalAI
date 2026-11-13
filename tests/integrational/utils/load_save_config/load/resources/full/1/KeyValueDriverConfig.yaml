@@ -3,6 +3,7 @@ db_config:
   db_info:
     db: DefaultPersonalAIKVDB
     table: DefaultPersonalAIKVTable
+    expected_db_base_path: '.'
   params:
     load_from_disk: false
     load_dump_name: null

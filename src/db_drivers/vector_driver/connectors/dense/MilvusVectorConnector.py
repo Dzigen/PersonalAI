@@ -13,6 +13,8 @@ from ....utils import restore_connection, retry
 
 
 class MilvusVectorConnector(AbstractVectorDatabaseConnection):
+    DATABASE_KW = 'milvus'
+
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_MILVUS_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8):
         if isinstance(config, dict):
@@ -91,7 +93,7 @@ class MilvusVectorConnector(AbstractVectorDatabaseConnection):
         try:
             load_state = self.client.get_load_state(
                 self.config.db_info['table'])['state'].value
-        except (TypeError, ConnectionError):
+        except (AttributeError, TypeError, ConnectionError):
             pass
         else:
             if load_state != 3:

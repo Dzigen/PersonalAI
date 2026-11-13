@@ -20,7 +20,8 @@ class AnswersJudgeConfig:
     llmjudge_task_config: AgentTaskSolverConfig = field(default_factory=lambda: DEFAULT_LLMJUDGE_TASK_CONFIG)
     cache_table_name: Union[str, None] = 'qaeval_judge_cache'
 
-    log_path: Logger = EVAL_JUDGE_MAIN_LOG_PATH
+    log_base_path: str = "."
+    log_relative_path: str = EVAL_JUDGE_MAIN_LOG_PATH
     verbose: bool = False
     log_level: LogLevel = LogLevel.DEBUG
 
@@ -33,13 +34,13 @@ class AnswersJudge(CacheUtils):
                  cache_kvdriver_config: KeyValueDriverConfig = None,
                  cache_llm_inference: bool = False):
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
         self.config = config
 
         self.cachekv = self.init_cachekv(cache_kvdriver_config, self.config.cache_table_name)
-        self.agent = AgentDriver.connect(config.adriver_config)
+        self.agent = AgentDriver.select(config.adriver_config)
 
         llmjudge_task_cache_config = None
         if cache_llm_inference:

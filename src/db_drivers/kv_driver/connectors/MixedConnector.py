@@ -1,4 +1,5 @@
 from typing import Dict, List, Union
+from copy import deepcopy
 
 from .configs import DEFAULT_MIXEDKV_CONFIG
 from .RedisConnector import RedisKVConnector
@@ -7,6 +8,9 @@ from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValue
 
 
 class MixedKVConnector(AbstractKVDatabaseConnection):
+
+    DATABASE_KW = 'mixed'
+    
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_MIXEDKV_CONFIG):
         if isinstance(config, dict):
             config = KVDBConnectionConfig.from_dict(config)
@@ -14,11 +18,10 @@ class MixedKVConnector(AbstractKVDatabaseConnection):
             config.formate_fields()
         self.config: KVDBConnectionConfig = config
 
-        self.config.params['mongo_config'].db_info['db'] = self.config.db_info['db']
-        self.config.params['mongo_config'].db_info['table'] = self.config.db_info['table']
+        self.config.params['mongo_config'].db_info = deepcopy(self.config.db_info)
         self.config.params['mongo_config'].need_to_clear = False
-        self.config.params['redis_config'].db_info['db'] = 0
-        self.config.params['redis_config'].db_info['table'] = self.config.db_info['table']
+        self.config.params['redis_config'].db_info = deepcopy(self.config.db_info)
+        self.config.params['redis_config'].db_info['db'] = 0 # !!! PAY ATTENTION !!! 
         self.config.params['redis_config'].need_to_clear = False
 
         self.redis_conn = RedisKVConnector(self.config.params['redis_config'])

@@ -9,14 +9,14 @@ from ..utils import AbstractDatabaseConnection, BaseDatabaseConfig
 class KVDBConnectionConfig(BaseDatabaseConfig):
     """Конфигурация подключения к key-value-хранилищу.
 
-    :param db_info: Информация о базе и таблице/пространстве ключей. По умолчанию {'db': 'DefaultPersonalAIKVDB', 'table': 'DefaultPersonalAIKVTable'}.
+    :param db_info: Информация о базе и таблице/пространстве ключей. По умолчанию {'db': 'DefaultPersonalAIKVDB', 'table': 'DefaultPersonalAIKVTable', 'expected_db_base_path': '.'}.
     :type db_info: Dict
     :param host: Хост, на котором развернуто хранилище.
     :type host: str
     :param port: Порт, по которому производится подключение к хранилищу.
     :type port: str
     """
-    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIKVDB', 'table': 'DefaultPersonalAIKVTable'})
+    db_info: Dict = field(default_factory=lambda: {'db': 'DefaultPersonalAIKVDB', 'table': 'DefaultPersonalAIKVTable', 'expected_db_base_path': '.'})
     host: str = None
     port: str = None
 

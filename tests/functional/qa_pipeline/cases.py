@@ -1,4 +1,6 @@
 
+AVAILABLE_LANGUAGES = ['ru', 'en'] # TO CHANGE
+
 RAW_TEXTS = {
     'en': [
         "Students living in the dormitory have the right to 24-hour access to their place of residence.",

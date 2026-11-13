@@ -10,6 +10,8 @@ from ...utils import restore_connection, retry
 
 class AerospikeKVConnector(AbstractKVDatabaseConnection):
 
+    DATABASE_KW = 'aerospike'
+
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_AEROSPIKE_CONFIG):
         if isinstance(config, dict):
             config = KVDBConnectionConfig.from_dict(config)

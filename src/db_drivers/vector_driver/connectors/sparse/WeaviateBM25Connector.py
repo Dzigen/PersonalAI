@@ -1,5 +1,6 @@
 from typing import List, Tuple, Union, Dict
 from time import sleep
+from weaviate.exceptions import WeaviateInvalidInputError, WeaviateConnectionError
 from haystack_integrations.document_stores.weaviate import WeaviateDocumentStore
 from haystack_integrations.document_stores.weaviate.document_store import generate_uuid5
 from haystack_integrations.components.retrievers.weaviate import WeaviateBM25Retriever
@@ -13,6 +14,7 @@ from .....utils.errors import ReturnInfo
 
 
 class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
+    DATABASE_KW = 'weaviate' 
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_WEAVIATE_BM25_CONFIG, **kwargs) -> None:
         if isinstance(config, dict):
@@ -32,13 +34,16 @@ class WeaviateBM25Connector(AbstractVectorDatabaseConnection):
         self.retriever = WeaviateBM25Retriever(document_store=self.db_conn)
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            # `is_ready` performs a GET /v1/.well-known/ready and returns a bool.
+            return self.db_conn.client.is_ready()
+        except (WeaviateConnectionError, AttributeError) as e:
+            return False
 
     def close_connection(self) -> ReturnInfo:
         try:
             self.db_conn._client.close()
-        except TypeError:
+        except (AttributeError, TypeError) as e:
             pass
 
     @restore_connection

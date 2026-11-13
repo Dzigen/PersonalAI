@@ -1,4 +1,5 @@
 from falkordb import FalkorDB, Node, QueryResult, Edge
+from redis.exceptions import ConnectionError, TimeoutError, RedisError
 from typing import List, Dict, Union
 import redis
 import json
@@ -15,6 +16,7 @@ from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
 
 
 class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
+    DATABASE_KW = 'falkor'
 
     def __init__(self, config: Union[Dict, GraphDBConnectionConfig] = DEFAULT_FALKORDB_CONFIG):
         if isinstance(config, dict):
@@ -52,13 +54,22 @@ class FalkorDBGraphConnector(AbstractGraphDatabaseConnection):
         if self.config.need_to_clear:
             self.clear()
 
-    def is_open(self) -> None:
-        # TODO
-        raise NotImplementedError
-
+    def is_open(self) -> bool:
+        try:
+            # A read‑only query that never modifies data
+            result = self.graph.ro_query("RETURN 1 AS ok").result_set
+            return bool(result) and result[0][0] == 1
+        except (ConnectionError, TimeoutError, RedisError, AttributeError) as e:
+            #print(str(e))
+            return False
+    
     def close_connection(self) -> None:
-        # TODO
-        pass
+        try:
+            self.db.close()
+            del self.graph
+            del self.db
+        except (AttributeError, TypeError):
+            pass
 
     @restore_connection
     def execute(self, query: str, mode: str = 'read') -> Union[object, None]:

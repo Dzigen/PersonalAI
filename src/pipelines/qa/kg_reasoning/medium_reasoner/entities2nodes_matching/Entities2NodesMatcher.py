@@ -11,7 +11,7 @@ from ......db_drivers.kv_driver import KeyValueDriverConfig
 from ......utils.cache_kv import CacheUtils
 from ......rerankers import RerankerDriverConfig, RerankerDriver
 from ......utils.cache_kv.CacheOperations import CacheOperations
-
+from ......environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class Entities2NodesMatcherConfig(BaseComponentConfig):
@@ -34,7 +34,7 @@ class Entities2NodesMatcherConfig(BaseComponentConfig):
     discard_other_mnodes_if_exactmatch_found: bool = True
 
     cache_table_name: str = "medreasn_e2nmatcher_main_stage_cache"
-    log_path: str = E2NMATCHER_MAIN_LOG_PATH
+    log_relative_path: str = E2NMATCHER_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.use_tree}|{self.max_n}|{self.reranker_driver_config.to_str()}|{self.discard_other_mnodes_if_exactmatch_found}"
@@ -53,7 +53,7 @@ class Entities2NodesMatcherConfig(BaseComponentConfig):
             self.reranker_driver_config.formate_fields()
 
 
-class Entities2NodesMatcher(CacheUtils, CacheOperations):
+class Entities2NodesMatcher(CacheUtils, CacheOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс стадии #2.1.2 medium QA-конвейера для выполнения сопоставления сущностей из user-вопроса с вершинами в графе знаний.
 
     :param kg_model: Модель памяти (графа знаний) ассистента.
@@ -72,7 +72,7 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
             config.formate_fields()
         self.config = config
 
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -81,7 +81,7 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
             self.config.reranker_driver_config,
             kg_model.graph_embeddings.nodes_vcomposers[NodeType.object])
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 
@@ -91,7 +91,7 @@ class Entities2NodesMatcher(CacheUtils, CacheOperations):
     @CacheUtils.cache_method_output
     def match_entity2knowledge(self, entity: str) -> Tuple[List[NodeInfo]]:
         if self.config.use_tree:
-            matched_objects = self.kg_model.nodestree_model.match_entity2objects(entity, max_n=self.config.max_n)
+            matched_objects = self.kgmodel_ref.nodestree_model.match_entity2objects(entity, max_n=self.config.max_n)
         else:
             matched_objects = list(map(
                 lambda node: NodeInfo(id=node.id, text=node.document, type=NodeType.object),

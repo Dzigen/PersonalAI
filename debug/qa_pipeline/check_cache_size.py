@@ -1,7 +1,7 @@
 import aerospike
 
 config = {'hosts': [("aerospikelservice", 3000)]}
-client = aerospike.client(config).connect()
+client = aerospike.client(config).select()
 print(client.info_all("sets"))
 
 # 08.10.24

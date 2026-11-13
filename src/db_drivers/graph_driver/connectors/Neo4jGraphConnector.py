@@ -1,4 +1,5 @@
 from neo4j import GraphDatabase
+from neo4j.exceptions import ServiceUnavailable, Neo4jError, DriverError
 from typing import List, Dict, Union
 import json
 
@@ -11,6 +12,7 @@ from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
 
 
 class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
+    DATABASE_KW = 'neo4j'
 
     def __init__(self, config: Union[Dict, GraphDBConnectionConfig] = DEFAULT_NEO4J_CONFIG):
         if isinstance(config, dict):
@@ -54,13 +56,17 @@ class Neo4jGraphConnector(AbstractGraphDatabaseConnection):
             self.clear()
 
     def is_open(self) -> None:
-        # TODO
-        raise NotImplementedError
+        try:
+            self.driver.verify_connectivity()
+        except (ServiceUnavailable, Neo4jError, DriverError) as e:
+            return False
+        else:
+            return True
 
     def close_connection(self) -> None:
         try:
             self.driver.close()
-        except TypeError:
+        except (AttributeError, TypeError, DriverError) as e:
             pass
 
     def __del__(self):

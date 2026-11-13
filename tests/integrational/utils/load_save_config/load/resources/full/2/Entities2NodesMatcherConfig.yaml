@@ -1,4 +1,4 @@
-log_path: log/qa/kg_reasoner/medium/entities2nodes_matching/main
+log_relative_path: log/qa/kg_reasoner/medium/entities2nodes_matching/main
 verbose: false
 log_level: 10
 use_tree: false

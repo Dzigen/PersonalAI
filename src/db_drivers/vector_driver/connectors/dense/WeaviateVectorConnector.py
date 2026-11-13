@@ -4,7 +4,7 @@ from copy import deepcopy
 import torch
 import numpy as np
 
-from weaviate.exceptions import WeaviateInvalidInputError
+from weaviate.exceptions import WeaviateInvalidInputError, WeaviateConnectionError
 from haystack_integrations.document_stores.weaviate import WeaviateDocumentStore
 from haystack_integrations.document_stores.weaviate._filters import convert_filters
 from haystack_integrations.document_stores.weaviate.document_store import generate_uuid5
@@ -21,6 +21,7 @@ from .....utils.errors import ReturnInfo
 
 
 class WeaviateVectorConnector(AbstractVectorDatabaseConnection):
+    DATABASE_KW = 'weaviate'
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_WEAVIATE_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
@@ -44,13 +45,16 @@ class WeaviateVectorConnector(AbstractVectorDatabaseConnection):
         self.retriever = WeaviateEmbeddingRetriever(document_store=self.db_conn)
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            # `is_ready` performs a GET /v1/.well-known/ready and returns a bool.
+            return self.db_conn.client.is_ready()
+        except (WeaviateConnectionError, AttributeError) as e:
+            return False
 
     def close_connection(self) -> ReturnInfo:
         try:
             self.db_conn._client.close()
-        except TypeError:
+        except (AttributeError, TypeError) as e:
             pass
 
     @restore_connection

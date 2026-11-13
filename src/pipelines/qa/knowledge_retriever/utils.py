@@ -7,7 +7,7 @@ from .errors import NOT_VALID_ID_ERROR_MSG, NO_START_NODE_IN_PARENT_ERROR_MSG, \
 from ....utils import ReturnInfo
 from ....utils.data_structs import QueryInfo, Triplet, NodeInfo, BaseConfigOperations, NodeType, LoggingConfig
 from ....utils.cache_kv.CacheOperations import CacheOperations, TraversalMethodCacheOpearions
-
+from ....environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 def get_nodes_path(parent: Dict[str, NodeInfo], end_node: NodeInfo) -> List[NodeInfo]:
     """Метод предназначен для получения пути обхода графа, заканчивая заданной конечной end_node_id вершиной.
@@ -43,7 +43,7 @@ class BaseTripletsFilterConfig(BaseConfigOperations, LoggingConfig):
     """Базовая конфигурация алгоритмов по ранжированию/фильтрации триплетов."""
 
 
-class AbstractTriplesFilter(CacheOperations):
+class AbstractTriplesFilter(CacheOperations, EnvironmentConnectionUtils):
     """Интерфейс алгоритмов фильтрации/ранжирования триплетов."""
 
     config: Union[None, BaseTripletsFilterConfig] = None
@@ -61,10 +61,6 @@ class AbstractTriplesFilter(CacheOperations):
         """
         pass
 
-    @abstractmethod
-    def close_connections(self):
-        pass
-
 
 @dataclass
 class BaseGraphSearchConfig(BaseConfigOperations, LoggingConfig):
@@ -72,7 +68,7 @@ class BaseGraphSearchConfig(BaseConfigOperations, LoggingConfig):
     accepted_node_types: Union[List[NodeType], None] = None
 
 
-class AbstractTripletsRetriever(TraversalMethodCacheOpearions):
+class AbstractTripletsRetriever(TraversalMethodCacheOpearions, EnvironmentConnectionUtils):
     """Интерфейс алгоритмов извлечения триплетов из графа знаний."""
 
     config: BaseGraphSearchConfig
@@ -88,13 +84,9 @@ class AbstractTripletsRetriever(TraversalMethodCacheOpearions):
         """
         pass
 
-    @abstractmethod
-    def close_connections(self):
-        pass
-
 
 @dataclass
-class KnowledgeRetrieverStages:
+class KnowledgeRetrieverStages(EnvironmentConnectionUtils):
     """Контейнер стадий knowledge retriever пайплайна.
 
     :param triplets_retriever: Реализация алгоритма извлечения триплетов.

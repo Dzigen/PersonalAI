@@ -1,0 +1,41 @@
+pai_base_path: functional/personalai/tests_output
+pai_name: personalai_env_b5746a
+kg_related_database_name: defaultknowledgegraphrelateddatabase
+log_base_path: functional/personalai/tests_output
+log_relative_path: log/textid_store
+verbose: false
+log_level: 10
+texttotriplets_store_config:
+  db_vendor: inmemory_kv
+  db_config:
+    db_info:
+      db: defaultknowledgegraphrelateddatabase
+      table: texttotriplets_store
+      expected_db_base_path: functional/personalai/tests_output/personalai_env_b5746a/memory_parts/text2id
+    params:
+      save_on_disk: true
+      max_storage: 500000000.0
+      rewrite: true
+    need_to_clear: false
+    create_index: false
+    timeout: 10
+    trials: 5
+    host: localhost
+    port: null
+triplettotexts_store_config:
+  db_vendor: inmemory_kv
+  db_config:
+    db_info:
+      db: defaultknowledgegraphrelateddatabase
+      table: triplettotexts_store
+      expected_db_base_path: functional/personalai/tests_output/personalai_env_b5746a/memory_parts/text2id
+    params:
+      save_on_disk: true
+      max_storage: 500000000.0
+      rewrite: true
+    need_to_clear: false
+    create_index: false
+    timeout: 10
+    trials: 5
+    host: localhost
+    port: null

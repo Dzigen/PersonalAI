@@ -1,0 +1,1341 @@
+[11/13/2026 14:34:27] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:27] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:27] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:34:27] - DEBUG - * cache hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b.
+[11/13/2026 14:34:27] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', '{"facilities": ["application", "administration of msg", "dormitory"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:34:27] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:27] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:34:27] - DEBUG - * Search query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:34:27] - DEBUG - * Search query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:34:27] - DEBUG - * Matched kg-object: facilities - ['application', 'administration of msg', 'dormitory'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:34:27] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:34:27] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:34:27] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:34:27] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:34:27] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:27] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:34:27] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:34:27] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:28] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory according to the administration of MSG?
+[11/13/2026 14:34:28] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:34:28] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:29] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:34:29] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:34:29] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:29] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:34:29] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:34:29] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:34:29] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:29] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:29] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:34:29] - DEBUG - * cahce hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b .
+[11/13/2026 14:34:39] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:39] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:39] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:34:39] - DEBUG - * cache hash_key: 2893c9c3c24fec673e3c0eb4bfdd16c6d6bc5b3d.
+[11/13/2026 14:34:39] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:34:39] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:39] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:34:39] - DEBUG - * Search query hash: 60cddc2892e701ea9225130f007b3a1e
+[11/13/2026 14:34:39] - DEBUG - * Search query: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:34:39] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:34:39] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:34:39] - DEBUG - RESULT:
+* всего сущностей: 2
+* после фильтрации: 2
+* объектов для каждой сущности: [amenities] 3;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:34:39] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:34:39] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:34:39] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:40] - DEBUG - RESULT: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:34:40] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:34:40] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:41] - DEBUG - RESULT: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:34:41] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:34:41] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:41] - DEBUG - RESULT: What specific amenity, such as 24-hour access, is available to students in the MSG dormitory?
+[11/13/2026 14:34:41] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:34:41] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:42] - DEBUG - RESULT: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:34:42] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:34:42] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:34:42] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:42] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:42] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:34:42] - DEBUG - * cahce hash_key: 2893c9c3c24fec673e3c0eb4bfdd16c6d6bc5b3d .
+[11/13/2026 14:34:50] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:50] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:50] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:34:50] - DEBUG - * cache hash_key: 225a6e2e2146d66064db7ec91d6f432dbb7bc31f.
+[11/13/2026 14:34:50] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory regarding recreational facilities?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "recreational facilities": ["dormitory", "application", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"], "students": ["students"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:34:50] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:50] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:34:50] - DEBUG - * Search query hash: 55cc6c23108918b92bc10973051ac1c5
+[11/13/2026 14:34:50] - DEBUG - * Search query: What specific amenities are available to students in the MSG dormitory regarding recreational facilities?
+[11/13/2026 14:34:50] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];recreational facilities - ['dormitory', 'application', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg'];students - ['students']
+[11/13/2026 14:34:50] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:34:50] - DEBUG - RESULT:
+* всего сущностей: 4
+* после фильтрации: 4
+* объектов для каждой сущности: [amenities] 3;[recreational facilities] 3;[MSG dormitory] 3;[students] 1
+* полученное количество комбинаций: 4
+[11/13/2026 14:34:50] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:34:50] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:34:50] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:51] - DEBUG - RESULT: What specific recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:34:51] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:34:51] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:51] - DEBUG - RESULT: What specific recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:34:51] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:34:51] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:52] - DEBUG - RESULT: What specific amenities, such as 24-hour access, are available to students in the MSG dormitory?
+[11/13/2026 14:34:52] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:34:52] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:34:53] - DEBUG - RESULT: What specific recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:34:53] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:34:53] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:34:53] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:53] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:53] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:34:53] - DEBUG - * cahce hash_key: 225a6e2e2146d66064db7ec91d6f432dbb7bc31f .
+[11/13/2026 14:35:01] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:01] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:01] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:35:01] - DEBUG - * cache hash_key: 06ca623a6634c4b4123c197c11af8df9764fcec2.
+[11/13/2026 14:35:01] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory regarding study and learning resources?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "study": ["students", "right", "application"], "learning resources": ["students", "right", "administration of msg"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:35:01] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:01] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:35:01] - DEBUG - * Search query hash: 61f07e32be3347ae16249ff8ff8258a6
+[11/13/2026 14:35:01] - DEBUG - * Search query: What specific amenities are available to students in the MSG dormitory regarding study and learning resources?
+[11/13/2026 14:35:01] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];study - ['students', 'right', 'application'];learning resources - ['students', 'right', 'administration of msg'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:35:01] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:35:01] - DEBUG - RESULT:
+* всего сущностей: 4
+* после фильтрации: 4
+* объектов для каждой сущности: [amenities] 3;[study] 3;[learning resources] 3;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:35:01] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:35:01] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:35:01] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:02] - DEBUG - RESULT: What specific study and learning resources are available to students in the MSG dormitory?
+[11/13/2026 14:35:02] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:35:02] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:03] - DEBUG - RESULT: What specific study amenities and learning resources are available to students in the MSG dormitory?
+[11/13/2026 14:35:03] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:35:03] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:03] - DEBUG - RESULT: What specific study applications are available to students in the MSG dormitory for accessing learning resources?
+[11/13/2026 14:35:03] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:35:03] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:04] - DEBUG - RESULT: What specific study and learning resources are available to students in the MSG dormitory?
+[11/13/2026 14:35:04] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:35:04] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:35:04] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:04] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:04] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:35:04] - DEBUG - * cahce hash_key: 06ca623a6634c4b4123c197c11af8df9764fcec2 .
+[11/13/2026 14:35:13] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:13] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:13] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:35:13] - DEBUG - * cache hash_key: fccf8d01ec3a7d159f15efa316bfddd89b244107.
+[11/13/2026 14:35:13] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory regarding dining options?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "dining options": ["dormitory", "administration of msg", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:35:13] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:13] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:35:13] - DEBUG - * Search query hash: 421ecb777a879afc5f114c38af426c3f
+[11/13/2026 14:35:13] - DEBUG - * Search query: What specific amenities are available to students in the MSG dormitory regarding dining options?
+[11/13/2026 14:35:13] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];dining options - ['dormitory', 'administration of msg', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:35:13] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:35:13] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [amenities] 3;[dining options] 3;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:35:13] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:35:13] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:35:13] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:14] - DEBUG - RESULT: What specific dining options are available to students in the MSG dormitory?
+[11/13/2026 14:35:14] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:35:14] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:15] - DEBUG - RESULT: What specific dining options are available to students in the MSG dormitory?
+[11/13/2026 14:35:15] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:35:15] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:15] - DEBUG - RESULT: What specific dining options, such as 24-hour access, are available to students in the MSG dormitory?
+[11/13/2026 14:35:15] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:35:15] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:16] - DEBUG - RESULT: What specific dining options are available to students in the MSG dormitory?
+[11/13/2026 14:35:16] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:35:16] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:35:16] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:16] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:16] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:35:16] - DEBUG - * cahce hash_key: fccf8d01ec3a7d159f15efa316bfddd89b244107 .
+[11/13/2026 14:35:24] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:24] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:24] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:35:24] - DEBUG - * cache hash_key: 4d82e1f3cf401e3fb6cff14dffc533da2afe048b.
+[11/13/2026 14:35:24] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory regarding laundry facilities?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "laundry facilities": ["dormitory", "application", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"], "students": ["students"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:35:24] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:24] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:35:24] - DEBUG - * Search query hash: af2df279216b408c92388b29001c8902
+[11/13/2026 14:35:24] - DEBUG - * Search query: What specific amenities are available to students in the MSG dormitory regarding laundry facilities?
+[11/13/2026 14:35:24] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];laundry facilities - ['dormitory', 'application', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg'];students - ['students']
+[11/13/2026 14:35:24] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:35:24] - DEBUG - RESULT:
+* всего сущностей: 4
+* после фильтрации: 4
+* объектов для каждой сущности: [amenities] 3;[laundry facilities] 3;[MSG dormitory] 3;[students] 1
+* полученное количество комбинаций: 4
+[11/13/2026 14:35:24] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:35:24] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:35:24] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:25] - DEBUG - RESULT: What specific laundry facilities are available to students in the MSG dormitory?
+[11/13/2026 14:35:25] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:35:25] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:26] - DEBUG - RESULT: What specific laundry facilities are available to students in the MSG dormitory?
+[11/13/2026 14:35:26] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:35:26] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:26] - DEBUG - RESULT: What specific laundry facilities, such as 24-hour access, are available to students in the MSG dormitory?
+[11/13/2026 14:35:26] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:35:26] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:27] - DEBUG - RESULT: What specific laundry facilities are available to students in the MSG dormitory?
+[11/13/2026 14:35:27] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:35:27] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:35:27] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:27] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:27] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:35:27] - DEBUG - * cahce hash_key: 4d82e1f3cf401e3fb6cff14dffc533da2afe048b .
+[11/13/2026 14:35:37] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:37] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:37] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:35:37] - DEBUG - * cache hash_key: a72a717077f5bde319ae98f2e102c6d1a00096de.
+[11/13/2026 14:35:37] - DEBUG - * hash seed: ['What recreational facilities are available for students living in the MSG dormitory?', '{"recreational facilities": ["dormitory", "application", "24-hour access"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:35:37] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:37] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:35:37] - DEBUG - * Search query hash: 842dbf1f092afbdd0b70993e3a386ecc
+[11/13/2026 14:35:37] - DEBUG - * Search query: What recreational facilities are available for students living in the MSG dormitory?
+[11/13/2026 14:35:37] - DEBUG - * Matched kg-object: recreational facilities - ['dormitory', 'application', '24-hour access'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:35:37] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:35:37] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [recreational facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:35:37] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:35:37] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:35:37] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:38] - DEBUG - RESULT: What recreational facilities are available for students living in the MSG dormitory?
+[11/13/2026 14:35:38] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:35:38] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:38] - DEBUG - RESULT: What recreational facilities are available for students living in the MSG dormitory?
+[11/13/2026 14:35:38] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:35:38] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:39] - DEBUG - RESULT: What 24-hour access recreational facilities are available for students living in the MSG dormitory?
+[11/13/2026 14:35:39] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:35:39] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:39] - DEBUG - RESULT: What recreational facilities are available for students living in the MSG dormitory?
+[11/13/2026 14:35:39] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:35:39] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:35:39] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:39] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:39] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:35:39] - DEBUG - * cahce hash_key: a72a717077f5bde319ae98f2e102c6d1a00096de .
+[11/13/2026 14:35:50] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:35:50] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:35:50] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:35:50] - DEBUG - * cache hash_key: 30fa4e7c29c3d343b8edda7b01a97b9b801c04d7.
+[11/13/2026 14:35:50] - DEBUG - * hash seed: ['What study and learning resources are available for students living in the MSG dormitory?', '{"study and learning resources": ["students", "administration of msg", "right"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:35:50] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:35:50] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:35:50] - DEBUG - * Search query hash: 2672360c606dec7e9300b3f918df7c2a
+[11/13/2026 14:35:50] - DEBUG - * Search query: What study and learning resources are available for students living in the MSG dormitory?
+[11/13/2026 14:35:50] - DEBUG - * Matched kg-object: study and learning resources - ['students', 'administration of msg', 'right'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:35:50] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:35:50] - DEBUG - RESULT:
+* всего сущностей: 2
+* после фильтрации: 2
+* объектов для каждой сущности: [study and learning resources] 3;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:35:50] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:35:50] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:35:50] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:51] - DEBUG - RESULT: What study and learning resources are available for students living in the MSG dormitory?
+[11/13/2026 14:35:51] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:35:51] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:51] - DEBUG - RESULT: What study and learning resources are available through the administration of MSG for students living in the MSG dormitory?
+[11/13/2026 14:35:51] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:35:51] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:52] - DEBUG - RESULT: What study and learning resources are available for students living in the MSG dormitory?
+[11/13/2026 14:35:52] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:35:52] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:35:52] - DEBUG - RESULT: What study and learning resources are available for students living in the MSG dormitory?
+[11/13/2026 14:35:52] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:35:52] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:35:52] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:35:52] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:35:52] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:35:52] - DEBUG - * cahce hash_key: 30fa4e7c29c3d343b8edda7b01a97b9b801c04d7 .
+[11/13/2026 14:36:02] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:36:02] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:36:02] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:36:02] - DEBUG - * cache hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad.
+[11/13/2026 14:36:02] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', '{"rules": ["right", "administration of msg", "application"], "restrictions": ["right", "administration of msg", "application"], "facility type": ["administration of msg", "right", "24-hour access"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:36:02] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:36:02] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:36:02] - DEBUG - * Search query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:36:02] - DEBUG - * Search query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:36:02] - DEBUG - * Matched kg-object: rules - ['right', 'administration of msg', 'application'];restrictions - ['right', 'administration of msg', 'application'];facility type - ['administration of msg', 'right', '24-hour access']
+[11/13/2026 14:36:02] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:36:02] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [rules] 3;[restrictions] 3;[facility type] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:36:02] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:36:02] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:36:02] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:36:03] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:36:03] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:36:03] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:36:03] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:36:03] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:36:03] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:36:04] - DEBUG - RESULT: What are the specific application rules and restrictions for using the administration of MSG?
+[11/13/2026 14:36:04] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:36:04] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:36:04] - DEBUG - RESULT: What are the specific rules and restrictions for the administration of MSG?
+[11/13/2026 14:36:04] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:36:04] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:36:04] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:36:04] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:36:04] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:36:04] - DEBUG - * cahce hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad .
+[11/13/2026 14:39:06] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:06] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:06] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:39:06] - DEBUG - * cache hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b.
+[11/13/2026 14:39:06] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', '{"facilities": ["application", "administration of msg", "dormitory"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:39:06] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:06] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:39:06] - DEBUG - * Search query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:39:06] - DEBUG - * Search query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:39:06] - DEBUG - * Matched kg-object: facilities - ['application', 'administration of msg', 'dormitory'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:39:06] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:39:06] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:39:06] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:39:06] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:39:06] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:07] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:39:07] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:39:07] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:08] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory according to the administration of MSG?
+[11/13/2026 14:39:08] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:39:08] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:08] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:39:08] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:39:08] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:09] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:39:09] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:39:09] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:39:09] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:09] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:09] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:39:09] - DEBUG - * cahce hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b .
+[11/13/2026 14:39:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:18] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:39:18] - DEBUG - * cache hash_key: b5d9878d276cce8b1028d0575344c5db4845d156.
+[11/13/2026 14:39:18] - DEBUG - * hash seed: ['What specific amenities and facilities are available to students in the MSG dormitory?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "facilities": ["application", "administration of msg", "dormitory"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:39:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:18] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:39:18] - DEBUG - * Search query hash: 8b39d577bb0f63f27081068577536f99
+[11/13/2026 14:39:18] - DEBUG - * Search query: What specific amenities and facilities are available to students in the MSG dormitory?
+[11/13/2026 14:39:18] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];facilities - ['application', 'administration of msg', 'dormitory'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:39:18] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:39:18] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [amenities] 3;[facilities] 3;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:39:18] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:39:18] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:39:18] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:19] - DEBUG - RESULT: What specific amenities and facilities are available to students in the MSG dormitory?
+[11/13/2026 14:39:19] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:39:19] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:19] - DEBUG - RESULT: What specific amenities and facilities are available to students in the MSG dormitory, such as those provided by the administration of MSG?
+[11/13/2026 14:39:19] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:39:19] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:20] - DEBUG - RESULT: What specific amenities and facilities are available to students in the MSG dormitory?
+[11/13/2026 14:39:20] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:39:20] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:21] - DEBUG - RESULT: What specific amenities and facilities are available to students in the administration of MSG?
+[11/13/2026 14:39:21] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:39:21] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:39:21] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:21] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:21] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:39:21] - DEBUG - * cahce hash_key: b5d9878d276cce8b1028d0575344c5db4845d156 .
+[11/13/2026 14:39:30] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:30] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:30] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:39:30] - DEBUG - * cache hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad.
+[11/13/2026 14:39:30] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', '{"rules": ["right", "administration of msg", "application"], "restrictions": ["right", "administration of msg", "application"], "facility type": ["administration of msg", "right", "24-hour access"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:39:30] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:30] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:39:30] - DEBUG - * Search query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:39:30] - DEBUG - * Search query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:39:30] - DEBUG - * Matched kg-object: rules - ['right', 'administration of msg', 'application'];restrictions - ['right', 'administration of msg', 'application'];facility type - ['administration of msg', 'right', '24-hour access']
+[11/13/2026 14:39:30] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:39:30] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [rules] 3;[restrictions] 3;[facility type] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:39:30] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:39:30] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:39:30] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:31] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:39:31] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:39:31] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:31] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:39:31] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:39:31] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:32] - DEBUG - RESULT: What are the specific application rules and restrictions for using the administration of MSG?
+[11/13/2026 14:39:32] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:39:32] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:39:33] - DEBUG - RESULT: What are the specific rules and restrictions for the administration of MSG?
+[11/13/2026 14:39:33] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:39:33] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:39:33] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:33] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:33] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:39:33] - DEBUG - * cahce hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad .
+[11/13/2026 14:41:39] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:39] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:39] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:41:39] - DEBUG - * cache hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b.
+[11/13/2026 14:41:39] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', '{"facilities": ["application", "administration of msg", "dormitory"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:41:39] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:39] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:41:39] - DEBUG - * Search query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:41:39] - DEBUG - * Search query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:41:39] - DEBUG - * Matched kg-object: facilities - ['application', 'administration of msg', 'dormitory'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:41:39] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:41:39] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:41:39] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:41:39] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:41:39] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:41:40] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:41:40] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:41:40] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:41:40] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory according to the administration of MSG?
+[11/13/2026 14:41:40] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:41:40] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:41:41] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:41:41] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:41:41] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:41:41] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:41:41] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:41:41] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:41:41] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:41] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:41] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:41:41] - DEBUG - * cahce hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b .
+[11/13/2026 14:41:51] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:51] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:51] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:41:51] - DEBUG - * cache hash_key: d1622899922aed7042b328fa7391e02478b7f8c8.
+[11/13/2026 14:41:51] - DEBUG - * hash seed: ['What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?', '{"facilities": ["application", "administration of msg", "dormitory"], "amenities": ["dormitory", "administration of msg", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"], "24-hour access": ["24-hour access"], "guest room placement": ["placement in guest rooms", "guest rooms", "guest rooms of dormitory"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:41:51] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:51] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:41:51] - DEBUG - * Search query hash: 8c681693c502fc5d1694d5f9278d87da
+[11/13/2026 14:41:51] - DEBUG - * Search query: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?
+[11/13/2026 14:41:51] - DEBUG - * Matched kg-object: facilities - ['application', 'administration of msg', 'dormitory'];amenities - ['dormitory', 'administration of msg', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg'];24-hour access - ['24-hour access'];guest room placement - ['placement in guest rooms', 'guest rooms', 'guest rooms of dormitory']
+[11/13/2026 14:41:51] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:41:51] - DEBUG - RESULT:
+* всего сущностей: 5
+* после фильтрации: 5
+* объектов для каждой сущности: [facilities] 3;[amenities] 3;[MSG dormitory] 3;[24-hour access] 1;[guest room placement] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:41:51] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:41:51] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:41:51] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:41:52] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and placement in guest rooms?
+[11/13/2026 14:41:52] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:41:52] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:41:53] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest rooms?
+[11/13/2026 14:41:53] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:41:53] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:41:53] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest rooms?
+[11/13/2026 14:41:53] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:41:53] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:41:54] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and placement in guest rooms?
+[11/13/2026 14:41:54] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:41:54] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:41:54] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:54] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:54] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:41:54] - DEBUG - * cahce hash_key: d1622899922aed7042b328fa7391e02478b7f8c8 .
+[11/13/2026 14:42:07] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:42:07] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:42:07] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:42:07] - DEBUG - * cache hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad.
+[11/13/2026 14:42:07] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', '{"rules": ["right", "administration of msg", "application"], "restrictions": ["right", "administration of msg", "application"], "facility type": ["administration of msg", "right", "24-hour access"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:42:07] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:42:07] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:42:07] - DEBUG - * Search query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:42:07] - DEBUG - * Search query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:42:07] - DEBUG - * Matched kg-object: rules - ['right', 'administration of msg', 'application'];restrictions - ['right', 'administration of msg', 'application'];facility type - ['administration of msg', 'right', '24-hour access']
+[11/13/2026 14:42:07] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:42:07] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [rules] 3;[restrictions] 3;[facility type] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:42:07] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:42:07] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:42:07] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:42:07] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:42:07] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:42:07] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:42:08] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:42:08] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:42:08] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:42:08] - DEBUG - RESULT: What are the specific application rules and restrictions for using the administration of MSG?
+[11/13/2026 14:42:08] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:42:08] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:42:09] - DEBUG - RESULT: What are the specific rules and restrictions for the administration of MSG?
+[11/13/2026 14:42:09] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:42:09] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:42:09] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:42:09] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:42:09] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:42:09] - DEBUG - * cahce hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad .
+[11/13/2026 14:43:28] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:28] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:28] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:43:28] - DEBUG - * cache hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b.
+[11/13/2026 14:43:28] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', '{"facilities": ["application", "administration of msg", "dormitory"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:43:28] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:28] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:43:28] - DEBUG - * Search query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:43:28] - DEBUG - * Search query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:43:28] - DEBUG - * Matched kg-object: facilities - ['application', 'administration of msg', 'dormitory'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:43:28] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:43:28] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:43:28] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:43:28] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:43:28] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:29] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:43:29] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:43:29] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:30] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory according to the administration of MSG?
+[11/13/2026 14:43:30] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:43:30] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:30] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:43:30] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:43:30] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:31] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:43:31] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:43:31] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:43:31] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:31] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:31] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:43:31] - DEBUG - * cahce hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b .
+[11/13/2026 14:43:41] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:41] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:41] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:43:41] - DEBUG - * cache hash_key: 2893c9c3c24fec673e3c0eb4bfdd16c6d6bc5b3d.
+[11/13/2026 14:43:41] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:43:41] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:41] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:43:41] - DEBUG - * Search query hash: 60cddc2892e701ea9225130f007b3a1e
+[11/13/2026 14:43:41] - DEBUG - * Search query: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:43:41] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:43:41] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:43:41] - DEBUG - RESULT:
+* всего сущностей: 2
+* после фильтрации: 2
+* объектов для каждой сущности: [amenities] 3;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:43:41] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:43:41] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:43:41] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:42] - DEBUG - RESULT: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:43:42] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:43:42] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:42] - DEBUG - RESULT: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:43:42] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:43:42] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:43] - DEBUG - RESULT: What specific amenity, such as 24-hour access, is available to students in the MSG dormitory?
+[11/13/2026 14:43:43] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:43:43] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:43] - DEBUG - RESULT: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:43:43] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:43:43] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:43:43] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:43] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:43] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:43:43] - DEBUG - * cahce hash_key: 2893c9c3c24fec673e3c0eb4bfdd16c6d6bc5b3d .
+[11/13/2026 14:43:53] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:53] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:53] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:43:53] - DEBUG - * cache hash_key: 38ac1971f6952350a8c036421d55463215f0eed3.
+[11/13/2026 14:43:53] - DEBUG - * hash seed: ['What recreational facilities are available to students in the MSG dormitory?', '{"recreational facilities": ["dormitory", "application", "24-hour access"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:43:53] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:53] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:43:53] - DEBUG - * Search query hash: 7ceaf7323a5b833d343d210837b3b0ec
+[11/13/2026 14:43:53] - DEBUG - * Search query: What recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:43:53] - DEBUG - * Matched kg-object: recreational facilities - ['dormitory', 'application', '24-hour access'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:43:53] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:43:53] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [recreational facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:43:53] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:43:53] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:43:53] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:54] - DEBUG - RESULT: What recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:43:54] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:43:54] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:54] - DEBUG - RESULT: What application is available for students in the MSG dormitory?
+[11/13/2026 14:43:54] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:43:54] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:55] - DEBUG - RESULT: What 24-hour access recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:43:55] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:43:55] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:43:55] - DEBUG - RESULT: What recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:43:55] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:43:55] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:43:55] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:55] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:55] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:43:55] - DEBUG - * cahce hash_key: 38ac1971f6952350a8c036421d55463215f0eed3 .
+[11/13/2026 14:44:05] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:44:05] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:44:05] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:44:05] - DEBUG - * cache hash_key: 12cea9ee821cda118f5958ad47e470582701acb3.
+[11/13/2026 14:44:05] - DEBUG - * hash seed: ['What amenities are available in the MSG dormitory for student residents?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"], "student residents": ["students", "dormitory", "right"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:44:05] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:44:05] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:44:05] - DEBUG - * Search query hash: 69190f63281d30e56ec244dd06180a9f
+[11/13/2026 14:44:05] - DEBUG - * Search query: What amenities are available in the MSG dormitory for student residents?
+[11/13/2026 14:44:05] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg'];student residents - ['students', 'dormitory', 'right']
+[11/13/2026 14:44:05] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:44:05] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [amenities] 3;[MSG dormitory] 3;[student residents] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:44:05] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:44:05] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:44:05] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:44:05] - DEBUG - RESULT: What amenities are available in the MSG dormitory for student residents?
+[11/13/2026 14:44:05] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:44:05] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:44:06] - DEBUG - RESULT: What amenities are available in the MSG dormitory for student residents?
+[11/13/2026 14:44:06] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:44:06] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:44:06] - DEBUG - RESULT: What amenities are available in the MSG dormitory for student residents?
+[11/13/2026 14:44:06] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:44:06] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:44:07] - DEBUG - RESULT: What amenities are available in the MSG dormitory according to the administration of MSG?
+[11/13/2026 14:44:07] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:44:07] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:44:07] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:44:07] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:44:07] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:44:07] - DEBUG - * cahce hash_key: 12cea9ee821cda118f5958ad47e470582701acb3 .
+[11/13/2026 14:44:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:44:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:44:18] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:44:18] - DEBUG - * cache hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad.
+[11/13/2026 14:44:18] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', '{"rules": ["right", "administration of msg", "application"], "restrictions": ["right", "administration of msg", "application"], "facility type": ["administration of msg", "right", "24-hour access"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:44:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:44:18] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:44:18] - DEBUG - * Search query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:44:18] - DEBUG - * Search query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:44:18] - DEBUG - * Matched kg-object: rules - ['right', 'administration of msg', 'application'];restrictions - ['right', 'administration of msg', 'application'];facility type - ['administration of msg', 'right', '24-hour access']
+[11/13/2026 14:44:18] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:44:18] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [rules] 3;[restrictions] 3;[facility type] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:44:18] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:44:18] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:44:18] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:44:19] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:44:19] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:44:19] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:44:19] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:44:19] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:44:19] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:44:20] - DEBUG - RESULT: What are the specific application rules and restrictions for using the administration of MSG?
+[11/13/2026 14:44:20] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:44:20] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:44:20] - DEBUG - RESULT: What are the specific rules and restrictions for the administration of MSG?
+[11/13/2026 14:44:20] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:44:20] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:44:20] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:44:20] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:44:20] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:44:20] - DEBUG - * cahce hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad .
+[11/13/2026 14:45:45] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:45] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:45:45] - DEBUG - * cache hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b.
+[11/13/2026 14:45:45] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', '{"facilities": ["application", "administration of msg", "dormitory"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:45:45] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:45] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:45:45] - DEBUG - * Search query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:45:45] - DEBUG - * Search query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:45:45] - DEBUG - * Matched kg-object: facilities - ['application', 'administration of msg', 'dormitory'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:45:45] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:45:45] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:45:45] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:45:45] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:45:45] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:45:45] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:45:45] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:45:45] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:45:46] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory according to the administration of MSG?
+[11/13/2026 14:45:46] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:45:46] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:45:46] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:45:46] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:45:46] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:45:47] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:45:47] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:45:47] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:45:47] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:47] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:47] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:45:47] - DEBUG - * cahce hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b .
+[11/13/2026 14:45:57] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:57] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:57] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:45:57] - DEBUG - * cache hash_key: d1622899922aed7042b328fa7391e02478b7f8c8.
+[11/13/2026 14:45:57] - DEBUG - * hash seed: ['What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?', '{"facilities": ["application", "administration of msg", "dormitory"], "amenities": ["dormitory", "administration of msg", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"], "24-hour access": ["24-hour access"], "guest room placement": ["placement in guest rooms", "guest rooms", "guest rooms of dormitory"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:45:57] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:57] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:45:57] - DEBUG - * Search query hash: 8c681693c502fc5d1694d5f9278d87da
+[11/13/2026 14:45:57] - DEBUG - * Search query: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest room placement?
+[11/13/2026 14:45:57] - DEBUG - * Matched kg-object: facilities - ['application', 'administration of msg', 'dormitory'];amenities - ['dormitory', 'administration of msg', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg'];24-hour access - ['24-hour access'];guest room placement - ['placement in guest rooms', 'guest rooms', 'guest rooms of dormitory']
+[11/13/2026 14:45:57] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:45:57] - DEBUG - RESULT:
+* всего сущностей: 5
+* после фильтрации: 5
+* объектов для каждой сущности: [facilities] 3;[amenities] 3;[MSG dormitory] 3;[24-hour access] 1;[guest room placement] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:45:57] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:45:57] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:45:57] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:45:58] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and placement in guest rooms?
+[11/13/2026 14:45:58] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:45:58] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:45:58] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest rooms?
+[11/13/2026 14:45:58] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:45:58] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:45:59] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and guest rooms?
+[11/13/2026 14:45:59] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:45:59] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:45:59] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access and placement in guest rooms?
+[11/13/2026 14:45:59] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:45:59] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:45:59] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:59] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:59] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:45:59] - DEBUG - * cahce hash_key: d1622899922aed7042b328fa7391e02478b7f8c8 .
+[11/13/2026 14:46:09] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:09] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:09] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:46:09] - DEBUG - * cache hash_key: 3f2017d40787b79deb5bfad87ed7c4e8e8f9427e.
+[11/13/2026 14:46:09] - DEBUG - * hash seed: ['What specific amenities are included in the MSG dormitory?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:46:09] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:09] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:46:09] - DEBUG - * Search query hash: 4db7cb35e7504dd9ef0ad9169ac7a378
+[11/13/2026 14:46:09] - DEBUG - * Search query: What specific amenities are included in the MSG dormitory?
+[11/13/2026 14:46:09] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:46:09] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:46:09] - DEBUG - RESULT:
+* всего сущностей: 2
+* после фильтрации: 2
+* объектов для каждой сущности: [amenities] 3;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:46:09] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:46:09] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:46:09] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:09] - DEBUG - RESULT: What specific amenities are included in the MSG dormitory?
+[11/13/2026 14:46:09] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:46:09] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:10] - DEBUG - RESULT: What specific amenities are included in the MSG dormitory according to its administration?
+[11/13/2026 14:46:10] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:46:10] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:11] - DEBUG - RESULT: What specific amenities, such as 24-hour access, are included in the MSG dormitory?
+[11/13/2026 14:46:11] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:46:11] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:11] - DEBUG - RESULT: What specific amenities are included in the MSG dormitory?
+[11/13/2026 14:46:11] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:46:11] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:46:11] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:11] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:11] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:46:11] - DEBUG - * cahce hash_key: 3f2017d40787b79deb5bfad87ed7c4e8e8f9427e .
+[11/13/2026 14:46:20] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:20] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:20] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:46:20] - DEBUG - * cache hash_key: a52117b6c4f87f8e2fe0f528ba0d92272f233dc7.
+[11/13/2026 14:46:20] - DEBUG - * hash seed: ['Are there any recreational facilities available for students in the MSG dormitory?', '{"recreational facilities": ["dormitory", "application", "24-hour access"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:46:20] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:20] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:46:20] - DEBUG - * Search query hash: 88c37889855c3e94690c25b60d9e0c35
+[11/13/2026 14:46:20] - DEBUG - * Search query: Are there any recreational facilities available for students in the MSG dormitory?
+[11/13/2026 14:46:20] - DEBUG - * Matched kg-object: recreational facilities - ['dormitory', 'application', '24-hour access'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:46:20] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:46:20] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [recreational facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:46:20] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:46:20] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:46:20] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:21] - DEBUG - RESULT: Are there any recreational facilities available for students in the MSG dormitory?
+[11/13/2026 14:46:21] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:46:21] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:21] - DEBUG - RESULT: Are there any application-based recreational facilities available for students in the MSG dormitory?
+[11/13/2026 14:46:21] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:46:21] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:22] - DEBUG - RESULT: Are there any 24-hour access recreational facilities available for students in the MSG dormitory?
+[11/13/2026 14:46:22] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:46:22] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:23] - DEBUG - RESULT: Are there any recreational facilities available for students in the MSG dormitory?
+[11/13/2026 14:46:23] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:46:23] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:46:23] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:23] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:23] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:46:23] - DEBUG - * cahce hash_key: a52117b6c4f87f8e2fe0f528ba0d92272f233dc7 .
+[11/13/2026 14:46:33] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:33] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:33] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:46:33] - DEBUG - * cache hash_key: e471699682947faf08a8b8e34246ddcf0a3a5f41.
+[11/13/2026 14:46:33] - DEBUG - * hash seed: ['What amenities and services are typically included in university dormitories?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "services": ["administration of msg", "application", "right"], "university dormitories": ["dormitory", "students", "head of dormitory"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:46:33] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:33] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:46:33] - DEBUG - * Search query hash: e47a324c6640f914f18c56221ca5b8e7
+[11/13/2026 14:46:33] - DEBUG - * Search query: What amenities and services are typically included in university dormitories?
+[11/13/2026 14:46:33] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];services - ['administration of msg', 'application', 'right'];university dormitories - ['dormitory', 'students', 'head of dormitory']
+[11/13/2026 14:46:33] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:46:33] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [amenities] 3;[services] 3;[university dormitories] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:46:33] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:46:33] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:46:33] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:33] - DEBUG - RESULT: What amenities and services, such as administration of msg, are typically included in university dormitories?
+[11/13/2026 14:46:33] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:46:33] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:34] - DEBUG - RESULT: What amenities and services, such as administration of msg, are typically included in university dormitories for students?
+[11/13/2026 14:46:34] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:46:34] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:35] - DEBUG - RESULT: What amenities and services, such as administration of msg and head of dormitory, are typically included in university dormitories?
+[11/13/2026 14:46:35] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:46:35] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:35] - DEBUG - RESULT: What amenities and services are typically included in university dormitories?
+[11/13/2026 14:46:35] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:46:35] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:46:35] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:35] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:35] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:46:35] - DEBUG - * cahce hash_key: e471699682947faf08a8b8e34246ddcf0a3a5f41 .
+[11/13/2026 14:46:45] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:46:45] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:46:45] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:46:45] - DEBUG - * cache hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad.
+[11/13/2026 14:46:45] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', '{"rules": ["right", "administration of msg", "application"], "restrictions": ["right", "administration of msg", "application"], "facility type": ["administration of msg", "right", "24-hour access"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:46:45] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:46:45] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:46:45] - DEBUG - * Search query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:46:45] - DEBUG - * Search query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:46:45] - DEBUG - * Matched kg-object: rules - ['right', 'administration of msg', 'application'];restrictions - ['right', 'administration of msg', 'application'];facility type - ['administration of msg', 'right', '24-hour access']
+[11/13/2026 14:46:45] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:46:45] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [rules] 3;[restrictions] 3;[facility type] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:46:45] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:46:45] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:46:45] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:46] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:46:46] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:46:46] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:47] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:46:47] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:46:47] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:47] - DEBUG - RESULT: What are the specific application rules and restrictions for using the administration of MSG?
+[11/13/2026 14:46:47] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:46:47] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:46:48] - DEBUG - RESULT: What are the specific rules and restrictions for the administration of MSG?
+[11/13/2026 14:46:48] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:46:48] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:46:48] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:46:48] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:46:48] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:46:48] - DEBUG - * cahce hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad .
+[11/13/2026 14:48:18] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:18] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:18] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:48:18] - DEBUG - * cache hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b.
+[11/13/2026 14:48:18] - DEBUG - * hash seed: ['What facilities are available to students living in the MSG dormitory?', '{"facilities": ["application", "administration of msg", "dormitory"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:48:18] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:18] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:48:18] - DEBUG - * Search query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:48:18] - DEBUG - * Search query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:48:18] - DEBUG - * Matched kg-object: facilities - ['application', 'administration of msg', 'dormitory'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:48:18] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:48:18] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:48:18] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:48:18] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:48:18] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:19] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:48:19] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:48:19] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:19] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory according to the administration of MSG?
+[11/13/2026 14:48:19] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:48:19] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:20] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:48:20] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:48:20] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:20] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:48:20] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:48:20] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:48:20] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:20] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:20] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:48:20] - DEBUG - * cahce hash_key: 3b6ed48bd8f3e1f217bb1a80cf60577c4d831d5b .
+[11/13/2026 14:48:31] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:31] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:31] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:48:31] - DEBUG - * cache hash_key: 2893c9c3c24fec673e3c0eb4bfdd16c6d6bc5b3d.
+[11/13/2026 14:48:31] - DEBUG - * hash seed: ['What specific amenities are available to students in the MSG dormitory?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:48:31] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:31] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:48:31] - DEBUG - * Search query hash: 60cddc2892e701ea9225130f007b3a1e
+[11/13/2026 14:48:31] - DEBUG - * Search query: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:48:31] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:48:31] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:48:31] - DEBUG - RESULT:
+* всего сущностей: 2
+* после фильтрации: 2
+* объектов для каждой сущности: [amenities] 3;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:48:31] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:48:31] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:48:31] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:31] - DEBUG - RESULT: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:48:31] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:48:31] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:32] - DEBUG - RESULT: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:48:32] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:48:32] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:32] - DEBUG - RESULT: What specific amenity, such as 24-hour access, is available to students in the MSG dormitory?
+[11/13/2026 14:48:32] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:48:32] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:33] - DEBUG - RESULT: What specific amenities are available to students in the MSG dormitory?
+[11/13/2026 14:48:33] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:48:33] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:48:33] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:33] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:33] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:48:33] - DEBUG - * cahce hash_key: 2893c9c3c24fec673e3c0eb4bfdd16c6d6bc5b3d .
+[11/13/2026 14:48:42] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:42] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:42] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:48:42] - DEBUG - * cache hash_key: 38ac1971f6952350a8c036421d55463215f0eed3.
+[11/13/2026 14:48:42] - DEBUG - * hash seed: ['What recreational facilities are available to students in the MSG dormitory?', '{"recreational facilities": ["dormitory", "application", "24-hour access"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:48:42] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:42] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:48:42] - DEBUG - * Search query hash: 7ceaf7323a5b833d343d210837b3b0ec
+[11/13/2026 14:48:42] - DEBUG - * Search query: What recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:48:42] - DEBUG - * Matched kg-object: recreational facilities - ['dormitory', 'application', '24-hour access'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:48:42] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:48:42] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [recreational facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:48:42] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:48:42] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:48:42] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:43] - DEBUG - RESULT: What recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:48:43] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:48:43] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:44] - DEBUG - RESULT: What application is available for students in the MSG dormitory?
+[11/13/2026 14:48:44] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:48:44] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:44] - DEBUG - RESULT: What 24-hour access recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:48:44] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:48:44] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:45] - DEBUG - RESULT: What recreational facilities are available to students in the MSG dormitory?
+[11/13/2026 14:48:45] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:48:45] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:48:45] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:45] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:45] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:48:45] - DEBUG - * cahce hash_key: 38ac1971f6952350a8c036421d55463215f0eed3 .
+[11/13/2026 14:48:55] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:55] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:55] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:48:55] - DEBUG - * cache hash_key: bf979fd320f0c8779e5a5fd4513b280b0bb85440.
+[11/13/2026 14:48:55] - DEBUG - * hash seed: ['What amenities are available in the MSG dormitory?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:48:55] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:55] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:48:55] - DEBUG - * Search query hash: cd7918ffff1401905107d2a363af5a56
+[11/13/2026 14:48:55] - DEBUG - * Search query: What amenities are available in the MSG dormitory?
+[11/13/2026 14:48:55] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:48:55] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:48:55] - DEBUG - RESULT:
+* всего сущностей: 2
+* после фильтрации: 2
+* объектов для каждой сущности: [amenities] 3;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:48:55] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:48:55] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:48:55] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:55] - DEBUG - RESULT: What amenities are available in the MSG dormitory?
+[11/13/2026 14:48:55] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:48:55] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:56] - DEBUG - RESULT: What amenities are available in the MSG dormitory according to its administration?
+[11/13/2026 14:48:56] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:48:56] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:57] - DEBUG - RESULT: What does 24-hour access entail in the MSG dormitory?
+[11/13/2026 14:48:57] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:48:57] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:48:57] - DEBUG - RESULT: What amenities are available in the MSG dormitory?
+[11/13/2026 14:48:57] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:48:57] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:48:57] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:57] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:57] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:48:57] - DEBUG - * cahce hash_key: bf979fd320f0c8779e5a5fd4513b280b0bb85440 .
+[11/13/2026 14:49:08] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:08] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:08] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:49:08] - DEBUG - * cache hash_key: bce2f7b26ced335def58116bd0fd0ff5dfcbe69b.
+[11/13/2026 14:49:08] - DEBUG - * hash seed: ['What amenities and facilities are available in the MSG dormitory for student use?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "facilities": ["application", "administration of msg", "dormitory"], "MSG dormitory": ["dormitory", "msg", "administration of msg"], "student": ["students", "right", "application"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:49:08] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:08] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:49:08] - DEBUG - * Search query hash: f2f92c031ad813f1a9e3f12cafe2a1c0
+[11/13/2026 14:49:08] - DEBUG - * Search query: What amenities and facilities are available in the MSG dormitory for student use?
+[11/13/2026 14:49:08] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];facilities - ['application', 'administration of msg', 'dormitory'];MSG dormitory - ['dormitory', 'msg', 'administration of msg'];student - ['students', 'right', 'application']
+[11/13/2026 14:49:08] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:49:08] - DEBUG - RESULT:
+* всего сущностей: 4
+* после фильтрации: 4
+* объектов для каждой сущности: [amenities] 3;[facilities] 3;[MSG dormitory] 3;[student] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:49:08] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:49:08] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:49:08] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:08] - DEBUG - RESULT: What amenities and facilities are available in the MSG dormitory for students to use?
+[11/13/2026 14:49:08] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:49:08] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:09] - DEBUG - RESULT: What amenities and facilities are available in the MSG dormitory for students to use?
+[11/13/2026 14:49:09] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:49:09] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:09] - DEBUG - RESULT: What amenities and facilities are available in the MSG dormitory for applications to use?
+[11/13/2026 14:49:09] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:49:09] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:10] - DEBUG - RESULT: What amenities and facilities are available in the MSG dormitory for students to use?
+[11/13/2026 14:49:10] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:49:10] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:49:10] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:10] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:10] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:49:10] - DEBUG - * cahce hash_key: bce2f7b26ced335def58116bd0fd0ff5dfcbe69b .
+[11/13/2026 14:49:21] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:21] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:21] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:49:21] - DEBUG - * cache hash_key: 753c9a4b107a62fad341032106355e834a09cb5a.
+[11/13/2026 14:49:21] - DEBUG - * hash seed: ['What specific amenities and facilities are available for student use in the MSG dormitory?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "facilities": ["application", "administration of msg", "dormitory"], "student": ["students", "right", "application"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:49:21] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:21] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:49:21] - DEBUG - * Search query hash: 6767db967a4449bf3a5b179e5fce0503
+[11/13/2026 14:49:21] - DEBUG - * Search query: What specific amenities and facilities are available for student use in the MSG dormitory?
+[11/13/2026 14:49:21] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];facilities - ['application', 'administration of msg', 'dormitory'];student - ['students', 'right', 'application'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:49:21] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:49:21] - DEBUG - RESULT:
+* всего сущностей: 4
+* после фильтрации: 4
+* объектов для каждой сущности: [amenities] 3;[facilities] 3;[student] 3;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:49:21] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:49:21] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:49:21] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:21] - DEBUG - RESULT: What specific amenities and facilities are available for students use in the MSG dormitory?
+[11/13/2026 14:49:21] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:49:21] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:22] - DEBUG - RESULT: What specific amenities and facilities are available for students to use in the MSG dormitory?
+[11/13/2026 14:49:22] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:49:22] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:22] - DEBUG - RESULT: What specific amenities and facilities are available for students to use in the MSG dormitory?
+[11/13/2026 14:49:22] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:49:22] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:23] - DEBUG - RESULT: What specific amenities and facilities are available for students in the MSG dormitory?
+[11/13/2026 14:49:23] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:49:23] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:49:23] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:23] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:23] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:49:23] - DEBUG - * cahce hash_key: 753c9a4b107a62fad341032106355e834a09cb5a .
+[11/13/2026 14:49:34] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:34] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:34] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:49:34] - DEBUG - * cache hash_key: 964d1871c705b9fe98b6f2806dff7809c287e26d.
+[11/13/2026 14:49:34] - DEBUG - * hash seed: ['Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?', '{"recreational facilities": ["dormitory", "application", "24-hour access"], "common areas": ["right", "administration of msg", "application"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:49:34] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:34] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:49:34] - DEBUG - * Search query hash: a61401d3c6a24b351d5c45896b331c59
+[11/13/2026 14:49:34] - DEBUG - * Search query: Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?
+[11/13/2026 14:49:34] - DEBUG - * Matched kg-object: recreational facilities - ['dormitory', 'application', '24-hour access'];common areas - ['right', 'administration of msg', 'application'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:49:34] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:49:34] - DEBUG - RESULT:
+* всего сущностей: 4
+* после фильтрации: 4
+* объектов для каждой сущности: [recreational facilities] 3;[common areas] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:49:34] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:49:34] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:49:34] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:35] - DEBUG - RESULT: Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?
+[11/13/2026 14:49:35] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:49:35] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:36] - DEBUG - RESULT: Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?
+[11/13/2026 14:49:36] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:49:36] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:36] - DEBUG - RESULT: Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?
+[11/13/2026 14:49:36] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:49:36] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:37] - DEBUG - RESULT: Are there any recreational facilities or common areas specifically designated for students in the MSG dormitory?
+[11/13/2026 14:49:37] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:49:37] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:49:37] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:37] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:37] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:49:37] - DEBUG - * cahce hash_key: 964d1871c705b9fe98b6f2806dff7809c287e26d .
+[11/13/2026 14:49:46] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:46] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:46] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:49:46] - DEBUG - * cache hash_key: a3c0f440d5a9f27c74e734f1eea8d0d68aa79a2f.
+[11/13/2026 14:49:46] - DEBUG - * hash seed: ['What amenities and services are available to students living in the MSG dormitory?', '{"amenities": ["dormitory", "administration of msg", "24-hour access"], "services": ["administration of msg", "application", "right"], "students": ["students"], "MSG dormitory": ["dormitory", "msg", "administration of msg"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:49:46] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:46] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:49:46] - DEBUG - * Search query hash: 0f82fa0f7437784e9fdf9def5e0ac2c7
+[11/13/2026 14:49:46] - DEBUG - * Search query: What amenities and services are available to students living in the MSG dormitory?
+[11/13/2026 14:49:46] - DEBUG - * Matched kg-object: amenities - ['dormitory', 'administration of msg', '24-hour access'];services - ['administration of msg', 'application', 'right'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:49:46] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:49:46] - DEBUG - RESULT:
+* всего сущностей: 4
+* после фильтрации: 4
+* объектов для каждой сущности: [amenities] 3;[services] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:49:46] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:49:46] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:49:46] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:47] - DEBUG - RESULT: What amenities and services, such as administration of MSG, are available to students living in the MSG dormitory?
+[11/13/2026 14:49:47] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:49:47] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:47] - DEBUG - RESULT: What amenities and services are available to students living in the MSG dormitory?
+[11/13/2026 14:49:47] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:49:47] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:48] - DEBUG - RESULT: What amenities and services are available to students living in the MSG dormitory?
+[11/13/2026 14:49:48] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:49:48] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:49:48] - DEBUG - RESULT: What amenities and services are provided by the administration of MSG for students living in the MSG dormitory?
+[11/13/2026 14:49:48] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:49:48] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:49:48] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:49:48] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:49:48] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:49:48] - DEBUG - * cahce hash_key: a3c0f440d5a9f27c74e734f1eea8d0d68aa79a2f .
+[11/13/2026 14:49:59] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:49:59] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:49:59] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache .
+[11/13/2026 14:49:59] - DEBUG - * cache hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad.
+[11/13/2026 14:49:59] - DEBUG - * hash seed: ['What are the specific rules and restrictions for using [facility type]?', '{"rules": ["right", "administration of msg", "application"], "restrictions": ["right", "administration of msg", "application"], "facility type": ["administration of msg", "right", "24-hour access"]}', 'en|None|cquerie_generator=v5|4|FalseFalse', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:49:59] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:49:59] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:49:59] - DEBUG - * Search query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:49:59] - DEBUG - * Search query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:49:59] - DEBUG - * Matched kg-object: rules - ['right', 'administration of msg', 'application'];restrictions - ['right', 'administration of msg', 'application'];facility type - ['administration of msg', 'right', '24-hour access']
+[11/13/2026 14:49:59] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:49:59] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [rules] 3;[restrictions] 3;[facility type] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:49:59] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:49:59] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:49:59] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:50:00] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:50:00] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:50:00] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:50:00] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:50:00] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:50:00] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:50:01] - DEBUG - RESULT: What are the specific application rules and restrictions for using the administration of MSG?
+[11/13/2026 14:50:01] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:50:01] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:50:01] - DEBUG - RESULT: What are the specific rules and restrictions for the administration of MSG?
+[11/13/2026 14:50:01] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:50:01] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:50:01] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:50:01] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:50:01] - DEBUG - * cache table_name: medreasn_cquerygen_main_stage_cache
+[11/13/2026 14:50:01] - DEBUG - * cahce hash_key: a7d2acdcd18ffb8995eff025d9299f07d4d234ad .
+[11/13/2026 14:51:37] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:37] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:51:37] - DEBUG - * Search query hash: cd576535346b1a47c378d0af7383c13c
+[11/13/2026 14:51:37] - DEBUG - * Search query: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:51:37] - DEBUG - * Matched kg-object: facilities - ['application', 'administration of msg', 'dormitory'];students - ['students'];MSG dormitory - ['dormitory', 'msg', 'administration of msg']
+[11/13/2026 14:51:37] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:51:37] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [facilities] 3;[students] 1;[MSG dormitory] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:51:37] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:51:37] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:51:37] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:51:38] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:51:38] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:51:38] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:51:38] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory according to the administration of MSG?
+[11/13/2026 14:51:38] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:51:38] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:51:39] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:51:39] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:51:39] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:51:39] - DEBUG - RESULT: What facilities are available to students living in the MSG dormitory?
+[11/13/2026 14:51:39] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:51:39] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:51:53] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:53] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:51:53] - DEBUG - * Search query hash: 1af2d4710a4155d7e1f7be3809e5fa9e
+[11/13/2026 14:51:53] - DEBUG - * Search query: What other facilities or amenities are available to students in the MSG dormitory besides guest room access?
+[11/13/2026 14:51:53] - DEBUG - * Matched kg-object: facilities - ['application', 'administration of msg', 'dormitory'];amenities - ['dormitory', 'administration of msg', '24-hour access'];guest room access - ['guest rooms', '24-hour access', 'guest rooms of dormitory'];MSG dormitory - ['dormitory', 'msg', 'administration of msg'];students - ['students']
+[11/13/2026 14:51:53] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:51:53] - DEBUG - RESULT:
+* всего сущностей: 5
+* после фильтрации: 5
+* объектов для каждой сущности: [facilities] 3;[amenities] 3;[guest room access] 3;[MSG dormitory] 3;[students] 1
+* полученное количество комбинаций: 4
+[11/13/2026 14:51:53] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:51:53] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:51:53] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:51:54] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides guest room access?
+[11/13/2026 14:51:54] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:51:54] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:51:55] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides 24-hour access?
+[11/13/2026 14:51:55] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:51:55] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:51:55] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides access to guest rooms?
+[11/13/2026 14:51:55] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:51:55] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:51:56] - DEBUG - RESULT: What other facilities or amenities are available to students in the MSG dormitory besides guest room access, according to the administration of MSG?
+[11/13/2026 14:51:56] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:51:56] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:52:10] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:52:10] - DEBUG - START CLUE-QUERIES GENERATION...
+[11/13/2026 14:52:10] - DEBUG - * Search query hash: 8e61ff8e3120cb52ee9212d4fdd338ab
+[11/13/2026 14:52:10] - DEBUG - * Search query: What are the specific rules and restrictions for using [facility type]?
+[11/13/2026 14:52:10] - DEBUG - * Matched kg-object: rules - ['right', 'administration of msg', 'application'];restrictions - ['right', 'administration of msg', 'application'];facility type - ['administration of msg', 'right', '24-hour access']
+[11/13/2026 14:52:10] - DEBUG - Получаем декартово произведение всех комбинаций объектов (по сущностям)...
+[11/13/2026 14:52:10] - DEBUG - RESULT:
+* всего сущностей: 3
+* после фильтрации: 3
+* объектов для каждой сущности: [rules] 3;[restrictions] 3;[facility type] 3
+* полученное количество комбинаций: 4
+[11/13/2026 14:52:10] - DEBUG - Формируем clue-query для каждой комбинации сопоставленных вершин...
+[11/13/2026 14:52:10] - DEBUG - Текущий cleu-query #: 0 / 4 .
+[11/13/2026 14:52:10] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:52:10] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:52:10] - DEBUG - Текущий cleu-query #: 1 / 4 .
+[11/13/2026 14:52:10] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:52:11] - DEBUG - RESULT: What are the specific rules and restrictions for using the administration of MSG?
+[11/13/2026 14:52:11] - DEBUG - Текущий cleu-query #: 2 / 4 .
+[11/13/2026 14:52:11] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:52:11] - DEBUG - RESULT: What are the specific application rules and restrictions for using the administration of MSG?
+[11/13/2026 14:52:11] - DEBUG - Текущий cleu-query #: 3 / 4 .
+[11/13/2026 14:52:11] - DEBUG - Выполняем генерацию clue-query с помощью LLM-агента...
+[11/13/2026 14:52:12] - DEBUG - RESULT: What are the specific rules and restrictions for the administration of MSG?
+[11/13/2026 14:52:12] - DEBUG - RESULT:
+* Количество полученных clue-queries: 4
+[11/13/2026 14:52:12] - DEBUG - STATUS: ReturnStatus.success

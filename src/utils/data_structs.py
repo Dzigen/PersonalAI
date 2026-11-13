@@ -9,7 +9,6 @@ import os
 
 from .logger import LogLevel, Logger
 
-
 @dataclass
 class BaseTableStucture:
     """Базовый класс для описания структуры записей, хранящихся в табличной БД."""
@@ -606,6 +605,9 @@ class BaseConfigOperations:
                     val['table_info'] = val['table_info'].__name__
                 formatted_dict[key] = val
 
+            elif isinstance(val, Enum):
+                formatted_dict[key] = val.value
+                
             else:
                 formatted_dict[key] = val
 
@@ -631,39 +633,80 @@ class BaseConfigOperations:
 @dataclass(kw_only=True)
 class LoggingConfig:
     """
-    :param log_path: Путь до каталога для хранения журнала мониторинга/поведения инициализируемой компоненты.
-    :type log_path: str, optional
+    :param log_base_path: ... . Значение по умолчанию '.'.
+    :type log_base_path: Union[None, str], optional   
+    :param log_relative_path: Относительный путь до каталога для хранения журнала мониторинга/поведения инициализируемой компоненты. Значение по умолчанию 'log'.
+    :type log_relative_path: str, optional
     :param verbose: Если True, то информация о поведении класса будет сохраняться в stdout и файл-журналирования (log), иначе только в файл. Значение по умолчанию False.
     :type verbose: bool, optional
     :param log_level: Уровень (равный и выше) логирумыех сообщений в файл журналирования. Значение по умолчанию LogLevel.DISABLED (логирование выключено).
     :type log_level: LogLevel, optional
     """
-    log_path: str = "."
+    log_base_path: Union[None, str] = "."
+    log_relative_path: str = "log"
     verbose: bool = False
     log_level: LogLevel = LogLevel.DEBUG
 
-    def synchronize_logging(self, log_level: Union[None, LogLevel] = None, verbose: Union[None, bool] = None):
+    def synchronize_logging(self, log_base_path: Union[None, str] = None, log_level: Union[None, LogLevel] = None, verbose: Union[None, bool] = None):
         """Метод предназначен для синхронизации настроек логированиями между вложенными конфигурациями.
-
+        
+        :param log_base_path: ... . Если None, используется текущее значение log_base_path. Значение по умолчанию None.
+        :type log_base_path: Union[None, str], optional   
         :param log_level: Уровень логирования, который необходимо установить принудительно. Если None, используется текущее значение self.log_level. Значение по умолчанию None.
         :type log_level: Union[None, LogLevel], optional
         :param verbose: Флаг сохранения лога в stdout, который необходимо установить принудительно. Если None, используется текущее значение self.verbose. Значение по умолчанию None.
         :type verbose: Union[None, bool], optional
         """
 
-        if isinstance(self, LoggingConfig):
-            if log_level is not None:
-                self.log_level = log_level
-            if verbose is not None:
-                self.verbose = verbose
+        if log_base_path is not None:
+            self.log_base_path = log_base_path
+        if log_level is not None:
+            self.log_level = log_level
+        if verbose is not None:
+            self.verbose = verbose
 
         fields_iterator = fields(self)
         for field_object in fields_iterator:
             field_value = getattr(self, field_object.name)
 
             if isinstance(field_value, LoggingConfig):
-                field_value.synchronize_logging(self.log_level, self.verbose)
+                field_value.synchronize_logging(self.log_base_path, self.log_level, self.verbose)
 
+@dataclass(kw_only=True)
+class EnvironmentConfig:
+    pai_base_path: str = "."
+    pai_name: Union[None,str] = "personalai_env_default"
+    kg_related_database_name: str = "defaultknowledgegraphrelateddatabase"
+
+    def synchronize_environment(
+            self, pai_base_path: Union[None, str] = None, pai_name: Union[None, str] = None, 
+            kg_related_database_name: Union[None, str] = None) ->  None:
+
+        if pai_base_path is not None:
+            self.pai_base_path = pai_base_path
+        if pai_name is not None:
+            self.pai_name = pai_name
+        if kg_related_database_name is not None:
+            self.kg_related_database_name = kg_related_database_name
+
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, EnvironmentConfig):
+                field_value.synchronize_environment(self.pai_base_path, self.pai_name, self.kg_related_database_name)
+
+    def synchronize_database(self) ->  None:
+        fields_iterator = fields(self)
+        for field_object in fields_iterator:
+            field_value = getattr(self, field_object.name)
+
+            if isinstance(field_value, EnvironmentConfig):
+                field_value.synchronize_database()
+
+    def synchronize_kgrelated_configs(self) -> None:
+        self.synchronize_environment()
+        self.synchronize_database()
 
 @dataclass
 class BaseComponentConfig(LoggingConfig, BaseConfigOperations):

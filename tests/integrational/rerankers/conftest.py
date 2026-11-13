@@ -31,7 +31,8 @@ def e5_small_embedder():
 def vector_composer(e5_small_embedder):
     # dense
     chroma_dense_config = VectorDriverConfig(db_vendor='chroma', db_config=VectorDBConnectionConfig(
-        conn={'path': f"{TEST_VOLUME_DIR}/chroma"}, db_info={'db': 'testing', 'table': 'testing'},
+        conn={'path': f"{TEST_VOLUME_DIR}/chroma"}, db_info={
+            'db': 'testing', 'table': 'testing', 'expected_db_base_path': TEST_VOLUME_DIR},
         params={"hnsw:space": "ip", "hnsw:M": 4096}, need_to_clear=True))
 
     # milvus_dense_config = VectorDriverConfig(db_vendor='milvus', db_config=VectorDBConnectionConfig(
@@ -77,13 +78,12 @@ def vector_composer(e5_small_embedder):
     inmemory_dense_config = VectorDriverConfig(
         db_vendor='inmemory',
         db_config=VectorDBConnectionConfig(
+            db_info={ 'db': 'testing','table': 'testing','expected_db_base_path': TEST_VOLUME_DIR },
             params={
-                'store_dump_name': 'inmemory_dense',
                 'load_from_disk': False,
-                'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
                 'save_on_disk': False,
-                'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_dense",
-                'vector_dim': 384
+                'vector_dim': 384,
+                'rewrite': True
             }
         )
     )
@@ -103,10 +103,9 @@ def vector_composer(e5_small_embedder):
 
     inmemory_bm25_config = VectorDriverConfig(
         db_vendor='inmemory', vector_category='sparse_bm25',
-        db_config=VectorDBConnectionConfig(params={
-            'load_from_disk': False, 'load_dump_name': None,
-            'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_bm25", 'save_on_disk': True,
-            'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_bm25"}
+        db_config=VectorDBConnectionConfig(
+            db_info={ 'db': 'testing','table': 'testing','expected_db_base_path': TEST_VOLUME_DIR },
+            params={'load_from_disk': False, 'save_on_disk': True, 'rewrite': True}
         )
     )
 
@@ -143,6 +142,7 @@ def vector_composer(e5_small_embedder):
     }
 
     composer = VectorComposer(vdb_config_mapping, emb_mapping)
+    composer.open_connection()
     composer.clear()
     print("before: ",composer.count_items())
 

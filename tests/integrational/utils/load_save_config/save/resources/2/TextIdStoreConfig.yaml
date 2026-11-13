@@ -1,4 +1,4 @@
-log_path: log/textid_store
+log_relative_path: log/textid_store
 verbose: false
 log_level: 10
 texttotriplets_store_config:

@@ -1,0 +1,124 @@
+[11/13/2026 14:34:22] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:34:22] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:34:22] - DEBUG - * cache table_name: qp_denoising_stage_cache .
+[11/13/2026 14:34:22] - DEBUG - * cache hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e.
+[11/13/2026 14:34:22] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?|None|None|None|None', 'en|None|swremoval=v4;grammarcheck=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:34:22] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:34:22] - DEBUG - START QUERY DENOISING...
+[11/13/2026 14:34:22] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:34:22] - DEBUG - * Query info: QueryPreprocessingInfo(base_query='What facilities are students allowed to use while living in the MSG dormitory?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=None)
+[11/13/2026 14:34:22] - DEBUG - Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...
+[11/13/2026 14:34:23] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:34:23] - DEBUG - Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...
+[11/13/2026 14:34:23] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:34:23] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:34:23] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:34:23] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:34:23] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:34:23] - DEBUG - * cache table_name: qp_denoising_stage_cache
+[11/13/2026 14:34:23] - DEBUG - * cahce hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e .
+[11/13/2026 14:39:02] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:39:02] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:39:02] - DEBUG - * cache table_name: qp_denoising_stage_cache .
+[11/13/2026 14:39:02] - DEBUG - * cache hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e.
+[11/13/2026 14:39:02] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?|None|None|None|None', 'en|None|swremoval=v4;grammarcheck=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:39:02] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:39:02] - DEBUG - START QUERY DENOISING...
+[11/13/2026 14:39:02] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:39:02] - DEBUG - * Query info: QueryPreprocessingInfo(base_query='What facilities are students allowed to use while living in the MSG dormitory?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=None)
+[11/13/2026 14:39:02] - DEBUG - Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...
+[11/13/2026 14:39:03] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:39:03] - DEBUG - Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...
+[11/13/2026 14:39:03] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:39:03] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:39:03] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:39:03] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:39:03] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:39:03] - DEBUG - * cache table_name: qp_denoising_stage_cache
+[11/13/2026 14:39:03] - DEBUG - * cahce hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e .
+[11/13/2026 14:41:34] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:41:34] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:41:34] - DEBUG - * cache table_name: qp_denoising_stage_cache .
+[11/13/2026 14:41:34] - DEBUG - * cache hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e.
+[11/13/2026 14:41:34] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?|None|None|None|None', 'en|None|swremoval=v4;grammarcheck=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:41:34] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:41:34] - DEBUG - START QUERY DENOISING...
+[11/13/2026 14:41:34] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:41:34] - DEBUG - * Query info: QueryPreprocessingInfo(base_query='What facilities are students allowed to use while living in the MSG dormitory?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=None)
+[11/13/2026 14:41:34] - DEBUG - Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...
+[11/13/2026 14:41:35] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:41:35] - DEBUG - Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...
+[11/13/2026 14:41:36] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:41:36] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:41:36] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:41:36] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:41:36] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:41:36] - DEBUG - * cache table_name: qp_denoising_stage_cache
+[11/13/2026 14:41:36] - DEBUG - * cahce hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e .
+[11/13/2026 14:43:24] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:43:24] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:43:24] - DEBUG - * cache table_name: qp_denoising_stage_cache .
+[11/13/2026 14:43:24] - DEBUG - * cache hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e.
+[11/13/2026 14:43:24] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?|None|None|None|None', 'en|None|swremoval=v4;grammarcheck=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:43:24] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:43:24] - DEBUG - START QUERY DENOISING...
+[11/13/2026 14:43:24] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:43:24] - DEBUG - * Query info: QueryPreprocessingInfo(base_query='What facilities are students allowed to use while living in the MSG dormitory?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=None)
+[11/13/2026 14:43:24] - DEBUG - Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...
+[11/13/2026 14:43:24] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:43:24] - DEBUG - Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...
+[11/13/2026 14:43:25] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:43:25] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:43:25] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:43:25] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:43:25] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:43:25] - DEBUG - * cache table_name: qp_denoising_stage_cache
+[11/13/2026 14:43:25] - DEBUG - * cahce hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e .
+[11/13/2026 14:45:40] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:45:40] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:45:40] - DEBUG - * cache table_name: qp_denoising_stage_cache .
+[11/13/2026 14:45:40] - DEBUG - * cache hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e.
+[11/13/2026 14:45:40] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?|None|None|None|None', 'en|None|swremoval=v4;grammarcheck=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:45:40] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:45:40] - DEBUG - START QUERY DENOISING...
+[11/13/2026 14:45:40] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:45:40] - DEBUG - * Query info: QueryPreprocessingInfo(base_query='What facilities are students allowed to use while living in the MSG dormitory?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=None)
+[11/13/2026 14:45:40] - DEBUG - Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...
+[11/13/2026 14:45:41] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:45:41] - DEBUG - Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...
+[11/13/2026 14:45:41] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:45:41] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:45:41] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:45:41] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:45:41] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:45:41] - DEBUG - * cache table_name: qp_denoising_stage_cache
+[11/13/2026 14:45:41] - DEBUG - * cahce hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e .
+[11/13/2026 14:48:13] - DEBUG - Поиск результата в кеше...
+[11/13/2026 14:48:13] - DEBUG - Результата по заданной конфигурации гиперпараметров в кеше нет.
+[11/13/2026 14:48:13] - DEBUG - * cache table_name: qp_denoising_stage_cache .
+[11/13/2026 14:48:13] - DEBUG - * cache hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e.
+[11/13/2026 14:48:13] - DEBUG - * hash seed: ['What facilities are students allowed to use while living in the MSG dormitory?|None|None|None|None', 'en|None|swremoval=v4;grammarcheck=v4', 'ollama:num_predict=2048;seed=42;temperature=0.0;top_k=1|model=qwen2.5:7b'] .
+[11/13/2026 14:48:13] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:48:13] - DEBUG - START QUERY DENOISING...
+[11/13/2026 14:48:13] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:48:13] - DEBUG - * Query info: QueryPreprocessingInfo(base_query='What facilities are students allowed to use while living in the MSG dormitory?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=None)
+[11/13/2026 14:48:13] - DEBUG - Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...
+[11/13/2026 14:48:14] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:48:14] - DEBUG - Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...
+[11/13/2026 14:48:15] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:48:15] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:48:15] - DEBUG - STATUS: ReturnStatus.success
+[11/13/2026 14:48:15] - DEBUG - Кешируем полученный результат.
+[11/13/2026 14:48:15] - DEBUG - * Trace Caching: False.
+[11/13/2026 14:48:15] - DEBUG - * cache table_name: qp_denoising_stage_cache
+[11/13/2026 14:48:15] - DEBUG - * cahce hash_key: b704d7eb3a5d24b15f36fe2a73e17fc0468ef32e .
+[11/13/2026 14:51:32] - DEBUG - Получаем результат с нуля...
+[11/13/2026 14:51:32] - DEBUG - START QUERY DENOISING...
+[11/13/2026 14:51:32] - DEBUG - * Question hash: 3ea10df6f26d45eb9129adf96580a02a
+[11/13/2026 14:51:32] - DEBUG - * Query info: QueryPreprocessingInfo(base_query='What facilities are students allowed to use while living in the MSG dormitory?', denoised_query=None, enchanced_query=None, decomposed_query=None, processed_query=None)
+[11/13/2026 14:51:32] - DEBUG - Выполнение удаление лишней информации/символов из запроса с помощью LLM-агента...
+[11/13/2026 14:51:33] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:51:33] - DEBUG - Выполнение перефразирования запроса с соблюдением грамматики и синтаксиса используемого естественного языке с помощью LLM-агента...
+[11/13/2026 14:51:34] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:51:34] - DEBUG - RESULT: What facilities are students allowed to use while living in the MSG dormitory?
+[11/13/2026 14:51:34] - DEBUG - STATUS: ReturnStatus.success

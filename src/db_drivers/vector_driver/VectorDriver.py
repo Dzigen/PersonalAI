@@ -42,8 +42,8 @@ class VectorDriverConfig(BaseConfigOperations):
 class VectorDriver:
     """Компонента для инициализации подключения к векторному хранилищу."""
     @staticmethod
-    def connect(config: Union[Dict, VectorDriverConfig] = VectorDriverConfig(), embedder: Union[None, EmbedderModel] = None) -> AbstractVectorDatabaseConnection:
-        """Метод предназначен для создания и открытия подключения к векторному хранилищу.
+    def select(config: Union[Dict, VectorDriverConfig] = VectorDriverConfig(), embedder: Union[None, EmbedderModel] = None) -> AbstractVectorDatabaseConnection:
+        """Метод предназначен для выбора способа подключения к векторному хранилищу.
 
         :param config: Конфигурация драйвера (VectorDriverConfig), либо словарь с её параметрами.
         :type config: Union[Dict, VectorDriverConfig]
@@ -62,5 +62,4 @@ class VectorDriver:
             connector_kw = f"{config.db_vendor}_{config.vector_category.split('_')[1]}"
 
         vector_conn: AbstractVectorDatabaseConnection = AVAILABLE_VECTORDB_CONNECTORS[connector_kw](config=config.db_config, embedder=embedder)
-        vector_conn.open_connection()
         return vector_conn

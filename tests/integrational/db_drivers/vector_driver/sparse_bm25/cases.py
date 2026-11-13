@@ -245,3 +245,21 @@ for db_vendor in AVAILABLE_BM25_DBS:
     for i in range(len(BM25_CLEAR_TEST_CASES)):
         BM25_POPULATED_CLEAR_TEST_CASES.append(
             BM25_CLEAR_TEST_CASES[i] + [db_vendor])
+
+###############################################################################################
+
+# conn_sequence, expected_is_open
+BM25_IS_OPEN_TEST_CASES = [
+    ([],),
+    (['close'],),
+    (['close', 'open'],),
+    (['open'],),
+    (['close', 'close'],),
+        
+]
+
+BM25_POPULATED_IS_OPEN_TEST_CASES = []
+for db_vendor in AVAILABLE_BM25_DBS:
+    for i in range(len(BM25_IS_OPEN_TEST_CASES)):
+        BM25_POPULATED_IS_OPEN_TEST_CASES.append(
+            BM25_IS_OPEN_TEST_CASES[i] + (db_vendor,))

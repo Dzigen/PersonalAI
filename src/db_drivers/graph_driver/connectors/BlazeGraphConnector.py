@@ -6,6 +6,8 @@ import requests
 import json
 import os
 
+from rdflib.exceptions import ParserError
+
 from .configs import DEFAULT_BLAZEGRAPH_CONFIG
 from ..utils import GraphDBConnectionConfig, AbstractGraphDatabaseConnection
 from ...utils import restore_connection, retry
@@ -19,6 +21,7 @@ from ....utils.data_structs import Triplet, Node, TripletCreator, NodeCreator, \
 
 
 class BlazeGraphConnector(AbstractGraphDatabaseConnection):
+    DATABASE_KW = 'blazegraph'
 
     def __init__(self, config: Union[Dict, GraphDBConnectionConfig] = DEFAULT_BLAZEGRAPH_CONFIG) -> None:
         if isinstance(config, dict):
@@ -108,18 +111,37 @@ class BlazeGraphConnector(AbstractGraphDatabaseConnection):
         formated_ns_config = "".join(self.config.params['namespace_configuration'].format(namespace_name=self.config.db_info['db']).split("\n"))
         requests.post(url, data=formated_ns_config, headers={"Content-Type": "application/xml", 'Accept': 'application/xml'})
 
+    def is_open(self) -> bool:
+        # always true if the server can answer
+        ask_query = "ASK { }"
+        try:
+            # `ds.query` automatically uses the store’s query endpoint.
+            result = self.dataset.query(ask_query)
+            # `result.askAnswer` is a boolean in rdflib 7.x+.  Earlier versions:
+            #   return bool(list(result))[0]
+            return getattr(result, "askAnswer", bool(list(result)))
+        except (TypeError, AttributeError) as e:
+            return False
+        except (requests.exceptions.RequestException) as e:
+            # Network‑level problems (connection refused, timeout, DNS failure, etc.)
+            print(f"BlazeGraph ping failed (network): {e}")
+            return False
+        except (ParserError) as e:
+            # Should never happen for the static ASK { } query – signals a bug.
+            print(f"Query parsing error (unexpected): {e}")
+            return False
+
     def close_connection(self) -> None:
         try:
             self.graph.close()
+            del self.graph
+            del self.dataset
+            del self.store
         except (AttributeError, TypeError):
             pass
 
     def __del__(self):
         self.close_connection()
-
-    def is_open(self) -> bool:
-        # TODO
-        raise NotImplementedError
 
     @restore_connection
     def execute(self, query: str, mode: str = 'read') -> object:

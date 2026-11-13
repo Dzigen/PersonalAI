@@ -16,7 +16,7 @@ from ....utils.data_structs import create_id, QueryInfo, Triplet, BaseComponentC
 from ....utils.cache_kv import CacheUtils
 from ....db_drivers.kv_driver import KeyValueDriverConfig
 from ....utils.cache_kv.CacheOperations import CacheOperations
-
+from ....environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
 class KnowledgeRetrieverConfig(BaseComponentConfig):
@@ -39,7 +39,7 @@ class KnowledgeRetrieverConfig(BaseComponentConfig):
     filter_config: Union[BaseTripletsFilterConfig, Dict, None] = field(default_factory=lambda: TripletsFilterConfig())
 
     cache_table_name: Union[str, None] = 'qa_kretriever_stage_cache'
-    log_path: str = KR_MAIN_LOG_PATH
+    log_relative_path: str = KR_MAIN_LOG_PATH
 
     def to_str(self) -> str:
         str_r_config = [f"{k}:{v}" for k, v in self.retriever_config.items()] if isinstance(self.retriever_config, dict) else self.retriever_config.to_str()
@@ -65,7 +65,7 @@ class KnowledgeRetrieverConfig(BaseComponentConfig):
             self.filter_config.formate_fields()
 
 
-class KnowledgeRetriever(CacheUtils, CacheOperations):
+class KnowledgeRetriever(CacheUtils, CacheOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс третьей стадии QA-конвейера для извлечения
     релевантной к user-вопросу информации из памяти (графа знаний) ассистента.
 
@@ -85,7 +85,7 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
             config.formate_fields()
         self.config = config
 
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -99,7 +99,7 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
             self.stages.triplets_filter = AVAILABLE_TRIPLETS_FILTERS[self.config.filter_method](
                 kg_model, self.config.filter_config, cache_kvdriver_config)
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
 
@@ -109,9 +109,9 @@ class KnowledgeRetriever(CacheUtils, CacheOperations):
         self.log.debug("Невалидные триплеты:", verbose=self.verbose, log_level=self.log_level)
         valid_triplets = []
         for triplet in triplets:
-            r_graph_exists = self.kg_model.graph_struct.db_conn.item_exist(
+            r_graph_exists = self.kgmodel_ref.graph_struct.db_conn.item_exist(
                 triplet.relation.get_info(), id_type='relation')
-            r_vector_exists = self.kg_model.graph_embeddings.triplets_vcomposer.item_exist(
+            r_vector_exists = self.kgmodel_ref.graph_embeddings.triplets_vcomposer.item_exist(
                 triplet.relation.id)
 
             if not (r_graph_exists and r_graph_exists):

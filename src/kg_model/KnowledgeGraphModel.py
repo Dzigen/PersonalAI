@@ -1,25 +1,27 @@
 from typing import List, Dict, Set, Union, Tuple
-from dataclasses import dataclass, field
 from copy import deepcopy
 from collections import defaultdict
+from dataclasses import dataclass, field
 from time import time
 import torch
+import pandas as pd
 
 from .config import KG_MAIN_LOG_PATH, DEFAULT_AGENTS_MAP, DEFAULT_EMBEDDERS_MAP, \
     DEFAULT_AGENTS_CONFIG, DEFAULT_EMBEDDERS_CONFIG
-from .graph_model.GraphModel import GraphModelConfig, GraphModel
-from .embeddings_model.EmbeddingsModel import EmbeddingsModelConfig, EmbeddingsModel
-from .nodestree_model import NodesTreeModelConfig, NodesTreeModel
+from .graph_model.GraphModel import GraphModel, GraphModelConfig
+from .embeddings_model.EmbeddingsModel import EmbeddingsModel, EmbeddingsModelConfig
+from .nodestree_model import NodesTreeModel, NodesTreeModelConfig
 from .utils import AgentsMapping, KGEmbeddersMapping
 from ..db_drivers.kv_driver import KeyValueDriverConfig
 from ..db_drivers.vector_driver.embedders import EmbedderModel, EmbedderModelConfig
-from ..agents import AgentDriverConfig, AgentDriver
+from ..agents import AgentDriver, AgentDriverConfig
+from ..agents.utils import AbstractAgentConnector
 from ..utils import Triplet, Logger, accumulate_step_info, ReturnInfo
-from ..utils.data_structs import RelationType, NodeType, NodeInfo, BaseComponentConfig
-
+from ..utils.data_structs import RelationType, NodeType, NodeInfo, BaseComponentConfig, EnvironmentConfig
+from ..environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 @dataclass
-class KnowledgeGraphModelConfig(BaseComponentConfig):
+class KnowledgeGraphModelConfig(BaseComponentConfig, EnvironmentConfig):
     """Конфигурация памяти (граф знаний) ассистента.
 
     :param graph_struct_config: Конфигурация структуры данных, которая отвечает за хранение знаний ассистента в формате графа. Значение по умолчанию GraphModelConfig().
@@ -47,7 +49,8 @@ class KnowledgeGraphModelConfig(BaseComponentConfig):
     agents_configs: Dict[str, Union[Dict, AgentDriverConfig]] = field(default_factory=lambda: DEFAULT_AGENTS_CONFIG)
     agents_map: Union[Dict, AgentsMapping] = field(default_factory=lambda: DEFAULT_AGENTS_MAP)
 
-    log_path: str = KG_MAIN_LOG_PATH
+    kg_related_database_name: str = 'DefaultKnowledgeGraphRelatedDatabase'
+    log_relative_path: str = KG_MAIN_LOG_PATH
 
     def to_str(self):
         # TODO
@@ -94,8 +97,7 @@ class KnowledgeGraphModelConfig(BaseComponentConfig):
         if isinstance(self.agents_map, dict):
             self.agents_map = AgentsMapping(**self.agents_map)
 
-
-class KnowledgeGraphModel:
+class KnowledgeGraphModel(EnvironmentConnectionUtils):
     """Модель памяти (граф знаний) ассистента.
 
     :param config: Конфигурация памяти (граф знаний) ассистента. Значение по умолчанию KnowledgeGraphModelConfig().
@@ -111,8 +113,9 @@ class KnowledgeGraphModel:
         else:
             config.formate_fields()
 
-        self.AVAILABLE_EMBEDDERS = {emb_name: EmbedderModel(emb_config) for emb_name, emb_config in config.embedders_configs.items()}
-        self.AVAILABLE_AGENTS = {agent_name: AgentDriver.connect(agent_config) for agent_name, agent_config in config.agents_configs.items()}
+        self.AVAILABLE_EMBEDDERS: Dict[str, EmbedderModel] = {emb_name: EmbedderModel(emb_config) for emb_name, emb_config in config.embedders_configs.items()}
+        self.AVAILABLE_AGENTS: Dict[str, AbstractAgentConnector] = {
+            agent_name: AgentDriver.select(agent_config) for agent_name, agent_config in config.agents_configs.items()}
         self.KG_EMBEDDERS_MAP: KGEmbeddersMapping = config.embedders_map
         self.AGENTS_MAP: AgentsMapping = config.agents_map
 
@@ -129,8 +132,8 @@ class KnowledgeGraphModel:
                 {db_name: self.AVAILABLE_EMBEDDERS[emb_name] for db_name, emb_name in self.KG_EMBEDDERS_MAP.nodestree_model.items()},
                 config.nodestree_config, cache_kvdriver_config)
 
-        self.cache_config = cache_kvdriver_config
-        self.log = Logger(config.log_path)
+        self.cache_config = deepcopy(cache_kvdriver_config) # костыль
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
 
@@ -398,6 +401,14 @@ class KnowledgeGraphModel:
             if self.nodestree_model is not None:
                 self.nodestree_model.clear_kv_caches()
 
+    def open_connections(self):
+        for a_name in self.AVAILABLE_AGENTS.keys():
+            self.AVAILABLE_AGENTS[a_name].open_connection()
+        self.graph_embeddings.open_connections()
+        self.graph_struct.open_connections()
+        if self.nodestree_model is not None:
+            self.nodestree_model.open_connections()
+
     def close_connections(self):
         for a_name in self.AVAILABLE_AGENTS.keys():
             self.AVAILABLE_AGENTS[a_name].close_connection()
@@ -407,3 +418,24 @@ class KnowledgeGraphModel:
             self.nodestree_model.close_connections()
 
         torch.cuda.empty_cache()
+
+    def is_connections_open(self, detailed: bool = True) -> Union[Dict, bool]:
+        connections_info = {
+            'graph_embeddings': self.graph_embeddings.is_connections_open(),
+            'graph_struct': self.graph_struct.is_connections_open(),
+            'AVAILABLE_AGENTS': {
+                agent_name: agent_inst.check_connection()
+                for agent_name, agent_inst in self.AVAILABLE_AGENTS.items()
+            }
+        }
+
+        if self.nodestree_model is not None:
+            connections_info['nodestree_model'] = self.nodestree_model.is_connections_open()
+
+        if not detailed:
+            df = pd.json_normalize(connections_info, sep='_')
+            connections_info_flat: Dict = df.to_dict(orient='records')[0]
+            connections_summary: bool = (sum(connections_info_flat.values()) == len(connections_info_flat))
+            connections_info = connections_summary
+
+        return connections_info

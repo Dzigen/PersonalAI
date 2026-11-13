@@ -1,6 +1,7 @@
 db_info:
   db: defaultpersonalaivectordb
   table: defaultpersonalaivectortable
+  expected_db_base_path: '.'
 params: {}
 need_to_clear: false
 create_index: false

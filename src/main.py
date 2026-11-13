@@ -1,96 +1,74 @@
-from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Union
-from copy import deepcopy
 
-from .kg_model import KnowledgeGraphModel, KnowledgeGraphModelConfig
-from .pipelines.qa import QAPipeline, QAPipelineConfig
-from .pipelines.memorize import MemPipeline, MemPipelineConfig
+from .PersonalAIConfig import PersonalAIConfig
+from .kg_model import KnowledgeGraphModel
+from .pipelines.qa import QAPipeline
+from .pipelines.memorize import MemPipeline
 from .utils import Logger, ReturnInfo, Triplet, CompositeModuleDetailedResult, \
     accumulate_stage_info, ModuleType
-from .utils.data_structs import create_id, BaseComponentConfig, LanguageConfig
+from .environment.EnvironmentUtils import EnvironmentUtils
 from .db_drivers.kv_driver import KeyValueDriverConfig
-from .config import PAI_MAIN_LOG_PATH, DEFAULT_PERSONALAI_KVCACHE_CONFIG
+from .config import DEFAULT_PERSONALAI_KVCACHE_CONFIG, DEFAULT_AGENTSTAT_CONFIG
 from .utils.agent_stat_analyzer import AgentStatAnalyzerConfig
-from .TextIdStore import TextIdStoreConfig, TextIdStore
+from .TextIdStore import TextIdStore
+from .utils.data_structs import create_id
 
+DEFAULT_PAI_CONFIG = PersonalAIConfig()
 
-@dataclass
-class PersonalAIConfig(BaseComponentConfig, LanguageConfig):
-    """Конфигурация персонального ассистента.
-
-    :param kg_model_config: Конфигурация памяти ассистента. Значение по умолчанию KnowledgeGraphModelConfig().
-    :type kg_model_config: Union[KnowledgeGraphModelConfig, Dict], optional
-    :param qa_pipeline_config: Конфигурация конвейера, который выполняет обработку входящих user-вопросов, поиск релевантной информации в памяти ассистента и генерацию ответов. Значение по умолчанию QAPipelineConfig().
-    :type qa_pipeline_config: Union[QAPipelineConfig, Dict], optional
-    :param mem_pipeline_config: Конфигурация конвейера, который выполняет изменение/обновление информации/знаний в памяти ассистента. Значение по умолчанию MemPipelineConfig().
-    :type mem_pipeline_config: Union[MemPipelineConfig, Dict], optional
-    :param textidstore_config: Конфигурация хранилища отображений между исходными текстами (сохранёнными в модель памяти) и извлечёнными (из данных текстов) триплетами. Значение по умолчанию TextIdStoreConfig().
-    :type textidstore_config: Union[TextIdStoreConfig, Dict], optional
-    """
-    kg_model_config: Union[KnowledgeGraphModelConfig, Dict] = field(default_factory=lambda: KnowledgeGraphModelConfig())
-    qa_pipeline_config: Union[QAPipelineConfig, Dict] = field(default_factory=lambda: QAPipelineConfig())
-    mem_pipeline_config: Union[MemPipelineConfig, Dict] = field(default_factory=lambda: MemPipelineConfig())
-    textidstore_config: Union[TextIdStoreConfig, Dict] = field(default_factory=lambda: TextIdStoreConfig())
-
-    log_path: str = PAI_MAIN_LOG_PATH
-
-    def to_str(self):
-        # TODO
-        raise NotImplementedError
-
-    @staticmethod
-    def from_dict(dict_config: Dict):
-        dictconfig_copy = deepcopy(dict_config)
-        formated_config = PersonalAIConfig(**dictconfig_copy)
-        formated_config.formate_fields()
-        return formated_config
-
-    def formate_fields(self):
-        if isinstance(self.kg_model_config, dict):
-            self.kg_model_config = KnowledgeGraphModelConfig.from_dict(self.kg_model_config)
-        else:
-            self.kg_model_config.formate_fields()
-
-        if isinstance(self.qa_pipeline_config, dict):
-            self.qa_pipeline_config = QAPipelineConfig.from_dict(self.qa_pipeline_config)
-        else:
-            self.qa_pipeline_config.formate_fields()
-
-        if isinstance(self.mem_pipeline_config, dict):
-            self.mem_pipeline_config = MemPipelineConfig.from_dict(self.mem_pipeline_config)
-        else:
-            self.mem_pipeline_config.formate_fields()
-
-        if isinstance(self.textidstore_config, dict):
-            self.textidstore_config = TextIdStoreConfig.from_dict(self.textidstore_config)
-        else:
-            self.textidstore_config.formate_fields()
-
-
-class PersonalAI:
+class PersonalAI(EnvironmentUtils):
     """Верхнеуровневый класс (точка входа) персонального ассистента.
 
-    :param config: Конфигурация персонального ассистента. Значение по умолчанию PersonalAIConfig().
+    :param config: Конфигурация персонального ассистента. Значение по умолчанию DEFAULT_PAI_CONFIG.
     :type config: Union[Dict,PersonalAIConfig], optional
     :param cache_kvdriver_config: Конфигурация структуры данных для кеширования результатов промежуточных операций ассистента. Значение по умолчанию DEFAULT_PERSONALAI_KVCACHE_CONFIG.
     :type cache_kvdriver_config: Union[None,KeyValueDriverConfig], optional
-    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию AgentStatAnalyzerConfig().
+    :param inferencestat_config: Конфигурация компоненты для сбора информации и расчёта статистик по результатам выполнения inference-операциий в рамках LLM-задач. Значение по умолчанию DEFAULT_AGENTSTAT_CONFIG.
     :type inferencestat_config: Union[None, AgentStatAnalyzerConfig], optional
     """
 
-    def __init__(self, config: Union[Dict, PersonalAIConfig] = PersonalAIConfig(),
+    def __init__(self, config: Union[Dict, PersonalAIConfig] = DEFAULT_PAI_CONFIG,
                  cache_kvdriver_config: Union[None, KeyValueDriverConfig] = DEFAULT_PERSONALAI_KVCACHE_CONFIG,
-                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = AgentStatAnalyzerConfig()) -> None:
+                 inferencestat_config: Union[None, AgentStatAnalyzerConfig] = DEFAULT_AGENTSTAT_CONFIG) -> None:
+        # config formatting stage
         if isinstance(config, dict):
             config: PersonalAIConfig = PersonalAIConfig.from_dict(config)
         else:
             config.formate_fields()
 
+        if config.log_base_path is None:
+            config.log_base_path = config.pai_base_path
+        if config.pai_name is None:
+            config.pai_name = f"personalai_env_{create_id()[:6]}"
+
+        # pai filestructure-environment loading/initialization stage
+        is_environment_exists = self.find_environment(config.pai_base_path, config.pai_name)
+        if is_environment_exists:
+            if config.load_existing_environment:
+                print("Existing PAI environment will be loaded.")
+                config, cache_kvdriver_config, inferencestat_config = \
+                    self.prepare_setting(config, cache_kvdriver_config, inferencestat_config)
+            else:
+                raise RuntimeError(f"Заданная pai-среда уже существует, но load_existing_environment-параметр равен {config.load_existing_environment}.")
+        else:
+            print("New PAI environment will be created.")
+            self.initialize_environment(config.pai_base_path, config.pai_name)
+            
+        # synchronization stage
         config.synchronize_language()
         config.synchronize_logging()
+        config.synchronize_kgrelated_configs()
 
+        if cache_kvdriver_config is not None:
+            config.synchronize_cache_kvdriver_config(cache_kvdriver_config)
+        if inferencestat_config is not None:
+            config.synchronize_inferencestat_config(inferencestat_config)
+
+        self.save_setting(config, cache_kvdriver_config, inferencestat_config)
+
+        # initialization of classes for specified pai-environment connection
         self.kg_model = KnowledgeGraphModel(
             config.kg_model_config, cache_kvdriver_config)
+        self.textid_store = TextIdStore(config.textidstore_config)
         self.qa_pipeline = QAPipeline(
             self.kg_model, config.qa_pipeline_config,
             cache_kvdriver_config, inferencestat_config)
@@ -98,9 +76,7 @@ class PersonalAI:
             self.kg_model, config.mem_pipeline_config,
             cache_kvdriver_config, inferencestat_config)
 
-        self.textid_store = TextIdStore(config.textidstore_config)
-
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
 
@@ -139,7 +115,7 @@ class PersonalAI:
         :param text_id: Идентификатор текста, сохраняемого в память.
         :type text_id: Union[None, str], optional
         :return: Кортеж из четёрых объектов: (1) идентификатор данного 'text'-значения и список извлечённой из текста информации (в виде триплетов), который использовался для обновления/актуализации памяти ассистента; (2) статус завершения операции с пояснительной информацией; (3) структура данных с промежуточными результатами реботы метода; (4) True, если результат был получен из кеша (cache hit), иначе False.
-        :rtype: Tuple[str, List[Triplet], ReturnInfo, CompositeModuleDetailedResult, bool]
+        :rtype: Tuple[Tuple[str, List[Triplet]], ReturnInfo, CompositeModuleDetailedResult, bool]
         """
         self.log.info("START MEMORY_UPDATING ...", verbose=self.verbose, log_level=self.log_level)
         self.log.info("* Text hash: %s .", create_id(text), verbose=self.verbose, log_level=self.log_level)
@@ -188,11 +164,3 @@ class PersonalAI:
         self.log.debug("* Triples delete_info: %s .", delete_info, verbose=self.verbose, log_level=self.log_level)
 
         return delete_info, rinfo, module_trace, False
-
-    def close_connections(self):
-        self.kg_model.close_connections()
-        self.textid_store.close_connections()
-
-        self.mem_pipeline.close_connections()
-
-        self.qa_pipeline.close_connections()

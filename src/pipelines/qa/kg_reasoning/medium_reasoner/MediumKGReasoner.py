@@ -68,7 +68,7 @@ class MediumKGReasonerConfig(BaseKGReasonerConfig, BaseComponentConfig, Language
     planlimit_exceeded_behaviour: PlanLimitExceededBehaviour = PlanLimitExceededBehaviour.strict_answer
 
     cache_table_name: str = 'qa_mediumreasoner_cache'
-    log_path: str = MDGR_MAIN_LOG_PATH
+    log_relative_path: str = MDGR_MAIN_LOG_PATH
 
     def to_str(self) -> str:
         str_spe_config = self.searchplan_enhancer_config.to_str()
@@ -153,7 +153,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
             config.formate_fields()
         self.config = config
 
-        self.kg_model = kg_model
+        self.kgmodel_ref = kg_model
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -167,11 +167,11 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
             entities_extractor=EntitiesExtractor(
                 agent, self.config.entities_extractor_config, cache_kvdriver_config, inferencestat_config),
             entities2nodes_matcher=Entities2NodesMatcher(
-                self.kg_model, self.config.e2n_matcher_config, cache_kvdriver_config),
+                self.kgmodel_ref, self.config.e2n_matcher_config, cache_kvdriver_config),
             cluequeries_generator=ClueQueriesGenerator(
                 agent, self.config.cluequeries_generator_config, cache_kvdriver_config, inferencestat_config),
             knowledge_retriever=KnowledgeRetriever(
-                self.kg_model, self.config.knowledge_retriever_config, cache_kvdriver_config),
+                self.kgmodel_ref, self.config.knowledge_retriever_config, cache_kvdriver_config),
             clueanswer_generator=ClueAnswerGenerator(
                 agent, self.config.clueanswer_generator_config, cache_kvdriver_config, inferencestat_config),
             clueanswers_summarizer=ClueAnswersSummarizer(
@@ -180,7 +180,7 @@ class MediumKGReasoner(AbstractKGReasoner, CacheUtils):
                 agent, self.config.answer_generator_config, cache_kvdriver_config, inferencestat_config)
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = config.verbose
         self.log_level = config.log_level
 

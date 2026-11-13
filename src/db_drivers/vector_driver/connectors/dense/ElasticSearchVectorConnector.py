@@ -2,6 +2,7 @@ from typing import List, Tuple, Union, Dict
 from haystack_integrations.document_stores.elasticsearch import ElasticsearchDocumentStore
 from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchEmbeddingRetriever
 import elasticsearch
+from elasticsearch import TransportError, ConnectionError, NotFoundError, SSLError, AuthenticationException
 from haystack import Document
 import torch
 from haystack.document_stores.types import DuplicatePolicy
@@ -17,6 +18,7 @@ from .....utils.errors import ReturnInfo
 
 
 class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
+    DATABASE_KW = 'elasticsearch'
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_ELASTICSEARCH_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
@@ -39,6 +41,7 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
             hosts=host, index=index, embedding_similarity_function='dot_product',
             request_timeout=60, retry_on_timeout=60
         )
+        self.db_conn._ensure_initialized()
         self.retriever = ElasticsearchEmbeddingRetriever(document_store=self.db_conn)
         self.create_index()
 
@@ -54,12 +57,19 @@ class ElasticSearchVectorConnector(AbstractVectorDatabaseConnection):
             sleep(2)
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            return self.db_conn._client.ping()
+        except (ConnectionError, TransportError, SSLError, AuthenticationException, AttributeError) as e:
+            return False
 
-    def close_connection(self) -> ReturnInfo:
-        # TODO
-        pass
+    def close_connection(self) -> None:
+        try:
+            self.db_conn._client.close()
+            #self.db_conn._client = None
+            del self.db_conn
+            del self.retriever
+        except (TypeError, AttributeError):
+            pass
 
     @restore_connection
     def create(self, items: List[VectorDBInstance]) -> ReturnInfo:

@@ -1,6 +1,7 @@
 db_info:
   db: DefaultPersonalAIKVDB
   table: DefaultPersonalAIKVTable
+  expected_db_base_path: '.'
 params: {}
 need_to_clear: false
 create_index: false

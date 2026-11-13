@@ -11,7 +11,7 @@ from haystack_integrations.components.retrievers.opensearch import OpenSearchEmb
 from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
 from haystack.document_stores.types import DuplicatePolicy
 from haystack import Document
-from opensearchpy.exceptions import TransportError, ConnectionError, ConnectionTimeout
+from opensearchpy.exceptions import ConnectionTimeout, ConnectionError, TransportError, SSLError, AuthenticationException
 
 from .configs import DEFAULT_OPENSEARCH_CONFIG
 from ...embedders import EmbedderModel
@@ -21,6 +21,7 @@ from .....utils.errors import ReturnInfo
 
 
 class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
+    DATABASE_KW = 'opensearch'
 
     def __init__(self, config: Union[Dict, VectorDBConnectionConfig] = DEFAULT_OPENSEARCH_CONFIG,
                  embedder: Union[None, EmbedderModel] = None, encode_batchsize: int = 8) -> None:
@@ -52,16 +53,22 @@ class OpenSeachVectorConnector(AbstractVectorDatabaseConnection):
             return_embedding=True,
             method=method_setting
         )
+        self.db_conn._ensure_initialized()
         self.retriever = OpenSearchEmbeddingRetriever(document_store=self.db_conn)
 
     def is_open(self) -> bool:
-        # TODO
-        pass
+        try:
+            return self.db_conn._client.ping()
+        except (ConnectionError, TransportError, SSLError, AuthenticationException, AttributeError) as e:
+            return False
 
     def close_connection(self) -> None:
         try:
-            self.db_conn._client.transport.close()
-        except TypeError:
+            self.db_conn._client.close()
+            #self.db_conn._client = None
+            del self.db_conn
+            del self.retriever
+        except (TypeError, AttributeError):
             pass
 
     @restore_connection

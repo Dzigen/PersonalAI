@@ -13,6 +13,7 @@ from ......utils.cache_kv import CacheUtils
 from ......utils.agent_stat_analyzer import AgentStatAnalyzerConfig
 from ......utils.agent_stat_analyzer.AgentStatOperations import AgentStatOperations
 from ......utils.cache_kv.CacheOperations import CacheOperations
+from ......environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 
 @dataclass
@@ -30,7 +31,7 @@ class ClueAnswersSummarizerConfig(BaseComponentConfig, LanguageConfig):
     agent_tasks_config: Union[ClueAnswersSummarizerAgentTasksConfig, Dict] = field(default_factory=lambda: ClueAnswersSummarizerAgentTasksConfig())
 
     cache_table_name: str = "medreasn_cquerysumm_main_stage_cache"
-    log_path: str = CQSUMM_MAIN_LOG_PATH
+    log_relative_path: str = CQSUMM_MAIN_LOG_PATH
 
     def to_str(self):
         return f"{self.lang}|{self.agent_gen_stategy}|{self.agent_tasks_config.to_str()}"
@@ -47,7 +48,7 @@ class ClueAnswersSummarizerConfig(BaseComponentConfig, LanguageConfig):
             self.agent_tasks_config = ClueAnswersSummarizerAgentTasksConfig.from_dict(self.agent_tasks_config)
 
 
-class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
+class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations, EnvironmentConnectionUtils):
     """Верхнеуровневый класс стадии #3.2 MediumQA-конвейера для суммаризации/резюмирования информации, извлечённой из графа знаний (памяти ассистента) по search_query-шагу поиска.
 
     :param agent: Коннектор к конкретному LLM-агенту для выполнения inference-операций.
@@ -71,7 +72,7 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
         else:
             config.formate_fields()
         self.config = config
-        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level)
+        self.config.agent_tasks_config.versions_to_configs(self.config.verbose, self.config.log_level, self.config.log_base_path)
 
         self.cachekv = self.init_cachekv(
             cache_kvdriver_config, config.cache_table_name)
@@ -86,7 +87,7 @@ class ClueAnswersSummarizer(CacheUtils, AgentStatOperations, CacheOperations):
                 self.agent, self.config.agent_tasks_config.canswers_summarisation, agents_cache_config, inferencestat_config)
         )
 
-        self.log = Logger(config.log_path)
+        self.log = Logger(config.log_relative_path, config.log_base_path)
         self.verbose = self.config.verbose
         self.log_level = self.config.log_level
 

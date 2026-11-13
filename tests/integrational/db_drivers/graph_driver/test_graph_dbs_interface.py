@@ -10,7 +10,8 @@ sys.path.insert(0, PROJECT_BASE_DIR)
 from .cases import GRAPHDB_POPULATED_CREATE_TEST_CASES, GRAPHDB_POPULATED_DELETE_TEST_CASES, \
     GRAPHDB_POPULATED_READ_TEST_CASES, GRAPHDB_POPULATED_COUNT_TEST_CASES, GRAPHDB_POPULATED_EXIST_TEST_CASES, \
     GRAPHDB_POPULATED_CLEAR_TEST_CASES, GRAPHDB_POPULATED_GET_TRIPLETS_TEST_CASES, GRAPHDB_POPULATED_GET_ADJACENT_NODES_TEST_CASES, \
-    GRAPHDB_POPULATED_GET_ADJACENT_TRIPLES_TEST_CASES, GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES, GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES
+    GRAPHDB_POPULATED_GET_ADJACENT_TRIPLES_TEST_CASES, GRAPHDB_POPULATED_READ_BY_NAME_TEST_CASES, GRAPHDB_POPULATED_GET_NSHARED_IDS_TEST_CASES, \
+        GRAPHDB_POPULATED_IS_OPEN_TEST_CASES
 from src.db_drivers.graph_driver.utils import AbstractGraphDatabaseConnection
 from src.utils.data_structs import Node, NodeInfo, RelationInfo
 from src.utils import Triplet, RelationType, NodeType
@@ -286,3 +287,20 @@ def test_get_nodes_shared_ids(
 
         else:
             raise ValueError(id_type)
+
+@pytest.mark.parametrize("conn_sequence, graphdb_conn", GRAPHDB_POPULATED_IS_OPEN_TEST_CASES, indirect=['graphdb_conn'])
+def test_is_open(conn_sequence: List[str], graphdb_conn: AbstractGraphDatabaseConnection):
+    assert graphdb_conn.is_open()
+
+    for conn_kw in conn_sequence:
+        if conn_kw == 'open':
+            graphdb_conn.open_connection()
+            assert graphdb_conn.is_open()
+        elif conn_kw == 'close':
+            graphdb_conn.close_connection()
+            assert not graphdb_conn.is_open()
+        else:
+            raise ValueError
+
+    graphdb_conn.open_connection()
+    assert graphdb_conn.is_open()

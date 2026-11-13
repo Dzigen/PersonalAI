@@ -2,13 +2,15 @@ from dataclasses import dataclass, asdict, field
 from typing import Dict, Union, List
 from copy import deepcopy
 
-from ...db_drivers.table_driver.utils import AbstractTableDatabaseConnection, TableDBInstance
-from ...db_drivers.table_driver.table_structures import LLMInferenceStat
-from ...db_drivers.table_driver import TableDriverConfig, TableDriver
 from .supported_dbvendors import SUPPORTED_VENDORS
 from .utils import AbstractTableStatOperations, CalculateMetrics
 from .configs import DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG
+from ...db_drivers.table_driver.utils import AbstractTableDatabaseConnection, TableDBInstance
+from ...db_drivers.table_driver.table_structures import LLMInferenceStat
+from ...db_drivers.table_driver import TableDriverConfig, TableDriver
 from ..data_structs import BaseConfigOperations
+from ...environment.EnvironmentConnectionUtils import EnvironmentConnectionUtils
+
 
 
 @dataclass
@@ -47,7 +49,7 @@ class AgentStatAnalyzerConfig(BaseConfigOperations):
             self.metrics_info = CalculateMetrics(**self.metrics_info)
 
 
-class AgentStatAnalyzer:
+class AgentStatAnalyzer(EnvironmentConnectionUtils):
     """Компонента для записи и агрегирования статистики LLM-инференса.
 
     Отвечает за:
@@ -64,7 +66,7 @@ class AgentStatAnalyzer:
             config.formate_fields()
         self.config = config
 
-        self.db_conn: AbstractTableDatabaseConnection = TableDriver.connect(self.config.table_driver_config)
+        self.db_conn: AbstractTableDatabaseConnection = TableDriver.select(self.config.table_driver_config)
         self.operations: AbstractTableStatOperations = SUPPORTED_VENDORS[self.config.table_driver_config.db_vendor](self.db_conn)
 
         self.table_operations: Dict[str, object] = {
@@ -101,7 +103,3 @@ class AgentStatAnalyzer:
 
     def clear(self) -> None:
         self.db_conn.clear()
-
-    def close_connection(self):
-        # print("closing astat-cache conn")
-        self.db_conn.close_connection()

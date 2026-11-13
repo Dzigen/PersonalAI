@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2 import OperationalError
 from typing import List, Dict, Tuple, Union
 from dataclasses import fields, asdict
 from collections import defaultdict
@@ -9,6 +10,7 @@ from ...utils import restore_connection, retry
 
 
 class PostgreSQLTableConnector(AbstractTableDatabaseConnection):
+    DATABASE_KW = 'postgresql'
 
     def __init__(self, config: Union[Dict, TableDBConnectionConfig] = DEFAULT_POSTGRESQLTABLE_CONFIG) -> None:
         if isinstance(config, dict):
@@ -18,8 +20,12 @@ class PostgreSQLTableConnector(AbstractTableDatabaseConnection):
         self.config = config
 
     def is_open(self) -> bool:
-        # TODO
-        raise NotImplementedError
+        try:
+            self.cursor.execute("SELECT 1")
+            self.cursor.fetchone()
+            return True
+        except (AttributeError, OperationalError, psycopg2.InterfaceError) as exc:
+            return False
 
     @retry
     def open_connection(self) -> None:
@@ -39,7 +45,7 @@ class PostgreSQLTableConnector(AbstractTableDatabaseConnection):
         try:
             self.cursor.close()
             self.conn.close()
-        except TypeError:
+        except (AttributeError, TypeError) as e:
             pass
 
     def create_table(self, query: str) -> None:

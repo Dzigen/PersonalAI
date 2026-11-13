@@ -21,17 +21,22 @@ class VectorComposer(AbstractVectorDatabaseComposer):
     :type embedders_mapping: Dict[str, EmbedderModel]
     """
 
+    vdb_config_mapping: Dict[str, VectorDriverConfig]
+    vdb_conn_mapping: Dict[str, AbstractVectorDatabaseConnection]
+    embedders_mapping: Dict[str, EmbedderModel]
+
     def __init__(self, vdb_config_mapping: Dict[str, Union[Dict, VectorDriverConfig]], embedders_mapping: Dict[str, EmbedderModel] = dict()) -> None:
         for vdb_name, vdb_config in vdb_config_mapping.items():
             if isinstance(vdb_config, dict):
                 vdb_config_mapping[vdb_name] = VectorDriverConfig.from_dict(vdb_config)
             else:
                 vdb_config_mapping[vdb_name].formate_fields()
-        self.vdb_config_mapping: Dict[str, VectorDriverConfig] = vdb_config_mapping
+        self.vdb_config_mapping = vdb_config_mapping
+        self.embedders_mapping = embedders_mapping
 
-        self.vdb_conn_mapping: Dict[str, AbstractVectorDatabaseConnection] = dict()
-
-        self.open_connection(embedders_mapping)
+        self.vdb_conn_mapping = dict()
+        for db_name, db_config in self.vdb_config_mapping.items():
+            self.vdb_conn_mapping[db_name] = VectorDriver.select(db_config, self.embedders_mapping.get(db_name, None))
 
     def is_open(self):
         db_info = dict()
@@ -39,14 +44,11 @@ class VectorComposer(AbstractVectorDatabaseComposer):
             db_info[db_name] = db_conn.is_open()
         return db_info
 
-    def open_connection(self, embedders_mapping: Dict[str, EmbedderModel] = dict()) -> None:
+    def open_connection(self) -> None:
         """Метод предназначен для открытия соединений со всеми сконфигурированными векторными хранилищами.
-
-        :param embedders_mapping: Сопоставление имени хранилища и эмбеддера, который должен быть передан в конкретный коннектор.
-        :type embedders_mapping: Dict[str, EmbedderModel]
         """
-        for db_name, db_config in self.vdb_config_mapping.items():
-            self.vdb_conn_mapping[db_name] = VectorDriver.connect(db_config, embedders_mapping.get(db_name, None))
+        for db_conn in self.vdb_conn_mapping.values():
+            db_conn.open_connection()
 
     def check_consistency(self) -> bool:
         sizes_info = self.count_items()
