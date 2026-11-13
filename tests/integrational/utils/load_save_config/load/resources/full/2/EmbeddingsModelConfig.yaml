@@ -24,12 +24,8 @@ nodesdb_driver_configs_mapping:
         db: default_db
         table: sparsebm25_nodes
       params:
-        store_dump_name: inmemory_bm25
-        load_from_disk: true
-        load_dump_name: null
-        load_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/inmemory_bm25
         save_on_disk: true
-        save_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/inmemory_bm25
+        rewrtie: true
       need_to_clear: false
       create_index: false
       conn: {}
@@ -56,12 +52,8 @@ tripletsdb_driver_configs_mapping:
         db: default_db
         table: sparsebm25_triplets
       params:
-        store_dump_name: inmemory_bm25
-        load_from_disk: true
-        load_dump_name: null
-        load_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/inmemory_bm25
         save_on_disk: true
-        save_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/inmemory_bm25
+        rewrite: true
       need_to_clear: false
       create_index: false
       conn: {}

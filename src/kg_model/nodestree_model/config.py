@@ -68,7 +68,7 @@ SUMMNODES_VDB_DEFAULT_DRIVER_CONFIGS_MAPPING = {
     'summ_bm25_nodes': VectorDriverConfig(
         db_vendor='inmemory', vector_category='sparse_bm25', db_config=VectorDBConnectionConfig(
             db_info={'db': 'default_db', 'table': "sparsebm25_snodes", 'expected_db_base_path': './personalai_tmp'},
-            params={'load_from_disk': True, 'save_on_disk': True, 'rewrite': True},
+            params={'save_on_disk': True, 'rewrite': True},
             need_to_clear=False
         )
     )

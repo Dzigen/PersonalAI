@@ -75,8 +75,6 @@ if llmasajudge_raw_config['caching']:
             db_info=llmasajudge_raw_config['cache_db_info'],
             host='localhost',
             params={
-                'load_from_disk': True,
-                'load_dump_name': None,
                 'load_dump_dir': EVALUATE_DIR,
                 'save_on_disk': True,
                 'save_dump_dir': EVALUATE_DIR,

@@ -96,7 +96,7 @@ PS_PAICONFIG_V3 = PersonalAIConfig(
     ),
     kg_model_config=KnowledgeGraphModelConfig(
         kg_related_database_name="test_name",
-        verbose=False,
+        verbose=True,
         pai_base_path="unit/utils/environment_utils/tests_input",
         pai_name="personalai_env_ps4"
     ),

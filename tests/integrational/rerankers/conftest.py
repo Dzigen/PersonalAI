@@ -80,7 +80,6 @@ def vector_composer(e5_small_embedder):
         db_config=VectorDBConnectionConfig(
             db_info={ 'db': 'testing','table': 'testing','expected_db_base_path': TEST_VOLUME_DIR },
             params={
-                'load_from_disk': False,
                 'save_on_disk': False,
                 'vector_dim': 384,
                 'rewrite': True
@@ -105,7 +104,7 @@ def vector_composer(e5_small_embedder):
         db_vendor='inmemory', vector_category='sparse_bm25',
         db_config=VectorDBConnectionConfig(
             db_info={ 'db': 'testing','table': 'testing','expected_db_base_path': TEST_VOLUME_DIR },
-            params={'load_from_disk': False, 'save_on_disk': True, 'rewrite': True}
+            params={'save_on_disk': True, 'rewrite': True}
         )
     )
 

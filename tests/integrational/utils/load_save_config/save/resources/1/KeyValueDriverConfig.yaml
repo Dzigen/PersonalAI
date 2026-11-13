@@ -4,11 +4,7 @@ db_config:
     db: DefaultPersonalAIKVDB
     table: DefaultPersonalAIKVTable
   params:
-    load_from_disk: false
-    load_dump_name: null
-    load_dump_dir: ./personalai_tmp/volumes/inmemory_kv
     save_on_disk: true
-    save_dump_dir: ./personalai_tmp/volumes/inmemory_kv
     max_storage: 500000000.0
     rewrite: false
   need_to_clear: false

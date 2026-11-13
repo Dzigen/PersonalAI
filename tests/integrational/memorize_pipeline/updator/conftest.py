@@ -49,9 +49,7 @@ def llm_updator():
                 db_config= VectorDBConnectionConfig(
                     db_info={'db': 'testing', 'table': 'vectorized_bm25_nodes'},
                     params={
-                        'load_from_disk': False, 'load_dump_name': None, 'save_on_disk': True,
-                        'load_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_bm25",
-                        'save_dump_dir': f"{TEST_VOLUME_DIR}/inmemory_bm25"
+                        'load_dump_name': None, 'save_on_disk': True,
                     }
                 )
             )

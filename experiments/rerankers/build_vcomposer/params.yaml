@@ -34,12 +34,9 @@ vdb_configs: # TO CHANGE
     db_info:
       db: 'rerankerexps'
       table: 'bm25'
+      expected_db_base_path: "/home/workspace/data/reranker_exps/rubqdev241025/inmemory_bm25"
     params:
-        load_from_disk: True
-        load_dump_name: null
-        load_dump_dir: "/home/workspace/data/reranker_exps/rubqdev241025/inmemory_bm25"
         save_on_disk: True
-        save_dump_dir: "/home/workspace/data/reranker_exps/rubqdev241025/inmemory_bm25"
 
 embedder_configs: # TO CHANGE
   e5large:

@@ -9,8 +9,7 @@ table_driver_config:
         \ PRIMARY KEY,\n    prompt_tokens_amount INT NULL,\n    generated_tokens_amount\
         \ INT NULL,\n    preparation_elapsed_time REAL NULL,\n    inference_elapsed_time\
         \ REAL NULL,\n    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP);\n"
-    params:
-      database_path: ./personalai_tmp/stat/agent/sqlite3
+    params: {}
     need_to_clear: false
     create_index: false
     timeout: 10

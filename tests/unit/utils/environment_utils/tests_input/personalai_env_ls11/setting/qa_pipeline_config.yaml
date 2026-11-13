@@ -113,7 +113,7 @@ reasoner_config:
       agent_gen_stategy: null
       agent_tasks_config:
         cquerie_generator: v5
-      max_cqueries_amount: 8
+      max_cqueries_amount: 4
       return_only_unique_cqueries: false
       use_basequery_as_cqueries: false
       cache_table_name: medreasn_cquerygen_main_stage_cache

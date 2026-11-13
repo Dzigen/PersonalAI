@@ -78,16 +78,13 @@ if ragas_raw_config['caching']:
             db_info=ragas_raw_config['cache_db_info'],
             host='localhost',
             params={
-                'load_from_disk': True,
-                'load_dump_name': None,
-                'load_dump_dir': EVALUATE_DIR,
                 'save_on_disk': True,
-                'save_dump_dir': EVALUATE_DIR,
                 'rewrite': True,
                 'max_storage': 5e+8
             }
         )
     )
+    kvdriver_config.db_config.db_info['expected_db_base_path'] = EVALUATE_DIR
 
 else:
     kvdriver_config = None

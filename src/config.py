@@ -10,7 +10,6 @@ DEFAULT_PERSONALAI_KVCACHE_CONFIG = KeyValueDriverConfig(
     db_config=KVDBConnectionConfig(
         host='localhost',
         params={
-            'load_from_disk': True,
             'save_on_disk': True,
             'max_storage': 5e+8,
             'rewrite': True
@@ -25,7 +24,6 @@ DEFAULT_TEXTTOTRIPLETS_STORE_CONFIG = KeyValueDriverConfig(
         host='localhost',
         db_info={'db': 'DefaultPersonalAIKVDB', 'table': 'textidtotripletsidmaptable'},
         params={
-            'load_from_disk': True,
             'save_on_disk': True,
             'max_storage': 5e+8,
             'rewrite': True
@@ -40,7 +38,6 @@ DEFAULT_TRIPLETTOTEXTS_STORE_CONFIG = KeyValueDriverConfig(
         host='localhost',
         db_info={'db': 'DefaultPersonalAIKVDB', 'table': 'tripletidtotextsidmaptable'},
         params={
-            'load_from_disk': True,
             'save_on_disk': True,
             'max_storage': 5e+8,
             'rewrite': True

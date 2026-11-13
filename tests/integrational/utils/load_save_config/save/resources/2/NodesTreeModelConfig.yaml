@@ -25,12 +25,8 @@ leafnodes_vdb_driver_configs_mapping:
         db: default_db
         table: sparsebm25_lnodes
       params:
-        store_dump_name: inmemory_bm25
-        load_from_disk: true
-        load_dump_name: null
-        load_dump_dir: ./personalai_tmp/graph_structures/tree_model/vectorized_leaf_nodes/inmemory_bm25
         save_on_disk: true
-        save_dump_dir: ./personalai_tmp/graph_structures/tree_model/vectorized_leaf_nodes/inmemory_bm25
+        rewrite: true
       need_to_clear: false
       create_index: false
       conn: {}
@@ -69,12 +65,8 @@ summnodes_vdb_driver_configs_mapping:
         db: default_db
         table: sparsebm25_snodes
       params:
-        store_dump_name: inmemory_bm25
-        load_from_disk: true
-        load_dump_name: null
-        load_dump_dir: ./personalai_tmp/graph_structures/tree_model/vectorized_summ_nodes/inmemory_bm25
         save_on_disk: true
-        save_dump_dir: ./personalai_tmp/graph_structures/tree_model/vectorized_summ_nodes/inmemory_bm25
+        rewrite: true
       need_to_clear: false
       create_index: false
       conn: {}

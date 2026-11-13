@@ -23,25 +23,20 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def open_connection(self) -> None:
         # print("opening kv connection...")
-        if self.config.params['load_from_disk']:
-            if self.config.params['load_dump_name'] is None:
-                load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}.pkl"
-            else:
-                load_path = f"{self.config.params['load_dump_dir']}/{self.config.params['load_dump_name']}"
-            if os.path.exists(load_path):
-                try:
-                    with open(load_path, 'rb') as fd:
-                        self.kv_store = pickle.load(fd)
-                except EOFError:
-                    # print(f"The pickle file '{load_path}' is empty or corrupted.")
-                    self.kv_store = dict()
-            else:
-                # print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
-                os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
+        load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}.pkl"
+
+        if os.path.exists(load_path):
+            try:
+                with open(load_path, 'rb') as fd:
+                    self.kv_store = pickle.load(fd)
+            except EOFError:
+                # print(f"The pickle file '{load_path}' is empty or corrupted.")
                 self.kv_store = dict()
         else:
+            # print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
             os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
             self.kv_store = dict()
+
 
         if self.config.need_to_clear:
             self.clear()

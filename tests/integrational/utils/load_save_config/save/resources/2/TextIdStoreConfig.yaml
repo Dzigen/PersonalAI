@@ -8,12 +8,9 @@ texttotriplets_store_config:
       db: DefaultPersonalAIKVDB
       table: textidtotripletsidmaptable
     params:
-      load_from_disk: true
-      load_dump_name: null
-      load_dump_dir: ./personalai_tmp/cache/inmemory_kv
       save_on_disk: true
-      save_dump_dir: ./personalai_tmp/cache/inmemory_kv
       max_storage: 500000000.0
+      rewrite: true
     need_to_clear: false
     create_index: false
     host: localhost
@@ -25,12 +22,9 @@ triplettotexts_store_config:
       db: DefaultPersonalAIKVDB
       table: tripletidtotextsidmaptable
     params:
-      load_from_disk: true
-      load_dump_name: null
-      load_dump_dir: ./personalai_tmp/cache/inmemory_kv
       save_on_disk: true
-      save_dump_dir: ./personalai_tmp/cache/inmemory_kv
       max_storage: 500000000.0
+      rewrite: true
     need_to_clear: false
     create_index: false
     host: localhost

@@ -6,6 +6,9 @@ log_relative_path: log/kg_model/main
 verbose: false
 log_level: 10
 graph_struct_config:
+  pai_base_path: .
+  pai_name: personalai_env_default
+  kg_related_database_name: defaultknowledgegraphrelateddatabase
   log_base_path: .
   log_relative_path: log/kg_model/graph
   verbose: false
@@ -16,8 +19,8 @@ graph_struct_config:
       db_info:
         db: DefaultDB
         table: KuzuGraph
+        expected_db_base_path: ./personalai_tmp
       params:
-        path: ./personalai_tmp/memory_parts/graph_model/kuzu
         buffer_pool_size: 1073741824
         table_type_map:
           relations:
@@ -39,6 +42,9 @@ graph_struct_config:
       host: null
       port: null
 graph_embeddings_config:
+  pai_base_path: .
+  pai_name: personalai_env_default
+  kg_related_database_name: defaultknowledgegraphrelateddatabase
   log_base_path: .
   log_relative_path: log/kg_model/embeddings
   verbose: false
@@ -51,6 +57,7 @@ graph_embeddings_config:
         db_info:
           db: default_db
           table: dense_nodes
+          expected_db_base_path: ./personalai_tmp
         params:
           hnsw:space: ip
           hnsw:M: 4096
@@ -58,8 +65,7 @@ graph_embeddings_config:
         create_index: false
         timeout: 10
         trials: 5
-        conn:
-          path: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/chroma
+        conn: {}
     bm25_nodes:
       db_vendor: inmemory
       vector_category: sparse_bm25
@@ -67,13 +73,10 @@ graph_embeddings_config:
         db_info:
           db: default_db
           table: sparsebm25_nodes
+          expected_db_base_path: ./personalai_tmp
         params:
-          store_dump_name: inmemory_bm25
-          load_from_disk: true
-          load_dump_name: null
-          load_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/inmemory_bm25
           save_on_disk: true
-          save_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_nodes/inmemory_bm25
+          rewrite: true
         need_to_clear: false
         create_index: false
         timeout: 10
@@ -87,6 +90,7 @@ graph_embeddings_config:
         db_info:
           db: default_db
           table: vectorized_triplets
+          expected_db_base_path: ./personalai_tmp
         params:
           hnsw:space: ip
           hnsw:M: 4096
@@ -94,8 +98,7 @@ graph_embeddings_config:
         create_index: false
         timeout: 10
         trials: 5
-        conn:
-          path: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/chroma
+        conn: {}
     bm25_triplets:
       db_vendor: inmemory
       vector_category: sparse_bm25
@@ -103,13 +106,10 @@ graph_embeddings_config:
         db_info:
           db: default_db
           table: sparsebm25_triplets
+          expected_db_base_path: ./personalai_tmp
         params:
-          store_dump_name: inmemory_bm25
-          load_from_disk: true
-          load_dump_name: null
-          load_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/inmemory_bm25
           save_on_disk: true
-          save_dump_dir: ./personalai_tmp/memory_parts/embeddings_model/vectorized_triplets/inmemory_bm25
+          rewrite: true
         need_to_clear: false
         create_index: false
         timeout: 10
@@ -118,7 +118,7 @@ graph_embeddings_config:
 nodestree_config: null
 embedders_configs:
   default_embedder:
-    model_name_or_path: ../models/intfloat/multilingual-e5-base
+    model_name_or_path: intfloat/multilingual-e5-base
     prompts:
       query: 'query: '
       passage: 'passage: '

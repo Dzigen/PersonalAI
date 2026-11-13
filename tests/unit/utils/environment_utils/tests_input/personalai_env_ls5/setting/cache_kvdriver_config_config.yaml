@@ -5,12 +5,9 @@ db_config:
     table: DefaultPersonalAIKVTable
     expected_db_base_path: .
   params:
-    load_from_disk: true
-    load_dump_name: null
-    load_dump_dir: ./personalai_tmp/cache/inmemory_kv
     save_on_disk: true
-    save_dump_dir: ./personalai_tmp/cache/inmemory_kv
     max_storage: 500000000.0
+    rewrite: true
   need_to_clear: false
   create_index: false
   timeout: 10
