@@ -12,6 +12,8 @@ from ..utils import KVDBConnectionConfig, AbstractKVDatabaseConnection, KeyValue
 
 class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
+    DATABASE_KW: str = 'inmemory_kv'
+
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_INMEMORYKV_CONFIG) -> None:
         if isinstance(config, dict):
             config = KVDBConnectionConfig.from_dict(config)
@@ -23,7 +25,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
 
     def open_connection(self) -> None:
         # print("opening kv connection...")
-        load_path = f"{self.config.params['load_dump_dir']}/{self.config.db_info['db']}/{self.config.db_info['table']}.pkl"
+        load_path = f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}/{self.config.db_info['table']}.pkl"
 
         if os.path.exists(load_path):
             try:
@@ -34,7 +36,7 @@ class InMemoryKVConnector(AbstractKVDatabaseConnection):
                 self.kv_store = dict()
         else:
             # print(f"warning: kvstore-dump '{load_path}' doesnt exists. creating empty kv-store")
-            os.makedirs(f"{self.config.params['save_dump_dir']}/{self.config.db_info['db']}", exist_ok=True)
+            os.makedirs(f"{self.config.db_info['expected_db_base_path']}/{self.DATABASE_KW}/{self.config.db_info['db']}", exist_ok=True)
             self.kv_store = dict()
 
 

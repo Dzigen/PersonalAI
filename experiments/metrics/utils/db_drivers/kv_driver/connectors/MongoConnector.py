@@ -10,6 +10,8 @@ from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValue
 
 class MongoKVConnector(AbstractKVDatabaseConnection):
 
+    DATABASE_KW: str = 'mongo_kv'
+
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_MONGOKV_CONFIG) -> None:
         if isinstance(config, dict):
             config = KVDBConnectionConfig.from_dict(config)

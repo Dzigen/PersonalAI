@@ -17,6 +17,9 @@ class StubAgentConnector(AbstractAgentConnector):
 
         self.looped_answers = deque(stub_answers)
 
+    def open_connection(self) -> bool:
+        pass
+
     def check_connection(self) -> bool:
         return True
 

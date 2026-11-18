@@ -9,7 +9,7 @@ from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValue
 
 class MixedKVConnector(AbstractKVDatabaseConnection):
 
-    DATABASE_KW = 'mixed'
+    DATABASE_KW: str = 'mixed_kv'
     
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_MIXEDKV_CONFIG):
         if isinstance(config, dict):

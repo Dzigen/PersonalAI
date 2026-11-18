@@ -8,6 +8,9 @@ from ..utils import AbstractKVDatabaseConnection, KVDBConnectionConfig, KeyValue
 
 
 class RedisKVConnector(AbstractKVDatabaseConnection):
+
+    DATABASE_KW: str = 'mongo_kv'
+
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_REDISKV_CONFIG):
         if isinstance(config, dict):
             config = KVDBConnectionConfig.from_dict(config)

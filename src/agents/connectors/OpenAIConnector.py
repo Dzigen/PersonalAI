@@ -28,7 +28,7 @@ class OpenAIConnector(AbstractAgentConnector):
     def open_connection(self) -> None:
         self.client = OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY", self.config.credentials['token']),
-            base_url=self.config.credentials['base_url']
+            base_url=self.config.credentials['base_url'], timeout=self.config.ext_params['timeout']
         )
 
     def check_connection(self) -> bool:

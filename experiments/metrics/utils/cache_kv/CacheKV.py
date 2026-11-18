@@ -3,11 +3,13 @@ import hashlib
 import pickle
 
 from .config import DEFAULT_CACHEKV_CONFIG
+from ..EnvironmentConnectionUtils import EnvironmentConnectionUtils
 from ..db_drivers.kv_driver import KeyValueDriver, KeyValueDriverConfig, KeyValueDBInstance
 from ..db_drivers.kv_driver.utils import AbstractKVDatabaseConnection
 
 
-class CacheKV:
+
+class CacheKV(EnvironmentConnectionUtils):
     kv_conn: AbstractKVDatabaseConnection
 
     def __init__(self, kvdriver_config: KeyValueDriverConfig = DEFAULT_CACHEKV_CONFIG):

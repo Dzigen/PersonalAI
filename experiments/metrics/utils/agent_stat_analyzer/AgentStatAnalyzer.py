@@ -8,6 +8,7 @@ from .supported_dbvendors import SUPPORTED_VENDORS
 from .utils import AbstractTableStatOperations, LLMInferenceStat, CalculateMetrics
 from .configs import DEFAULT_AGENTSTAT_TABLEDB_DRIVER_CONFIG
 from ..data_structs import BaseConfigOperations
+from ..EnvironmentConnectionUtils import EnvironmentConnectionUtils
 
 
 @dataclass
@@ -46,7 +47,7 @@ class AgentStatAnalyzerConfig(BaseConfigOperations):
             self.metrics_info = CalculateMetrics(**self.metrics_info)
 
 
-class AgentStatAnalyzer:
+class AgentStatAnalyzer(EnvironmentConnectionUtils):
     """Компонента для записи и агрегирования статистики LLM-инференса.
 
     Отвечает за:

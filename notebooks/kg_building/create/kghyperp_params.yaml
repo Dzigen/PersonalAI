@@ -18,7 +18,7 @@ KG_CONFIG:
       credentials:
         model: GigaChat-Max
         scope: GIGACHAT_API_PERS
-        token: YzJkNmU4MmEtYTdhYi00ZmY3LTk3NTItMTgwNGFhYTM5MzAwOjcxYjI2YjQzLThjYWUtNGQ5NS04N2ZhLTUxYzE2NTE4NDUzZQ==
+        token: 8
       ext_params:
         timeout: 560
         trials: 5

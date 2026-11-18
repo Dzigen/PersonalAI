@@ -20,7 +20,8 @@ class LocalAgentConnector(AbstractAgentConnector):
             self.config.gen_strategy['top_p'] = float(self.config.gen_strategy['top_p'])
 
         self.CONNECTOR_KW = 'local'
-
+    
+    def open_connection(self) -> bool:
         self.pipeline = pipeline(
             "text-generation",
             model=self.config.credentials['model_name_or_path'],

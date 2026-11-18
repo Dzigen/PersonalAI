@@ -36,7 +36,7 @@ class PersonalAI(EnvironmentUtils):
             config.formate_fields()
 
         if config.log_base_path is None:
-            config.log_base_path = config.pai_base_path
+            config.log_base_path = f"{config.pai_base_path}/{config.pai_name}"
         if config.pai_name is None:
             config.pai_name = f"personalai_env_{create_id()[:6]}"
 

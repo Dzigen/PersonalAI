@@ -15,7 +15,7 @@ cachetools==6.2.1
 certifi==2025.10.5
 cffi==2.0.0
 charset-normalizer==3.4.4
-chromadb==1.1.1
+chromadb==1.5.9
 click==8.3.0
 coloredlogs==15.0.1
 comm==0.2.3
@@ -96,7 +96,7 @@ numpy==2.2.6
 # nvidia-nvjitlink-cu12==12.6.85
 # nvidia-nvtx-cu12==12.6.77
 oauthlib==3.3.1
-ollama==0.6.0
+ollama==0.6.3
 onnxruntime==1.23.1
 opensearch-haystack==4.4.0
 opensearch-py==2.8.0
@@ -191,7 +191,7 @@ zipp==3.23.0
 ranx==0.3.21
 langdetect==1.0.9
 faiss-cpu==1.12.0
-langchain_community
+langchain_community==0.3.31
 torchmetrics==1.8.2
 evaluate==0.4.6
 levenshtein==0.27.3
@@ -228,3 +228,4 @@ optuna==4.7.0
 picologging
 langchain-google-vertexai
 prometheus_client
+langchain-ollama==1.1.0

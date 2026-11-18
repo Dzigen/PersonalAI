@@ -9,7 +9,7 @@ from ...utils import restore_connection, retry
 
 
 class RedisKVConnector(AbstractKVDatabaseConnection):
-    DATABASE_KW = 'redis'
+    DATABASE_KW: str = 'redis_kv'
     
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_REDISKV_CONFIG):
         if isinstance(config, dict):

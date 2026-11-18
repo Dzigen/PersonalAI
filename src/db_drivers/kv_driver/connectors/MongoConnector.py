@@ -13,7 +13,7 @@ from ...utils import restore_connection, retry
 
 class MongoKVConnector(AbstractKVDatabaseConnection):
 
-    DATABASE_KW = 'mongo'
+    DATABASE_KW: str = 'mongo_kv'
 
     def __init__(self, config: Union[Dict, KVDBConnectionConfig] = DEFAULT_MONGOKV_CONFIG) -> None:
         if isinstance(config, dict):

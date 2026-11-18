@@ -1,5 +1,11 @@
+from typing import Dict
+
 from .agent_tasks.judge import AgentLLMJudgeTaskConfigSelector
+from ..utils.task_solver import BaseAgentTaskConfigSelector
+
 
 EVAL_JUDGE_MAIN_LOG_PATH = 'log/eval/judge'
-DEFAULT_LLMJUDGE_TASK_CONFIG = AgentLLMJudgeTaskConfigSelector.select(
-    base_config_version='v1')
+
+JUDGE_AGENTASKS_SELECTORS_MAPPING: Dict[str, BaseAgentTaskConfigSelector] = {
+    'llmasajudge': AgentLLMJudgeTaskConfigSelector
+}
