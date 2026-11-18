@@ -104,12 +104,14 @@ class PersonalAI(EnvironmentUtils):
         return answer, rinfo, module_trace, False
 
     @accumulate_stage_info
-    def update_memory(self, text: str, text_properties: Union[None, Dict] = None, text_id: Union[None, str] = None) \
+    def update_memory(self, text: str, time: Union[None, str] = None, text_properties: Union[None, Dict] = None, text_id: Union[None, str] = None) \
             -> Tuple[Tuple[str, List[Triplet]], ReturnInfo, CompositeModuleDetailedResult, bool]:
         """Метод предназначен для добавления новой информации в память (граф знаний) и её актуализации.
 
         :param text: Слабоструктурированный текст на естественном языке.
         :type text: str
+        :param time: ... .
+        :type time: str, optional
         :param text_properties: Набор свойств данного текста, который необходимо дополнительно сохранить в память ассистента и сопоставить соответствующим фрагментам информации. Значение по умолчанию None.
         :type text_properties: Union[None, Dict], optional
         :param text_id: Идентификатор текста, сохраняемого в память.
@@ -120,6 +122,7 @@ class PersonalAI(EnvironmentUtils):
         self.log.info("START MEMORY_UPDATING ...", verbose=self.verbose, log_level=self.log_level)
         self.log.info("* Text hash: %s .", create_id(text), verbose=self.verbose, log_level=self.log_level)
         self.log.info("* Text: %s .", text, verbose=self.verbose, log_level=self.log_level)
+        self.log.info("* Time: %s .", time, verbose=self.verbose, log_level=self.log_level)
         self.log.info("* Properties: %s .", text_properties, verbose=self.verbose, log_level=self.log_level)
         module_trace = CompositeModuleDetailedResult()
 
@@ -128,7 +131,7 @@ class PersonalAI(EnvironmentUtils):
         if self.textid_store.textid_to_tripletsid_store.item_exist(text_id):
             raise ValueError(f"'text' with given 'text_id' already exists! Change 'text_id' value:\n* text: {text}\n* text_id: {text_id}")
 
-        triplets, rinfo, trace = self.mem_pipeline.remember(text, text_properties)
+        triplets, rinfo, trace = self.mem_pipeline.remember(text, time, text_properties)
         module_trace.add('remember', ModuleType.stage, trace)
         self.textid_store.save_info(text_id, triplets)
         self.log.info("RESULT:", verbose=self.verbose, log_level=self.log_level)
