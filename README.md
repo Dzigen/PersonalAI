@@ -103,7 +103,6 @@ TODO
   title={PersonalAI: A Systematic Comparison of Knowledge Graph Storage and Retrieval Approaches for Personalized LLM Agents}, 
   year={2026},
   volume={14},
-  number={},
   pages={58262-58281},
   keywords={Filtering;Filters;Circuits and systems;Communication systems;Computer networks;IP networks;Mobile handsets;Telecommunications;Large language models;Artificial intelligence;GraphRAG;graph traversal approaches;knowledge graphs generation;multiagency;question answering},
   doi={10.1109/ACCESS.2026.3682941}}
