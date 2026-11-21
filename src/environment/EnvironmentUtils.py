@@ -134,14 +134,20 @@ class EnvironmentUtils(EnvironmentConnectionUtils):
         env_config, env_cache_kvdriver_config, env_inferencestat_config = \
             EnvironmentUtils.load_setting(config.pai_base_path, config.pai_name)
 
+        #
         pai_env_path = f"{config.pai_base_path}/{config.pai_name}"
         pai_setting_dir = f"{pai_env_path}/{PAI_FILESTRUCTURE['directories']['setting']}"        
-        
         qa_pipeline_path = f"{pai_setting_dir}/{PAI_FILESTRUCTURE['configuration_files']['optional']['qa_pipeline_config']}"
         if not os.path.exists(qa_pipeline_path):
            env_config.qa_pipeline_config = deepcopy(config.qa_pipeline_config)
-        selected_pai_config = env_config
+        selected_pai_config: PersonalAIConfig = env_config
 
+        #
+        selected_pai_config.pai_base_path = config.pai_base_path
+        selected_pai_config.log_base_path = config.log_base_path
+        selected_pai_config.verbose = config.verbose
+
+        #
         if env_cache_kvdriver_config is not None:
             selected_cache_kvdriver_config = None if cache_kvdriver_config is None else env_cache_kvdriver_config
         else:

@@ -186,6 +186,23 @@ PS_PAICONFIG_V6 = PersonalAIConfig(
 )
 PS_EXPECTED_OUTPUT_CASE7 = (PS_PAICONFIG_V6, deepcopy(PS_KVCACHECONFIG_V1), deepcopy(PS_AGENTSTATCONFIG_V1))
 
+PS_PAICONFIG_V7 = PersonalAIConfig(
+    pai_base_path="unit/utils/environment_utils/tests_input/sub_personalai_env_ps8",
+    pai_name="personalai_env_ps8",
+    log_base_path="new/log/base/path",
+    verbose=True,
+    kg_model_config=KnowledgeGraphModelConfig(
+        pai_base_path="unit/utils/environment_utils/tests_input",
+        pai_name="personalai_env_ps8"
+    ),
+    textidstore_config=TextIdStoreConfig(
+        pai_base_path="unit/utils/environment_utils/tests_input",
+        pai_name="personalai_env_ps8"    
+    )
+)
+PS_EXPECTED_OUTPUT_CASE8 = (PS_PAICONFIG_V7, None, None)
+
+
 # config: PersonalAIConfig, cache_kvdriver_config: Union[None, KeyValueDriverConfig], 
 # inferencestat_config: Union[None, AgentStatAnalyzerConfig], is_exception_expected: bool, expected_output
 PREPATE_SETTING_TEST_CASES = [
@@ -205,6 +222,10 @@ PREPATE_SETTING_TEST_CASES = [
     # 7. в файловой системе среды отсутствуют конфиги для кеша и сбора статистики по llm-токенам, 
     # при этом в cache_kvdriver_config и inferencestat_config указан не None
     (PS_PAICONFIG_V6, PS_KVCACHECONFIG_V1, PS_AGENTSTATCONFIG_V1, False, PS_EXPECTED_OUTPUT_CASE7),
+    # 8. при загрузе pai_partial-конфига из существующей среды в качестве значений
+    # pai_base_path-, log_base_path- и verbose-параметров подставляются значения
+    # из исходного PersonalAIConfig, который был передан в метод
+    (PS_PAICONFIG_V7, None, None, False, PS_EXPECTED_OUTPUT_CASE8)
 ]
 
 # =====================================================

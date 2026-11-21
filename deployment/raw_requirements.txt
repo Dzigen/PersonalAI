@@ -51,3 +51,4 @@ flatdict
 pytest
 prometheus_client
 langchain-ollama
+tqdm

@@ -229,3 +229,4 @@ picologging
 langchain-google-vertexai
 prometheus_client
 langchain-ollama==1.1.0
+pytest==9.2.0
