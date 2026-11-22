@@ -247,7 +247,7 @@ class NodeCreator(BaseCreator):
 
         node = Node(name=name, type=n_type, prop=prop)
         _, str_node = NodeCreator.stringify(node)
-        node.id = create_id(str_node)
+        node.id = create_id(f"type: {node.type.value}; str_node: {str_node}")
         if add_stringified_node:
             node.stringified = str_node
         return node
@@ -316,7 +316,7 @@ class TripletCreator(BaseCreator):
         if add_stringified_triplet:
             triplet.stringified = str_triplet
 
-        triplet.relation.id = create_id(str_triplet)
+        triplet.relation.id = create_id(str_triplet) # !!! PAY ATTENTION !!!
 
         if t_id is None:
             triplet.id = create_id(''.join(
